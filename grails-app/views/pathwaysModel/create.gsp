@@ -6,13 +6,10 @@
 <g:set var="entityName"
 	value="${message(code: 'pathwaysModel.label', default: 'PathwaysModel')}" />
 <title><g:message code="default.create.label" args="[entityName]" /></title>
-<link rel="stylesheet"
-	href="${resource(dir: 'css', file: 'pathway.css')}" type="text/css">
 <parameter name="name" value="Create Pathways" />
 
 <link rel="stylesheet" href="${resource(dir: 'css', file: 'bootstrap-editable.css')}" type="text/css">
 <link rel="stylesheet" href="${resource(dir: 'css', file: 'layout.css')}" type="text/css">
-<link rel="stylesheet" href="${resource(dir: 'css', file: 'custom.css')}" type="text/css">
 
 <link rel="stylesheet" href="${resource(dir: 'css', file: 'font-awesome.min.css')}" type="text/css">
 

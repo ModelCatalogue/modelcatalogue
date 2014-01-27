@@ -10,10 +10,8 @@
 			<div id="login" class="tab-pane active">
 
 				<g:if test='${flash.message}'>
-					<div class='login_message'>
-						<p class="muted text-center">
+					<div class='alert alert-danger'>
 							${flash.message}
-						</p>
 					</div>
 				</g:if>
 

@@ -159,8 +159,7 @@ modules = {
 		resource url: "js/forms/formDesign.js"
 		resource url: "js/model/collection/collection.js"
 
-        resource url: "css/pathways/style.css"
-		
+
 	}
 	
 	pathwaysList{
@@ -207,7 +206,6 @@ modules = {
         resource url: "js/main.js"
 
         // Keep this at the end, otherwise we'll override our classes with vendor defaults :(
-        resource url:'css/style.css'
         resource url:[dir: 'less', file: 'application.less'], attrs:[rel: "stylesheet/less", type:'css']
         resource url: "js/vendor/less/less-1.6.0.min.js", disposition: 'head'
     }
