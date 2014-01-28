@@ -249,8 +249,8 @@
         	var node = new NodeModel();
             node.name = name;
             node.description = description;
-            node.x = '150px';
-            node.y = '150px';
+            node.x = ($('#model-panel').scrollLeft() + 150) + 'px';//'150px';
+            node.y = ($('#model-panel').scrollTop() + 150) + 'px';//'150px';
             var jsonNodeToServer = pathwayService.createJsonNode(node, self.pathwayModel.id)
            // //console.log(jsonNodeToServer)
             //after the node has been created on the server using the pathways service methods
