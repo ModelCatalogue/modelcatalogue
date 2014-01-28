@@ -51,11 +51,16 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="${createLink(uri: '/')}">MDC</a>
+                    <a class="navbar-brand" href="${createLink(uri: '/')}">Model Catalogue</a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-
+<sec:ifNotLoggedIn>
+                        <li><a href="#">Introduction</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Download</a></li>
+                        <li><a href="#">Contact</a></li>
+</sec:ifNotLoggedIn>
 <sec:ifLoggedIn>
                         <li><a href="${createLink(uri: '/dashboard/')}">Dashboard</a></li>
                         <!-- Metadata curation menu -->
@@ -98,18 +103,13 @@
                                 <li><g:link mapping="importData">Import data</g:link></li>
                             </ul>
                         </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><g:link data-placement="bottom" class="btn btn-inverse" data-original-title="Logout" rel="tooltip" controller="logout"> Logout </g:link></li>
     </sec:ifAnyGranted>
 </sec:ifLoggedIn>
                     </ul>
 
-                    <ul class="nav navbar-nav navbar-right">
-<sec:ifLoggedIn>
-                        <li><g:link class="btn btn-inverse" controller="logout"> Logout </g:link></li>
-</sec:ifLoggedIn>
-<sec:ifNotLoggedIn>
-                        <li><g:link class="btn btn-inverse" controller="login" action="auth" > Login </g:link></li>
-</sec:ifNotLoggedIn>
-                    </ul>
                 </div>
             </div>
         </nav>

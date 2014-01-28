@@ -1,47 +1,40 @@
 <html>
 
 <head>
-<title><g:message code='spring.security.ui.forgotPassword.title'/></title>
-<meta name='layout' content='main'/>
+    <title><g:message code='spring.security.ui.forgotPassword.title'/></title>
+    <meta name='layout' content='main'/>
 </head>
 
 <body>
 
-<p/>
+<g:if test='${emailSent}'>
+    <div class='alert alert-danger'>
+        <g:message code='spring.security.ui.forgotPassword.sent'/>
+    </div>
+</g:if>
 
-<s2ui:form width='350' height='350' elementId='forgotPasswordFormContainer'
-           titleCode='spring.security.ui.forgotPassword.header' center='false'>
+<h2 class="text-center">Forgot Password</h2>
 
-	<g:form action='forgotPassword' name="forgotPasswordForm" autocomplete='off'>
+<form action='${forgotPassword}' name="forgotPasswordForm" method='POST' id='loginForm' class="form-signin" autocomplete='off'>
 
-	<g:if test='${emailSent}'>
-	<br/>
-	<g:message code='spring.security.ui.forgotPassword.sent'/>
-	</g:if>
+    <p>Enter your username and we'll send a link to reset your password to the address we have for your account.</p>
 
-	<g:else>
+    <input type='text' placeholder="Username"
+           class='text_ input-block-level input-full' name='j_username' id='username' />
 
-	<br/>
-	<h4><g:message code='spring.security.ui.forgotPassword.description'/></h4>
+    <p>
+        <input type='submit' class="btn btn-large btn-primary btn-block"
+               id="submit"
+               value='${message(code: "spring.security.ui.forgotPassword.submit")}' />
+    </p>
 
-	<table>
-		<tr>
-			<td><label for="username"><g:message code='spring.security.ui.forgotPassword.username'/></label></td>
-			<td><g:textField name="username" size="25" /></td>
-		</tr>
-	</table>
 
-	<s2ui:submitButton class="btn btn-large btn-primary" elementId='reset' form='forgotPasswordForm' messageCode='spring.security.ui.forgotPassword.submit'/>
-
-	</g:else>
-
-	</g:form>
-</s2ui:form>
+</form>
 
 <script>
-$(document).ready(function() {
-	$('#username').focus();
-});
+    $(document).ready(function() {
+        $('#username').focus();
+    });
 </script>
 
 </body>

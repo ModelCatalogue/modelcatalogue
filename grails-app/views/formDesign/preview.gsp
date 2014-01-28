@@ -15,7 +15,6 @@
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'bootstrap-editable.css')}" type="text/css">
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'bootstrap-timepicker.css')}" type="text/css">
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'layout.css')}" type="text/css">
-		<link rel="stylesheet" href="${resource(dir: 'css', file: 'custom.css')}" type="text/css">
 	</head>
 	<body>
 		<header>
