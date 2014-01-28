@@ -5,9 +5,8 @@ angular.module('utils', ['ngResource'])
 #
 .service 'Grails', ($resource) ->
         getResource: (scope) ->
-            $resource "/:grailsAppName/:controller/:action/:id",
-              {grailsAppName: scope.grailsAppName || '', controller: scope.controller || '', action: scope.action || '', id: scope.id || ''}, ->
-
+            $resource "/:grailsAppName/:controller/:action/:id.json",
+              {grailsAppName: scope.grailsAppName || '', controller: scope.controller || '', action: scope.action || '', id: scope.id || ''}
 
 #
 # A delete button which prompts the user to confirm their deletion.

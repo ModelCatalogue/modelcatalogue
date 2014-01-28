@@ -13,6 +13,7 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 // }
 
 grails.project.groupId = uk.co.mdc // change this to alter the default package name and Maven publishing destination
+grails.mime.use.accept.header = true // required to play nicely with Angular's JSON requests
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.types = [
 	all:           '*/*',
@@ -29,6 +30,7 @@ grails.mime.types = [
 		'application/json',
 		'text/json'
 	],
+    hal:           ['application/hal+json','application/hal+xml'],
 	multipartForm: 'multipart/form-data',
 	rss:           'application/rss+xml',
 	text:          'text/plain',

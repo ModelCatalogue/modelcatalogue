@@ -36,7 +36,9 @@ angular.module('pathway.directives', [])
     return {
     replace: false,
     scope: {
-      options: '@'
+      options: '@',
+      upALevel: '&',
+      canGoUp: '&'
     },
     link: (scope, iElement, iAttrs) ->
       if scope.options
@@ -55,7 +57,8 @@ angular.module('pathway.directives', [])
     scope: {
       node: '=graphNode',
       isSelected: '&',
-      selectNode: '&'
+      selectNode: '&',
+      dblClick: '&'
     },
     templateUrl: 'templates/pathway/jsPlumbNode.html',
     link: (scope, iElement, iAttrs) ->

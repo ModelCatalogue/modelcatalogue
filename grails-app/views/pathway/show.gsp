@@ -18,8 +18,8 @@
 </head>
 <body >
 <g:set var="grailsParams" value="${params.collect{ it.key + '=\'' + it.value + '\''}.join('; ')}" />
-<div ng-app="pathway-editor" ng-init="${grailsParams}" class="pathwayEditor">
-<div ng-controller="PathwayEditorCtrl">
+<div ng-app="pathway-editor" ng-init="${grailsParams}; grailsAppName='model_catalogue'" class="pathwayEditor">
+<div ng-controller="PathwayEditorCtrl" class="ng-cloak">
 
     <div class="row">
         <div class="col-xs-12">
@@ -51,8 +51,9 @@
          </div>
 
         <div class="ui-layout-center">
-            <div mc-graph-container class="jsplumb-container canvas" ng-controller="GraphCanvasCtrl">
-                <div mc-graph-node graph-node="node" select-node="selectNode(node)" is-selected="isSelected(node)" ng-repeat="node in pathway.nodes"></div>
+            <div mc-graph-container class="jsplumb-container canvas" up-a-level="upALevel()" can-go-up="canGoUp(pathway)" ng-controller="GraphCanvasCtrl">
+                <div><i class="fa fa-reply fa-2x" ng-click="upALevel()" style="z-index:-100"></i></div>
+                <div mc-graph-node graph-node="node" select-node="selectNode(node)" dbl-click="viewSubpathway(node)" is-selected="isSelected(node)" ng-repeat="node in pathway.nodes"></div>
                 <div mc-graph-link graph-link="link" ng-repeat="link in pathway.links"></div>
             </div>
         </div>
@@ -106,7 +107,7 @@
 </script>
 
 <script type="text/ng-template" id="templates/pathway/jsPlumbNode.html">
-<div class="node" id="node{{node.id}}" ng-click="selectNode(node)"  ng-class="{selectedItem: isSelected(node)}" style="left: {{node.x}}px; top: {{node.y}}px">
+<div class="node" id="node{{node.id}}" ng-click="selectNode()" ng-dblclick="dblClick()"  ng-class="{selectedItem: isSelected()}" style="left: {{node.x}}px; top: {{node.y}}px">
     <div><i class="fa " ng-class="{'fa-sitemap': node.nodes.length > 0}"></i> {{node.name}}</div>
     <div class="fa fa-arrow-circle-o-right ep right"></div>
     <div class="fa fa-arrow-circle-o-left ep left"></div>

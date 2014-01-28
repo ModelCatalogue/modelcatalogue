@@ -12,6 +12,6 @@
 @angularAppName = 'pathway-editor'
 angular.module(angularAppName, ['pathway.services', 'pathway.directives', 'pathway.controllers', "xeditable", "utils"])
 
-.run( (editableOptions) ->
-  editableOptions.theme = 'bs3'; # bootstrap3 theme. Can be also 'bs2', 'default'
-)
+.run (editableOptions) ->
+    editableOptions.theme = 'bs3'; # bootstrap3 theme. Can be also 'bs2', 'default'
+

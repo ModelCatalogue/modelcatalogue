@@ -6,13 +6,14 @@
 angular.module('pathway.services', ['ngResource'])
 
 .service 'NodeSelector', ->
-  selectedNode = null
+        selectedNode = null
 
-  selectNode: (node) ->
-    selectedNode = node
+        selectNode: (node) ->
+            selectedNode = node
 
-  isSelected: (node) ->
-    return selectedNode == node
+        isSelected: (node) ->
+            selectedNode == node
 
-  getSelectedNode: ->
-    selectedNode
+        getSelectedNode: ->
+            selectedNode
+

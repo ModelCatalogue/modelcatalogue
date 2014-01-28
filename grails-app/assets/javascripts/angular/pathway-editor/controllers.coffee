@@ -7,7 +7,8 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
             NodeSelector.selectNode(node)
         $scope.isSelected = (node) ->
             NodeSelector.isSelected(node)
-
+        $scope.selectedNode = ->
+            NodeSelector.getSelectedNode()
 
         $scope.deleteNode = (node) ->
 
@@ -73,10 +74,38 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
     ])
 
 .controller('GraphCanvasCtrl', ['$scope', 'NodeSelector', ($scope, NodeSelector) ->
-        $scope.pathway
+        $scope.pathway = $scope.$parent.pathway
+
         $scope.selectNode = (node) ->
             NodeSelector.selectNode(node)
+
+        $scope.viewSubpathway = (node) ->
+            jsPlumb.reset()
+            $scope.pathway = node
+
         $scope.isSelected = (node) ->
             NodeSelector.isSelected(node)
+
+        $scope.canGoUp = (pathway) ->
+            console.log  $scope.pathway is not $scope.$parent.pathway
+            $scope.pathway is not $scope.$parent.pathway
+
+        $scope.upALevel = ->
+            newParent = getParentOfSelectedNode($scope.$parent.pathway, $scope.pathway)
+            console.log newParent.name
+            console.log $scope.pathway.name
+            if newParent isnt $scope.pathway
+                jsPlumb.reset()
+                $scope.pathway = newParent
+
+        getParentOfSelectedNode = (pathway, node)->
+            if node is null
+                node = selectedNode
+            if pathway is node
+                return node
+            if pathway and pathway.nodes
+                if pathway.nodes.indexOf(node) != -1
+                    return pathway
+                this.getParentOfSelectedNode(node) for node in pathway.nodes
     ])
 

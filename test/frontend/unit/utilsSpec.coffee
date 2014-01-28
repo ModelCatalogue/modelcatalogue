@@ -16,7 +16,7 @@ describe 'service', ->
     describe 'Grails', ->
 
         it 'should call url with controller, action, and id', ->
-            setup.httpBackend.expectGET('/testapp/grailsControllerName/grailsActionName/grailsId').respond()
+            setup.httpBackend.expectGET('/testapp/grailsControllerName/grailsActionName/grailsId.json').respond()
             setup.scope.grailsAppName = 'testapp'
             setup.scope.controller = 'grailsControllerName'
             setup.scope.action = 'grailsActionName'
@@ -25,7 +25,7 @@ describe 'service', ->
             setup.httpBackend.flush()
 
         it 'should call url with only controller and action', ->
-            setup.httpBackend.expectGET('/testapp/grailsControllerName/grailsActionName').respond()
+            setup.httpBackend.expectGET('/testapp/grailsControllerName/grailsActionName.json').respond()
             setup.scope.grailsAppName = 'testapp'
             setup.scope.controller = 'grailsControllerName'
             setup.scope.action = 'grailsActionName'
@@ -33,7 +33,7 @@ describe 'service', ->
             setup.httpBackend.flush()
 
         it 'should call url with only controller and specified action', ->
-            setup.httpBackend.expectGET('/testapp/grailsControllerName/alternateGrailsActionName').respond()
+            setup.httpBackend.expectGET('/testapp/grailsControllerName/alternateGrailsActionName.json').respond()
             setup.scope.grailsAppName = 'testapp'
             setup.scope.controller = 'grailsControllerName'
             setup.scope.action = 'grailsActionName'
@@ -42,6 +42,6 @@ describe 'service', ->
 
         it 'should call url without controller, action, or id', ->
             setup.scope.grailsAppName = 'testapp'
-            setup.httpBackend.expectGET('/testapp').respond()
+            setup.httpBackend.expectGET('/testapp//.json').respond()
             setup.grails.getResource(setup.scope).get()
             setup.httpBackend.flush()
