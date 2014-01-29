@@ -29,7 +29,6 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
         at PathwayShowPage
     }
 
-
     def "View a Pathway add a new node and then delete as admin"() {
 
         at PathwayShowPage
@@ -75,7 +74,7 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
                     return true
                 }
             }
-							
+
 		}
 
     def "Check that When I create a node with no description then the description is blank" () {
@@ -113,7 +112,7 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 
     def "Clear content of the Create node form after the user has cancelled the action"(){
         at PathwayShowPage
-        
+
         when: "I click on create Node"
         addNodeButton.click()
 
@@ -132,6 +131,7 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
         createNodeName == ""
         createNodeDescription==""
     }
+
 
     def "Validate node name is not blank in Create Node Modal"(){
 
@@ -152,5 +152,59 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 
         then: "the system sends a message to the user to note name is a compulsory field"
         !isErrorNodeName()
+    }
+    /**
+     * added by Soheil to solve MC-125
+     (Problem:Creating a second node places it over the first one)
+     */
+    def "When a new node is added, make it as selected"()
+    {
+        at PathwayShowPage
+
+        def nodeNumber1
+        def selectedNode
+
+        when:"I click on create Node and add a new node"
+        nodeNumber1 = createNode("Node Number 1","Description Number 1");
+        selectedNode = getSelectedNode()
+
+        then:"The New node should be selected automatically"
+        nodeNumber1.attr("id") == selectedNode.attr("id")
+    }
+
+    /**
+     * added by Soheil to solve MC-125
+     (Problem:Creating a second node places it over the first one)
+     */
+    def "When new nodes are added, the second one should appear properly besides the first one"()
+    {
+        at PathwayShowPage
+
+        def node1
+        def node2
+        def selectedNode
+
+        when: "I create a node"
+        node1 = createNode("Node Number 1","Description Number 1");
+        selectedNode = getSelectedNode()
+
+
+        then:"It should be added and selected"
+        node1.attr("id") == selectedNode.attr("id")
+
+
+        when: "I create another node"
+        node2  = createNode("Node Number 2","Description Number 2");
+        selectedNode = getSelectedNode()
+
+
+        then:"the second node should be selected"
+        node2.attr("id") == selectedNode.attr("id")
+
+
+        and: "And the second node should be aligned properly bedside the first node"
+        node2.x > node1.x +   getNodeWidth(node2.attr("id")) + 50 //50: the default value used in AppViewModel.js(self.saveNode method)
+        node2.y == node1.y
+
     }
 }

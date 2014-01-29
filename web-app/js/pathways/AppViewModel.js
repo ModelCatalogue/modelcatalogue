@@ -190,18 +190,18 @@
                 	$.when(pathwayService.loadPathway(n.pathwayId)).done(function (pathwayJSON) {
 						self.loadPathway(pathwayJSON.pathwaysModelInstance);
 						self.selectedItem = ko.utils.arrayFirst(self.pathwayModel.nodes, function (node) { return node.id === n.id });
-			              
+
 					});
                 }
             }
             self.selectedItem = n;
             console.log("SELECTED:" + n.name);
             console.log("SELECTED:" + self.selectedItem.name);
-            
+
             $('#properties-panel .form-group input').css({'max-width': $('#properties-panel').width() - 15, 'min-width': $('#properties-panel').width() - 15});
             $('#properties-panel .form-group textarea').css({'max-width': $('#properties-panel').width() - 15, 'min-width': $('#properties-panel').width() - 15});
-            
-            
+
+
         };
         
         self.getNodeName = function (n) {
@@ -249,8 +249,23 @@
                 var node = new NodeModel();
                 node.name = name;
                 node.description = description;
-                node.x = ($('#model-panel').scrollLeft() + 150) + 'px';//'150px';
-                node.y = ($('#model-panel').scrollTop() + 150) + 'px';//'150px';
+
+                var selectedNode = self.selectedItem;
+                if(selectedNode)
+                {
+                    var sWidth=$('#node'+selectedNode.id).width();
+                    var sX = parseInt(selectedNode.x);
+                    if(sX==NaN)
+                        sX= $('#model-panel').scrollLeft() + 150;
+                    node.x = parseInt(sX) + sWidth +50+'px'
+                    node.y = selectedNode.y
+                }
+                else
+                {
+                    node.x = ($('#model-panel').scrollLeft() + 150) + 'px';//'150px';
+                    node.y = ($('#model-panel').scrollTop() + 150) + 'px';//'150px';
+                }
+
                 var jsonNodeToServer = pathwayService.createJsonNode(node, self.pathwayModel.id)
                 // //console.log(jsonNodeToServer)
                 //after the node has been created on the server using the pathways service methods
@@ -279,6 +294,9 @@
                         alert('node creation failed')
                     }
                 });
+
+                self.selectedItem = node
+
                 $('#createNodeName').val('');
                 $('#createNodeDescription').val('');
                 errorNodeName.style.color = "transparent";
@@ -289,6 +307,9 @@
                  errorNodeName.style.color = "red";
             }
         }
+
+
+
         
         self.deleteNode = function(nodeId){
 
