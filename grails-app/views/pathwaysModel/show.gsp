@@ -187,33 +187,6 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-    <!-- Add Node Modal -->
-    <div class="modal fade" id="CreateNode" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
-                    <h4 class="modal-title" id="createNodeModalLabel">Create Node</h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form" role="form">
-                        <div class="form-group">
-                            <label for="txt-name" class="control-label">Name: </label>
-                            <input id="createNodeName" type="text" class="form-control"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="txt-name" class="control-label">Description: </label>
-                            <input id="createNodeDescription" type="text" class="form-control"/>
-                        </div>
-			        </form>
-                </div>
-                <div class="modal-footer">
-                    <button id="createNodeButton" type="button" class="btn btn-primary" data-bind="click: $root.saveNode">Create</button>
-                    <button id="cancelCreateNodeButton" type="button" class="btn btn-default" data-dismiss="modal" data-bind="click: $root.addNodeCancel">Cancel</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
 <!-- Add Node Modal -->
 <div class="modal fade" id="CreateNode" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -231,12 +204,13 @@
                     <div class="form-group">
                         <label for="txt-name" class="control-label">Description: </label>
                         <input id="createNodeDescription" type="text" class="form-control"/>
+                        <label for="txt-name" id="errorNodeName" class="control-label" style="color: transparent">Please specify Name</label>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button id="createNodeButton" type="button" class="btn btn-primary" data-bind="click: $root.saveNode">Create</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="cancelCreateNodeButton" type="button" class="btn btn-default" data-dismiss="modal" data-bind="click: $root.addNodeCancel">Cancel</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

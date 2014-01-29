@@ -132,4 +132,25 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
         createNodeName == ""
         createNodeDescription==""
     }
+
+    def "Validate node name is not blank in Create Node Modal"(){
+
+        at PathwayShowPage
+
+        when: "I click on create Node"
+        addNodeButton.click()
+
+        then: "the create node modal pops up"
+        waitFor{
+            modalLabel.text() == "Create Node"
+        }
+
+        when: "The node name is blank and click create node"
+        createNodeName = ""
+        createNodeDescription = ""
+        createNodeButton.click()
+
+        then: "the system sends a message to the user to note name is a compulsory field"
+        !isErrorNodeName()
+    }
 }

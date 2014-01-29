@@ -50,6 +50,7 @@ class PathwayShowPage extends BasePageWithNav{
 		createNodeDescription { $("#createNodeDescription") }
 		createNodeButton { $("#createNodeButton") }
         cancelCreateNodeButton {$("#cancelCreateNodeButton")}
+        errorNodeName { $('#errorNodeName')}
 		newNodeTitleDiv { pathwayCanvas.find("div", text: "testNode")}
 
         editModal { module PathwayEditModal }
@@ -136,6 +137,14 @@ class PathwayShowPage extends BasePageWithNav{
      */
     Boolean hasParentNodeStyle(def node){
         return node.find("i").classes().contains("fa-sitemap")
+    }
+
+    /**
+     * Checks if the errorNodeName label is in red => the node name textbox is empty
+     * @return
+     */
+    Boolean isErrorNodeLabelRed(){
+        return (errorNodeName.style.color == 'red')
     }
 
 
