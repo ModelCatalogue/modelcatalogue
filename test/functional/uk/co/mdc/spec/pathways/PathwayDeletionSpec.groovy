@@ -22,35 +22,34 @@ class PathwayDeletionSpec extends GebReportingSpec {
         loginRegularUser()
         at DashboardPage
         nav.goToPathwayListPage()
-        at PathwayListPage
+
     }
 
     def "Check deletion can be cancelled"(){
-
-        given: "I am on the show page for a pathway"
-        dataTableTMLink.click()
-        at PathwayShowPage
-
-        when: "I click on the edit info button"
-        editInfoButton.click()
+        when:
+        at PathwayListPage
+        def pathway = getPathwayLink("Transplanting and Monitoring Pathway")
 
         then: "The delete button is visible but the confirmation is not"
-        waitFor{
-            editModal.deleteButton.displayed
-        }
-        !editModal.deleteCancellationButton.displayed && !editModal.deleteConfirmationButton.displayed
+        getDeleteButton(pathway).displayed
+        !getDeleteAbortButton(pathway).displayed
+        !getDeleteConfirmationButton(pathway).displayed
 
         when: "I click on the delete button"
-        editModal.deleteButton.click()
+        getDeleteButton(pathway).click()
 
         then: "The confirmation is displayed"
-        !editModal.deleteButton.displayed && editModal.deleteCancellationButton.displayed && editModal.deleteConfirmationButton.displayed
+        !getDeleteButton(pathway).displayed
+        getDeleteAbortButton(pathway).displayed
+        getDeleteConfirmationButton(pathway).displayed
 
         when: "I click 'cancel'"
-        editModal.deleteCancellationButton.click()
+        getDeleteAbortButton(pathway).click()
 
         then: "The confirmation is hidden and the delete button becomes visible again"
-        editModal.deleteButton.displayed && !editModal.deleteCancellationButton.displayed && !editModal.deleteConfirmationButton.displayed
+        getDeleteButton(pathway).displayed
+        !getDeleteAbortButton(pathway).displayed
+        !getDeleteConfirmationButton(pathway).displayed
     }
 
     def "Check deletion can be confirmed"(){
@@ -77,7 +76,7 @@ class PathwayDeletionSpec extends GebReportingSpec {
         }
 
         def pathwayShowURL = driver.currentUrl
-        def matcher = pathwayShowURL =~ /pathwaysModel\/show\/(\d+)$/
+        def matcher = pathwayShowURL =~ /pathway\/show\/(\d+)$/
         matcher.size() == 1
         def createdPathwayID = matcher[0][1]
 
@@ -86,37 +85,36 @@ class PathwayDeletionSpec extends GebReportingSpec {
          */
         when: "I go to the page and click on the link"
         to PathwayListPage
-        goToPathway(createdPathwayID)
+        assert goToPathway("A special pathway to be deleted")
 
         then: "I'm at the right page"
         at PathwayShowPage
         driver.currentUrl == pathwayShowURL
 
-        /**
-         * Then let's delete it
-         */
-        when: "I click on the edit modal"
-        editInfoButton.click()
+        when:
+        to PathwayListPage
+        def pathwayItem = getPathwayLink("A special pathway to be deleted")
 
-        then: "The edit modal pops up and the delete button is visible but the confirmation is not"
-        waitFor{
-            editModal.deleteButton.displayed
-        }
-        !editModal.deleteCancellationButton.displayed && !editModal.deleteConfirmationButton.displayed
+        then: "The delete button is visible but the confirmation is not"
+        getDeleteButton(pathwayItem).displayed
+        !getDeleteAbortButton(pathwayItem).displayed
+        !getDeleteConfirmationButton(pathwayItem).displayed
 
         when: "I click on the delete button"
-        editModal.deleteButton.click()
+        getDeleteButton(pathwayItem).click()
 
         then: "The confirmation is displayed"
-        !editModal.deleteButton.displayed && editModal.deleteCancellationButton.displayed && editModal.deleteConfirmationButton.displayed
+        !getDeleteButton(pathwayItem).displayed
+        getDeleteAbortButton(pathwayItem).displayed
+        getDeleteConfirmationButton(pathwayItem).displayed
 
-        when: "I click to confirm"
-        editModal.deleteConfirmationButton.click()
+        when: "I click 'confirm'"
+        getDeleteConfirmationButton(pathwayItem).click()
 
-        then: "We're taken back to the list page but the deleted item isn't present"
+        then: "the deleted item isn't present"
         waitFor{
-            at PathwayListPage
+            !getPathwayLink("A special pathway to be deleted")
         }
-        !goToPathway(createdPathwayID)  
+
     }
 }

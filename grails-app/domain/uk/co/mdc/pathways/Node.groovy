@@ -9,6 +9,10 @@ class Node extends Pathway{
     String name
     String description
 
+    // The owning pathway. We define the ownership because we want
+    // the delete to cascade from Pathway to Link (but not vice-versa)
+    static belongsTo = [pathway: Pathway]
+
     // Coordinates for rendering node
     Integer x
     Integer y

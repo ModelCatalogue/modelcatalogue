@@ -22,4 +22,9 @@ class Pathway {
 		nodes       nullable: true
         links       nullable: true
     }
+
+    static mapping = {
+        nodes cascade: "all-delete-orphan"
+        links cascade: "all-delete-orphan"
+    }
 }

@@ -26,12 +26,21 @@ class PathwayListPage extends BasePageWithNav{
         pathwayListURLs { pathwayList.find("a")*.href() }
 	}
 
+    def getDeleteButton(def pathway) {
+        pathway.parent().siblings().find("button", text: contains("Delete"))
+    }
+    def getDeleteConfirmationButton(def pathway){
+        pathway.parent().siblings().find("button", text: contains("Confirm"))
+    }
+    def getDeleteAbortButton(def pathway){
+        pathway.parent().siblings().find("button", text: contains("Abort"))
+    }
 
     def getPathwayLinks(){
         return dataTableRows.find("a")
     }
-    boolean goToPathway(id){
-        def link = pathwayList.find("a", id: "$id")
+    boolean goToPathway(String title){
+        def link = pathwayList.find("a", text: "$title")
         if(link){
             link.click()
             return true

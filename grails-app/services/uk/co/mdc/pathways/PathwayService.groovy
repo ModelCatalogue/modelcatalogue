@@ -1,5 +1,6 @@
 package uk.co.mdc.pathways
 
+import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PostFilter
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.acls.domain.BasePermission
@@ -65,11 +66,12 @@ class PathwayService {
     }
 
     /**
-     * Deletes a pathway, and its associated ACL
+     * Deletes a pathway, all it's associated links and sub-pathways, and its associated ACL
      * @param pathway The pathway to delete
      */
-    @Transactional @PreAuthorize("hasPermission(#pathway, delete) or hasPermission(#pathway, admin)")
-    void delete(Pathway pathway) {
+    @Transactional
+    @PreAuthorize("hasPermission(#pathway, delete) or hasPermission(#pathway, admin)")
+    void delete(Pathway pathway){
         pathway.delete()
         aclUtilService.deleteAcl pathway
     }
@@ -124,11 +126,10 @@ class PathwayService {
     }
 
 
-//	@PostAuthorize("hasPermission(returnObject, read) or hasPermission(returnObject, admin)")
-//	Pathway get(long id) {
-//	   Pathway.get id
-//	}
-	
+	@PostAuthorize("hasPermission(returnObject, read) or hasPermission(returnObject, admin)")
+	Pathway get(long id) {
+	   Pathway.get id
+	}
 
 //	@PreAuthorize("hasRole('ROLE_USER')")
 //	@PostFilter("hasPermission(filterObject, read) or hasPermission(filterObject, admin)")

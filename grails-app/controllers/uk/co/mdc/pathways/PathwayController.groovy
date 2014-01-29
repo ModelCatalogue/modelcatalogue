@@ -17,10 +17,8 @@ class PathwayController extends RestfulController{
 
 
     def list() {
-        //def model = [pathways: pathwayService.topLevelPathways()]
-        //respond model
-        // FIXME respond :)
-        [pathways: pathwayService.topLevelPathways()]
+        def model = [items: pathwayService.topLevelPathways()]
+        respond model
     }
 
     def show(Pathway pathway){
@@ -51,25 +49,24 @@ class PathwayController extends RestfulController{
         respond pathway
     }
 
-    def delete(Long id) {
-        def pathway = findInstance(id)
+    def delete(Pathway pathway) {
 
         def model
         def msg
 
         if (!pathway) {
-            msg = message(code: 'default.not.found.message', args: [message(code: 'pathway.label', default: 'Pathway'), id])
+            msg = message(code: 'default.not.found.message', args: [message(code: 'pathway.label', default: 'Pathway'), pathway.id])
             model = [errors: true, details: msg]
             respond model
         }
 
         try {
             pathwayService.delete(pathway)
-            msg = message(code: 'default.deleted.message', args: [message(code: 'pathway.label', default: 'Pathway'), id])
+            msg = message(code: 'default.deleted.message', args: [message(code: 'pathway.label', default: 'Pathway'), pathway.id])
             model = [success: true, details: msg]
         }
         catch (DataIntegrityViolationException e) {
-            msg = message(code: 'default.not.deleted.message', args: [message(code: 'pathway.label', default: 'Pathway'), id])
+            msg = message(code: 'default.not.deleted.message', args: [message(code: 'pathway.label', default: 'Pathway'), pathway.id])
             model = [errors: true, details: msg]
         }
 

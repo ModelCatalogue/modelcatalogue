@@ -70,6 +70,7 @@
   <asset:javascript src="jquery.layout/dist/jquery.layout-latest.js"/>
 
   <asset:javascript src="angular/app.js"/>
+  <asset:javascript src="angular/list.js"/>
   <r:layoutResources />
   </body>
 </html>
