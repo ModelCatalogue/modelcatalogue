@@ -29,18 +29,9 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
             # 4. Update the NodeSelector so it doesn't reference the old object
             NodeSelector.selectNode(null)
 
-        $scope.addNode = ->
-            $scope.pathway.nodes.push({
-                name: "New node"
-                id: "LOCAL" + nextLocalId()
-                x: 100 + (Math.random()*300)
-                y: 100 + (Math.random()*300)
-            })
 
-        lastLocalId = 0
-        nextLocalId = ->
-            lastLocalId++
-            return lastLocalId
+
+
     ])
 
 .controller('NodePropertiesCtrl', ['$scope', 'NodeSelector', ($scope, NodeSelector) ->
@@ -80,32 +71,45 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
             NodeSelector.selectNode(node)
 
         $scope.viewSubpathway = (node) ->
-            jsPlumb.reset()
+            jsPlumb.deleteEveryEndpoint(); # FIXME this should be handled in the directive. Controllers are for data model, directives are for DOM manipulation
             $scope.pathway = node
 
         $scope.isSelected = (node) ->
             NodeSelector.isSelected(node)
 
-        $scope.canGoUp = (pathway) ->
-            console.log  $scope.pathway is not $scope.$parent.pathway
+        $scope.canGoUp = () ->
             $scope.pathway is not $scope.$parent.pathway
 
         $scope.upALevel = ->
             newParent = getParentOfSelectedNode($scope.$parent.pathway, $scope.pathway)
-            console.log newParent.name
-            console.log $scope.pathway.name
             if newParent isnt $scope.pathway
-                jsPlumb.reset()
+                jsPlumb.deleteEveryEndpoint(); # FIXME this should be handled in the directive. Controllers are for data model, directives are for DOM manipulation
                 $scope.pathway = newParent
 
         getParentOfSelectedNode = (pathway, node)->
-            if node is null
-                node = selectedNode
             if pathway is node
                 return node
-            if pathway and pathway.nodes
+            if pathway and pathway.nodes.length > 0
                 if pathway.nodes.indexOf(node) != -1
                     return pathway
-                this.getParentOfSelectedNode(node) for node in pathway.nodes
+                for subPathway in pathway.nodes
+                    response =  getParentOfSelectedNode(subPathway, node)
+                    if(response?)
+                        return response
+
+        $scope.addNode = ->
+            $scope.pathway.nodes.push {
+                name: "New node"
+                id: "LOCAL" + nextLocalId()
+                x: 100 + (Math.random()*300)
+                y: 100 + (Math.random()*300)
+                nodes: []
+                links: []
+            }
+
+        lastLocalId = 0
+        nextLocalId = ->
+            lastLocalId++
+            return lastLocalId
     ])
 

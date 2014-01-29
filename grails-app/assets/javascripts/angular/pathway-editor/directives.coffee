@@ -36,15 +36,52 @@ angular.module('pathway.directives', [])
     return {
     replace: false,
     scope: {
+      pathway: '='
       options: '@',
       upALevel: '&',
       canGoUp: '&'
     },
+    controller: ($scope) ->
+        nextId = 0
+        $scope.getNextLinkId = ->
+            nextId++
+            return nextId
+#        $scope.goUp = ->
+#            if $scope.canGoUp()
+#               jsPlumb.reset()
+#               $scope.upALevel()
+
+
+    ,
+    #templateUrl: 'templates/pathway/jsPlumbCanvas.html',
     link: (scope, iElement, iAttrs) ->
       if scope.options
         jsPlumb.importDefaults(scope.options)
       else
         jsPlumb.importDefaults(defaultOptions)
+
+      # Listen for link creation and add to the list of links
+      jsPlumb.bind "connection", (info) ->
+          connectionId = info.connection.getParameter("connectionId", connectionId)
+          if not connectionId
+              connectionId = 'connection_' + info.source.id + '_' + info.target.id
+
+              # We only allow one link to occur between two nodes
+              exists = false
+              for link in scope.pathway.links
+                  console.log 'connection_node' + link.source + '_node' + link.target
+                  if connectionId is 'connection_node' + link.source + '_node' + link.target
+                    exists = true
+              if exists
+                jsPlumb.detach(info)
+              else
+                # TODO this should be extracted so the directive takes a function to add the link as a parameter
+                scope.pathway.links.push {
+                    id: 'LOCAL'+scope.getNextLinkId(),
+                    source: info.source.id.replace(/node/, ""),
+                    target: info.target.id.replace(/node/, "")
+                }
+
     }
   )# end directive
 
