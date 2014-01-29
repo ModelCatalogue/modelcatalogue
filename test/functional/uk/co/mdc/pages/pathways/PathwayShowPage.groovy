@@ -24,7 +24,7 @@ class PathwayShowPage extends BasePageWithNav{
         pathwayDescription { $("#pathwayDescription") }
         pathwayIsDraft { $("#pathwayIsDraft") }
 
-		addNodeButton { $("#addNode") }
+		addNodeButton { pathwayCanvas.find("i", class: "fa-plus-square-o") }
 		node2(required:false) { $("#node7") }
 		addFormModal { $("#AddFormModal") }
 		addFormButton { $("h5", text: "Forms").find("i") }
@@ -35,9 +35,8 @@ class PathwayShowPage extends BasePageWithNav{
 
 		pathwayCanvas { $(".jsplumb-container") }
 
-        goToParentButton { $("#goToParent") }
-        viewSubPathwayButton { $("button", text:"Go to sub-pathway") }
-		deleteSelectedElementButton {$("#properties-panel").find("button", text: "Delete")}
+        goToParentButton { $("i", class: "fa-reply") }
+		deleteSelectedElementButton {$("#properties-panel").find("button", text: contains("Delete"))}
 		propertiesName {js.exec("return document.getElementById('txt-properties-name').value")}
 		modalLabel { $("#createNodeModalLabel") }
 		createNodeName { $("#createNodeName") }
@@ -79,15 +78,20 @@ class PathwayShowPage extends BasePageWithNav{
      * @return
      */
     def createSubpathway(def node){
-
-        node.click()
-        viewSubPathwayButton.click()
+        waitFor{
+            node.displayed
+        }
+        node.doubleClick()
 
         waitFor{
             goToParentButton.displayed
         }
         // Return to the original screen
         goToParentButton.click()
+
+        //waitFor{
+        //    !goToParentButton.displayed
+        //}
     }
 
     /**

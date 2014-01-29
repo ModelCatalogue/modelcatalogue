@@ -726,7 +726,7 @@ class BootStrap {
 
             Node node1 = new Node(
                     name: 'Guard Patient',
-                    x: '5px',
+                    x: '250px',
                     y: '0px',
                     description: 'guard patient on recovery',
             ).save(failOnError: true)
@@ -769,7 +769,7 @@ class BootStrap {
 
             def node21 = new Node(
                     name: 'transfer to O.R.',
-                    x: '5px',
+                    x: '455px',
                     y: '0px',
                     description: 'transfer patient to the Operating Room',
             ).save(flush:true)

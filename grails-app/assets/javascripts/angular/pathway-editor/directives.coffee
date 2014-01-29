@@ -39,19 +39,13 @@ angular.module('pathway.directives', [])
       pathway: '='
       options: '@',
       upALevel: '&',
-      canGoUp: '&'
     },
     controller: ($scope) ->
+        $scope.hasParent = true
         nextId = 0
         $scope.getNextLinkId = ->
             nextId++
             return nextId
-#        $scope.goUp = ->
-#            if $scope.canGoUp()
-#               jsPlumb.reset()
-#               $scope.upALevel()
-
-
     ,
     #templateUrl: 'templates/pathway/jsPlumbCanvas.html',
     link: (scope, iElement, iAttrs) ->
@@ -60,6 +54,7 @@ angular.module('pathway.directives', [])
       else
         jsPlumb.importDefaults(defaultOptions)
 
+      jsPlumb.unbind("dblclick");
       # Listen for link creation and add to the list of links
       jsPlumb.bind "connection", (info) ->
           connectionId = info.connection.getParameter("connectionId", connectionId)

@@ -40,6 +40,7 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
             console.log("FIXME: this should switch the pathway viewer's scope to node " + $scope.selectedNode.id)
 
         $scope.deleteNode = ->
+            console.log "Deleting node"
             $scope.$parent.deleteNode($scope.selectedNode)
 
         $scope.removeForm = (form) ->
@@ -77,8 +78,10 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
         $scope.isSelected = (node) ->
             NodeSelector.isSelected(node)
 
-        $scope.canGoUp = () ->
-            $scope.pathway is not $scope.$parent.pathway
+        $scope.levelsAbove = false
+
+        $scope.$watch 'pathway', ->
+            $scope.levelsAbove = ($scope.pathway != $scope.$parent.pathway)
 
         $scope.upALevel = ->
             newParent = getParentOfSelectedNode($scope.$parent.pathway, $scope.pathway)

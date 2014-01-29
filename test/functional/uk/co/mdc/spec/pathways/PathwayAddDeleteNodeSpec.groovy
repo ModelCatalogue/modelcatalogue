@@ -64,29 +64,19 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 					when: "I click on add node"
 					addNodeButton.click()
 					
-					then: "the create node modal pops up"
-					waitFor{
-						modalLabel.text() == "Create Node"
-					}
-					
-					when: "I fill in the information"
-					createNodeName = "testNode"
-					createNodeDescription = "testDesc"
-					createNodeButton.click()
-					
 					then: "the node appears in the interface with the testNode title"
 
+                    def newNode = $(".node", text: "New node")
 					waitFor{
-						newNodeTitleDiv.displayed
+						newNode.displayed
 					}
 
 					when: "I click on the node I have just created"
-					newNodeTitleDiv.click()
+                    newNode.click()
 				
 					then: "the delete node button is visible in the properties panel"
 					waitFor{
-						deleteSelectedElementButton.@type=="button"	
-						propertiesName == "testNode"
+						deleteSelectedElementButton.displayed
 					}
 					
 					when: "I click on the delete node button"
@@ -95,7 +85,7 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 					then: "the node is deleted"
 					waitFor{
 							try {
-								newNodeTitleDiv.text() != "testNode"
+                                $(".node", text: "New node").displayed == false
 							} catch (UnresolvablePropertyException e) {
 								return true
 							} catch (RequiredPageContentNotPresent e) {
