@@ -53,6 +53,7 @@ class PathwayShowPage extends BasePageWithNav{
 		newNodeTitleDiv { pathwayCanvas.find("div", text: "testNode")}
 
         editModal { module PathwayEditModal }
+
 	}
 
     def getNodeIds(){
@@ -100,9 +101,9 @@ class PathwayShowPage extends BasePageWithNav{
     /**
      * Create a node on the canvas and return it
      */
-    def createNode(String name) {
+    def createNode(String name,String description) {
+        def preCreationNodeIds = getNodeIds()
 
-        def preCreationNodes = getNodeIds()
         addNodeButton.click()
 
         waitFor{
@@ -110,15 +111,25 @@ class PathwayShowPage extends BasePageWithNav{
         }
 
         createNodeName = name
-        createNodeDescription = ""
+        createNodeDescription = description
         createNodeButton.click()
+        waitFor {
+            !modalLabel.displayed
+        }
 
-        def postCreationNodes = getNodeIds()
-        postCreationNodes.removeAll(preCreationNodes)
+        waitFor{
+            addNodeButton.displayed
+        }
 
-        assert postCreationNodes.size() == 1
-        return getNode(postCreationNodes[0])
+        def postCreationNodeIds = getNodeIds()
 
+        assert postCreationNodeIds.size() == preCreationNodeIds.size() + 1
+
+        Boolean changed= postCreationNodeIds.removeAll(preCreationNodeIds)
+        assert  changed
+
+        assert postCreationNodeIds.size() == 1
+        return getNode(postCreationNodeIds[0])
     }
 
     /**
@@ -138,6 +149,20 @@ class PathwayShowPage extends BasePageWithNav{
         return node.find("i").classes().contains("fa-sitemap")
     }
 
+    /**
+     * returns the selected node
+     */
+    def getSelectedNode()
+    {
+        return  pathwayCanvas.find("div.selectedItem");
+    }
 
+    /**
+     * Get the node width based of the node id
+     */
+    def getNodeWidth(def nodeId)
+    {
+        return  $('#node'+nodeId).width;
+    }
 
 }
