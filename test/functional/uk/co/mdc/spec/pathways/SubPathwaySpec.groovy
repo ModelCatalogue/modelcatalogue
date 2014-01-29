@@ -48,11 +48,5 @@ class SubPathwaySpec extends GebReportingSpec {
         then: "That node is not marked as a parent"
         !hasParentNodeStyle(newNode)
 
-        cleanup: "Remove our new nodes"
-        deleteNode(newNode)
-
-        nodeElement = getNode(nodeId)
-        deleteNode(nodeElement)
-
     }
 }

@@ -81,11 +81,13 @@ class PathwayShowPage extends BasePageWithNav{
         waitFor{
             node.displayed
         }
-        node.doubleClick()
+        node.click()
+        node.doubleClick() // make this work!!!
 
         waitFor{
             goToParentButton.displayed
         }
+        createNode("Some temp node")
         // Return to the original screen
         goToParentButton.click()
 
@@ -102,13 +104,7 @@ class PathwayShowPage extends BasePageWithNav{
         def preCreationNodes = getNodeIds()
         addNodeButton.click()
 
-        waitFor{
-            modalLabel.displayed
-        }
 
-        createNodeName = name
-        createNodeDescription = ""
-        createNodeButton.click()
 
         def postCreationNodes = getNodeIds()
         postCreationNodes.removeAll(preCreationNodes)
