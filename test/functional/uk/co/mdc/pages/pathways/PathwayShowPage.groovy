@@ -82,7 +82,9 @@ class PathwayShowPage extends BasePageWithNav{
             node.displayed
         }
         node.click()
-        node.doubleClick() // make this work!!!
+
+        node.click() // make this work!!!
+        node.click()
 
         waitFor{
             goToParentButton.displayed

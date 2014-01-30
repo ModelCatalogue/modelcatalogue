@@ -40,14 +40,14 @@
 
     <div id="container" class="row" >
 
-         <div class="ui-layout-west" id="tree-panel" >
+         <div class="ui-layout-west panel panel-primary" >
              <ul>
                  <li ng-repeat="node in pathway.nodes"
                      ng-include="'templates/pathway/pathwayTreeView.html'"></li>
              </ul>
          </div>
 
-        <div class="ui-layout-center">
+        <div class="ui-layout-center panel panel-primary">
             <div mc-graph-container
                  pathway="pathway"
                  up-a-level="goUp()"
@@ -63,7 +63,7 @@
         </div>
 
         <!-- If selectedItem is undefined, the right panel will be empty -->
-        <div class="ui-layout-east large-rounded panel panel-primary" id="properties-panel" ng-controller="NodePropertiesCtrl">
+        <div class="ui-layout-east large-rounded panel panel-primary" ng-controller="NodePropertiesCtrl">
             <div class="panel-heading">
                 Properties
             </div>
