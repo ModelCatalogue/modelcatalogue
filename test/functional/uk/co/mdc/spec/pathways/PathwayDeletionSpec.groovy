@@ -22,13 +22,15 @@ class PathwayDeletionSpec extends GebReportingSpec {
         loginRegularUser()
         at DashboardPage
         nav.goToPathwayListPage()
-
+        at PathwayListPage
     }
 
     def "Check deletion can be cancelled"(){
         when:
-        at PathwayListPage
-        def pathway = getPathwayLink("Transplanting and Monitoring Pathway")
+        createPathway("Test pathway 4")
+
+        to PathwayListPage
+        def pathway = getPathwayLink("Test pathway 4")
 
         then: "The delete button is visible but the confirmation is not"
         getDeleteButton(pathway).displayed
@@ -50,6 +52,11 @@ class PathwayDeletionSpec extends GebReportingSpec {
         getDeleteButton(pathway).displayed
         !getDeleteAbortButton(pathway).displayed
         !getDeleteConfirmationButton(pathway).displayed
+
+        cleanup:
+        getDeleteButton(pathway).click()
+        getDeleteConfirmationButton(pathway).click()
+
     }
 
     def "Check deletion can be confirmed"(){

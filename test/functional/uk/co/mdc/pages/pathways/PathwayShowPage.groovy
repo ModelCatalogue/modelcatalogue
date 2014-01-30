@@ -157,4 +157,6 @@ class PathwayShowPage extends BasePageWithNav{
         return  $('#node'+nodeId).width;
     }
 
+
+
 }

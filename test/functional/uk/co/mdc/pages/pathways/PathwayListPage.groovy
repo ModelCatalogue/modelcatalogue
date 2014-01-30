@@ -63,4 +63,32 @@ class PathwayListPage extends BasePageWithNav{
     def getPathwayLink(pathwayName){
         return pathwayList.find("a", text: pathwayName)
     }
+
+    /**
+     * Create a pathway. TODO this should be available everywhere, but it feels wrong to put it in NavElements...
+     * @param name
+     * @return
+     */
+    def createPathway(String name) {
+
+
+        nav.expandPathwayMenuLink.click()
+        waitFor{
+            nav.createPathwayLink.displayed
+        }
+
+        nav.createPathwayLink.click()
+        waitFor{
+            nav.pathwayCreationModal.displayed
+        }
+
+        nav.newPathwayName = name
+        nav.newPathwayDescription = "This is a sample pathway"
+        nav.newPathwayVersionNo = "1a"
+        nav.newPathwayIsDraft = "false"
+        nav.newPathwaySubmit.click()
+
+
+        // FIXME go to list and confirm it's right there too
+    }
 }
