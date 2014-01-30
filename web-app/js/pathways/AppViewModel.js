@@ -1,4 +1,4 @@
-﻿
+
     //The main view model
     var AppViewModel = function () {
     	
@@ -183,7 +183,7 @@
                     	self.containerPathway = self.pathwayModel;
                         self.loadPathway(pathwayJSON);
                         
-                        self.selectedItem = ko.utils.arrayFirst(self.pathwayModel.nodes, function (node) { return node.id === node.id });
+                        self.selectedItem = ko.utils.arrayFirst(self.pathwayModel.nodes, function (node) { return node.id === n.id });
                         $('#properties-panel .form-group input').css({'max-width': $('#properties-panel').width() - 15, 'min-width': $('#properties-panel').width() - 15});
                         $('#properties-panel .form-group textarea').css({'max-width': $('#properties-panel').width() - 15, 'min-width': $('#properties-panel').width() - 15});
                     });
@@ -197,10 +197,11 @@
             }
             self.selectedItem = node;
             
+
             $('#properties-panel .form-group input').css({'max-width': $('#properties-panel').width() - 15, 'min-width': $('#properties-panel').width() - 15});
             $('#properties-panel .form-group textarea').css({'max-width': $('#properties-panel').width() - 15, 'min-width': $('#properties-panel').width() - 15});
-            
-            
+
+
         };
         
         self.getNodeName = function (n) {
@@ -228,47 +229,82 @@
             pm.versionOnServer = JSONNode.version;
             pm.nodes.push(node);
         };
-        
-        self.saveNode = function (createFrom) {
-        	
-        	var name = 'node' + (new Date().getTime());	 
-        	var description = ''
-        	
-        	if($('#createNodeName').val()!=''){
-        		name = $('#createNodeName').val();
-        		description = $('#createNodeDescription').val();
-        	}
-        	
-        	//create the node in the model
-        	var node = new NodeModel();
-            node.name = name;
-            node.description = description;
-            node.x = '150px';
-            node.y = '150px';
-            var jsonNodeToServer = pathwayService.createJsonNode(node, self.pathwayModel.id)
-           // //console.log(jsonNodeToServer)
-            //after the node has been created on the server using the pathways service methods
-            //pass the version number and the id from the server to the node and 
-            //add it to the pathways model
 
-            $.when(pathwayService.createNode(jsonNodeToServer)).done(function (data) {
-            	if(data.success===true){
-	                node.id = data.nodeId
-	                node.versionOnServer = data.nodeVersion
-	                self.pathwayModel.versionOnServer = data.pathwaysModelVersion
-	                self.pathwayModel.nodes.push(node);
-	                
-            	}else{
-            		alert('node creation failed')
-            	}
-            });
-            
-            
-            
-            $('#createNodeName').val('');
-    		$('#createNodeDescription').val('');
-            $('#CreateNode').modal('hide');
-        };
+        self.saveNode = function (createFrom) {
+
+            var name = 'node' + (new Date().getTime());
+            var description = ''
+
+            if($('#createNodeName').val()!=''){
+                name = $('#createNodeName').val();
+                description = $('#createNodeDescription').val();
+
+
+                //create the node in the model
+                var node = new NodeModel();
+                node.name = name;
+                node.description = description;
+
+                var selectedNode = self.selectedItem;
+                if(selectedNode)
+                {
+                    var sWidth=$('#node'+selectedNode.id).width();
+                    var sX = parseInt(selectedNode.x);
+                    if(sX==NaN)
+                        sX= $('#model-panel').scrollLeft() + 150;
+                    node.x = parseInt(sX) + sWidth +50+'px'
+                    node.y = selectedNode.y
+                }
+                else
+                {
+                    node.x = ($('#model-panel').scrollLeft() + 150) + 'px';//'150px';
+                    node.y = ($('#model-panel').scrollTop() + 150) + 'px';//'150px';
+                }
+
+                var jsonNodeToServer = pathwayService.createJsonNode(node, self.pathwayModel.id)
+                // //console.log(jsonNodeToServer)
+                //after the node has been created on the server using the pathways service methods
+                //pass the version number and the id from the server to the node and
+                //add it to the pathways model
+
+                $.when(pathwayService.createNode(jsonNodeToServer)).done(function (data) {
+                    if(data.success===true){
+                        node.id = data.nodeId
+                        node.versionOnServer = data.nodeVersion
+                        self.pathwayModel.versionOnServer = data.pathwaysModelVersion
+                        self.pathwayModel.nodes.push(node);
+
+                        //refresh the top level pathway if there have been updates
+
+                        if(self.pathwayModel.id == self.topLevelPathway.id){
+                            self.topLevelPathway = self.pathwayModel
+                        }else if(node.pathwayId == self.topLevelPathway.id){
+                            $.when(pathwayService.loadPathway(self.topLevelPathway.id)).done(function (data) {
+                                var tlpm = self.createPathway(data.pathwaysModelInstance);
+                                self.topLevelPathway = tlpm;
+                            });
+                        }
+
+                    }else{
+                        alert('node creation failed')
+                    }
+                });
+
+                self.selectedItem = node
+
+                $('#createNodeName').val('');
+                $('#createNodeDescription').val('');
+                errorNodeName.style.color = "transparent";
+                $('#CreateNode').modal('hide');
+            }
+
+            else{
+                 errorNodeName.style.color = "red";
+            }
+        }
+
+
+
         
         self.deleteNode = function(nodeId){
 
@@ -469,7 +505,14 @@
         self.addFormFinish = function(){
       	    $('#AddFormModal').modal('hide');
         }
-	
+
+        self.addNodeCancel = function(){
+
+            $('#createNodeName').val('');
+            $('#createNodeDescription').val('');
+            errorNodeName.style.color = "transparent";
+            $('#CreateNode').modal('hide');
+        }
         self.refreshCollections = function(){
             self.selectedItem.refreshCollections();
         }

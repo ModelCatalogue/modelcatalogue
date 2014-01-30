@@ -5,51 +5,16 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Model Catalogue - Dashboard</title>
 
-
-<!-- FIXME Styles in HTML is bad, bad, bad! Extract to generic CSS file.... -->
-<style type="text/css">
-
-
-.dashboard_option{
-	width: 200px;
-	height: 200px;
-	text-align: center;
-	float: left;
-	margin-bottom: 10px;
-	cursor: pointer;
-	margin-right:15px;
-	font-weight: bold;
-
-    opacity: 0.4;
-    filter: alpha(opacity=40); /* msie */
-
-    transition: opacity 0.5s;
-    -webkit-transition: opacity 0.5s; /* Safari */
-
-}
-.dashboard_option:hover{
-    opacity: 1;
-    filter: alpha(opacity=100); /* msie */
-
-}
-
-.dashboard_option span{
-	text-align: center;
-	width: 100%;
-	white-space: nowrap;
-}
-</style>
-
 </head>
 <body>
-  	<div id="dashboard" min-height="300px">
-	  	<div class="dashboard-page" id="dashboard-options">
+    <h2>Dashboard</h2>
+  	<div id="dashboard">
+	  	<div class="dashboard-page dashboard-page-enabled" id="dashboard-options">
 			<div class="options-box">
 				<div class="dashboard_option" id="pathways">
 					<img src="../images/dashboard/Pathways_colour.png"/>
 					<span>Pathway Models</span>
 				</div>
-			</div>
 			<div class="dashboard_option" id="forms">
 				<img src="../images/dashboard/Forms_colour.png"/>
 				<span>Form Models</span>
@@ -74,10 +39,11 @@
 				<span>My Profile</span>
 			</div>
 			-->
+            </div>
 		</div>
 
 
-	  	<div class="dashboard-page" id="dashboard-pathways" style="display: none;">
+	  	<div class="dashboard-page dashboard-page-disabled" id="dashboard-pathways">
 	  		<div class="dashboard-wrapper">
 		  		<h2>Pathway Models</h2>
 		  		<p>You currently have ${draftPathways.size()} pathway(s) in a 'draft' state, and you have
@@ -85,11 +51,11 @@
 					view, or start creating a new pathway model by clicking the button below...
 				</p>
 
-				<table class="table table-bordered" style="width: 100%">
+				<table class="table table-bordered">
 					<thead>
 		  				<tr>
-		  					<th style="width: 50%;">'Draft' Pathway Models</th>
-		  					<th style="width: 50%;">Finalised Pathway Models</th>
+		  					<th>'Draft' Pathway Models</th>
+		  					<th>Finalised Pathway Models</th>
 		  				</tr>
 		  			</thead>
 		  			<tbody>
@@ -111,12 +77,12 @@
 		  				</tr>
 		  			</tbody>
 		  		</table>
-	  			<button id="dashCreatePathway" class="btn btn-default" data-toggle="modal" data-target="#createPathwayModal"><i style="color: green;" class="icon-plus"></i>&nbsp;Create a new Pathway Model</button>
+	  			<button id="dashCreatePathway" class="btn btn-large btn-primary" data-toggle="modal" data-target="#createPathwayModal"><i class="glyphicon glyphicon-plus"></i>&nbsp;Create a new Pathway Model</button>
 
-		  		<button class="dashboard-return btn btn-default"><i class="icon-arrow-left"></i>&nbsp;Return to the Dashboard</button>
+		  		<button class="btn btn-large btn-info"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;Return to the Dashboard</button>
 	  		</div>
 	  	</div>
-	  	<div class="dashboard-page" id="dashboard-forms" style="display: none;">
+	  	<div class="dashboard-page dashboard-page-disabled" id="dashboard-forms">
 	  		<div class="dashboard-wrapper">
 	  	 		<h2>Forms</h2>
 		  		<p>You currently have ${draftForms.size()} form(s) in a 'draft' state, and you have
@@ -124,11 +90,11 @@
 					view, or start creating a new form model by clicking the button below...
 				</p>
 
-				<table class="table table-bordered" style="width: 100%">
+				<table class="table table-bordered">
 					<thead>
 		  				<tr>
-		  					<th style="width: 50%;">'Draft' Form Models</th>
-		  					<th style="width: 50%;">Finalised Form Models</th>
+		  					<th>'Draft' Form Models</th>
+		  					<th>Finalised Form Models</th>
 		  				</tr>
 		  			</thead>
 		  			<tbody>
@@ -150,11 +116,11 @@
 		  				</tr>
 		  			</tbody>
 		  		</table>
-	  			<button id="dashCreateForm" class="btn btn-default" data-toggle="modal" data-target="createFormModal"><i style="color: green;" class="icon-plus"></i>&nbsp;Create a new Form Model</button>
-		  		<button class="dashboard-return btn btn-default"><i class="icon-arrow-left"></i>&nbsp;Return to the Dashboard</button>
+                <button id="dashCreateForm" class="btn btn-large btn-primary" data-toggle="modal" data-target="createFormModal"><i class="glyphicon glyphicon-plus"></i>&nbsp;Create a new Form Model</button>
+		  		<button class="dashboard-return btn btn-large btn-info"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;Return to the Dashboard</button>
 	  		</div>
 	  	</div>
-        <div class="dashboard-page" id="dashboard-deployments" style="display: none;">
+        <div class="dashboard-page dashboard-page-disabled" id="dashboard-deployments">
 	  		<div class="dashboard-wrapper">
 		  		<h2>Deployment Models</h2>
 		  		<br/><br/>
@@ -166,7 +132,7 @@
 		  		<button class="dashboard-return btn btn-default"><i class="icon-arrow-left"></i>&nbsp;Return to the Dashboard</button>
 	  		</div>
 	  	</div>
-	  	<div class="dashboard-page" id="dashboard-projects" style="display: none;">
+	  	<div class="dashboard-page dashboard-page-disabled" id="dashboard-projects">
 	  		<div class="dashboard-wrapper">
 		  		<h2>Projects</h2>
 		  		<br/><br/>
@@ -178,14 +144,14 @@
 		  		<button class="dashboard-return btn btn-default"><i class="icon-arrow-left"></i>&nbsp;Return to the Dashboard</button>
 	  		</div>
 	  	</div>
-	  	<div class="dashboard-page" id="dashboard-metadata" style="display: none;">
+	  	<div class="dashboard-page dashboard-page-disabled" id="dashboard-metadata">
 	  		<div class="dashboard-wrapper">
 		  		<h2>Metadata Curation</h2>
                 <h3>Under construction!</h3>
 		  		<button class="dashboard-return btn btn-default"><i class="icon-arrow-left"></i>&nbsp;Return to the Dashboard</button>
 	  		</div>
 	  	</div>
-	  	<div class="dashboard-page" id="dashboard-profile" style="display: none;">
+	  	<div class="dashboard-page dashboard-page-disabled" id="dashboard-profile">
 	  		<div class="dashboard-wrapper">
 		  		<h2>Profile</h2>
 		  		<br/><br/>

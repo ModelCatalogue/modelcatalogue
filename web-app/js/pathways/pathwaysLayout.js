@@ -19,6 +19,7 @@ $(document).ready(function () {
 	});
 
 	function resizeWindows(){
-		$('#container').height($('html').height()-90);
+        var surround = $('#footer').height() + $('.navbar').height() + $('h1').height() + 70;
+		$('#container').height($('body').height() - surround);
 	}
 });

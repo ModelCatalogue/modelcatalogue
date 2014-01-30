@@ -280,6 +280,12 @@
             
             bindingContext.$root.updatePathway();
         };
+
+
+
+
+
+
     };
   
   //json marshaller(so we don't get cyclical problems)

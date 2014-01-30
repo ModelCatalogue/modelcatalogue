@@ -15,8 +15,6 @@
 		<parameter name="name" value=" FORM Builder - ${formDesignInstance?.name}" />
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'bootstrap-editable.css')}" type="text/css">
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'layout.css')}" type="text/css">
-		<link rel="stylesheet" href="${resource(dir: 'css', file: 'custom.css')}" type="text/css">
-		<link rel="stylesheet" href="${resource(dir: 'css', file: 'font-awesome.min.css')}" type="text/css">
 	</head>
 	<body>
 		<header>

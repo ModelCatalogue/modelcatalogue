@@ -6,12 +6,10 @@
 <g:set var="entityName"
 	value="${message(code: 'pathway.label', default: 'Pathway')}" />
 <title>Pathway Editor</title>
-<link rel="stylesheet"
-	href="${resource(dir: 'css', file: 'pathway.css')}" type="text/css">
+
 <parameter name="name" value="Pathway Editor" />
 
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'layout.css')}" type="text/css">
-    <link rel="stylesheet" href="${resource(dir: 'css', file: 'custom.css')}" type="text/css">
 
     <asset:stylesheet href="jquery.layout/dist/jquery.layout-latest.css"/>
 

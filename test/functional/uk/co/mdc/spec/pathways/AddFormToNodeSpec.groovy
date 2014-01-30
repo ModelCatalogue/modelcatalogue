@@ -72,7 +72,7 @@ class AddFormToNodeSpec extends GebReportingSpec {
 					
 					when: "I drag and drop the first row of the form list"
 					interact {
-						dragAndDropBy(formDesignTableFirstRow, 0, -175)
+						dragAndDropBy(formDesignTableFirstRow, 0, -145)
 					}
 					
 					then: "the form name is added to the form list"

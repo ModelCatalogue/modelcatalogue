@@ -131,6 +131,30 @@ class PathwayShowPage extends BasePageWithNav{
         return node.find("i").classes().contains("fa-sitemap")
     }
 
+    /**
+     * Checks if the errorNodeName label is in red => the node name textbox is empty
+     * @return
+     */
+    Boolean isErrorNodeLabelRed(){
+        return (errorNodeName.style.color == 'red')
+    }
 
+
+    /*
+     * returns the selected node
+     */
+    def getSelectedNode()
+    {
+        return  pathwayCanvas.find("div.selectedItem");
+    }
+
+
+    /**
+     * Get the node width based of the node id
+     */
+    def getNodeWidth(def nodeId)
+    {
+        return  $('#node'+nodeId).width;
+    }
 
 }
