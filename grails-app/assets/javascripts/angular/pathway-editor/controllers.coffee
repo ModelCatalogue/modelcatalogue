@@ -40,7 +40,7 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
             console.log("FIXME: this should switch the pathway viewer's scope to node " + $scope.selectedNode.id)
 
         $scope.deleteNode = ->
-            console.log "Deleting node"
+            # FIXME, change this so it doesn't reference parent
             $scope.$parent.deleteNode($scope.selectedNode)
 
         $scope.removeForm = (form) ->

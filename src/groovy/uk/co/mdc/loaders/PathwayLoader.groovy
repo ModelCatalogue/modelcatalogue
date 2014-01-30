@@ -2,7 +2,7 @@ package uk.co.mdc.loaders
 
 import uk.co.mdc.pathways.*;
 
-class PathwaysModelLoader {
+class PathwayLoader {
 
 	/**
 	 * Namespace string of the pathways model.

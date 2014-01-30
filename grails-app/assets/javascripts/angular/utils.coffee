@@ -8,6 +8,7 @@ angular.module('utils', ['ngResource'])
             $resource "/:grailsAppName/:controller/:action/:id.json",
               {grailsAppName: scope.grailsAppName || '', controller: scope.controller || '', action: scope.action || '', id: scope.id || ''}
 
+
 #
 # A delete button which prompts the user to confirm their deletion.
 # To use, simply pass the delete function to the "on-confirm" attribute

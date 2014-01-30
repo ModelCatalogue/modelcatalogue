@@ -43,7 +43,7 @@
                     </div>
                     <div ng-show="isDeleting">
                         <button type="button" class="btn btn-default btn-xs" ng-click="cancel()">Abort deletion</button>
-                        <button type="button" class="btn btn-danger btn-xs"  ng-click="confirm()"><i class="fa fa-trash-o"></i>Confirm</button>
+                        <button type="button" class="btn btn-danger btn-xs"  ng-click="confirm()"><i class="fa fa-trash-o"></i> Confirm</button>
                     </div>
                 </div>
             </script>

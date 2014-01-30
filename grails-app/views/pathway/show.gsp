@@ -18,6 +18,7 @@
 </head>
 <body >
 <g:set var="grailsParams" value="${params.collect{ it.key + '=\'' + it.value + '\''}.join('; ')}" />
+<!-- FIXME remove hardcoded grails app name and put it in params -->
 <div ng-app="pathway-editor" ng-init="${grailsParams}; grailsAppName='model_catalogue'" class="pathwayEditor">
 <div ng-controller="PathwayEditorCtrl" class="ng-cloak">
 
