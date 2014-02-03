@@ -18,7 +18,6 @@ import org.springframework.security.acls.domain.BasePermission
 class BootStrap {
 	def aclService
 	def aclUtilService
-	//def objectIdentityRetrievalStrategy
 	def sessionFactory
 	def springSecurityService
 	def grailsApplication
@@ -29,9 +28,6 @@ class BootStrap {
 		
 		//register custom json Marshallers
 		registerJSONMarshallers(springContext)
-
-		//register spring filters (in this case the rest api security filter)
-		registerSpringFilters()
 		
 		environments {
 			production {
@@ -92,12 +88,7 @@ class BootStrap {
 					SecUserSecAuth.create admin, roleAdmin, true
 				}
 	}
-	
-	private registerSpringFilters(){
 
-		SpringSecurityUtils.clientRegisterFilter('apiAuthFilter', SecurityFilterPosition.SECURITY_CONTEXT_FILTER.order + 10)
-
-	}
 
 	private registerJSONMarshallers(springContext) {
 

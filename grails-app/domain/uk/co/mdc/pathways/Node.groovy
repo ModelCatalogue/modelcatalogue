@@ -17,9 +17,6 @@ class Node extends Pathway{
     Integer x
     Integer y
 
-    // The owning pathway
-    Pathway parent
-
     // TODO Forms
     // TODO Data elements
 //    static hasMany = [

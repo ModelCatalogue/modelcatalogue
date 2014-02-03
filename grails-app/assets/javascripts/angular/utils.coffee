@@ -4,6 +4,11 @@ angular.module('utils', ['ngResource'])
 # The Grails resource, used for all interaction with the Grails environment.
 #
 .service 'Grails', ($resource) ->
+
+        # private REST resource URL resolver
+        getRestResource: (scope) ->
+            $resource "/:grailsAppName/:controller/:id.json", {grailsAppName: scope.grailsAppName || '', controller: scope.controller || '', id: scope.id || ''}, {'update': { method:'PUT'} }
+
         getResource: (scope) ->
             $resource "/:grailsAppName/:controller/:action/:id.json",
               {grailsAppName: scope.grailsAppName || '', controller: scope.controller || '', action: scope.action || '', id: scope.id || ''}

@@ -20,7 +20,8 @@ class NodeMarshaller {
 			    'y' :           node.y,
 			    'version' :     node.version,
                 'nodes' :       node.nodes,
-                'links' :       node.links
+                'links' :       node.links,
+                'pathway':      node.pathway?.id
 			]
 		}
 	}

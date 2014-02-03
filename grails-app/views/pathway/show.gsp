@@ -19,7 +19,7 @@
 <!-- FIXME remove hardcoded grails app name and put it in params -->
 <div ng-app="pathway-editor" ng-init="${grailsParams}; grailsAppName='model_catalogue'" class="pathwayEditor">
 <div ng-controller="PathwayEditorCtrl" class="ng-cloak">
-
+    <button type="button" class="btn btn-primary" ng-click="save()">Save</button>
     <div class="row">
         <div class="col-xs-12">
             <div class="pull-right">

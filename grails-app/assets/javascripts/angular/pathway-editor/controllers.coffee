@@ -1,7 +1,9 @@
 pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 
-.controller('PathwayEditorCtrl', ['$scope', 'Grails', 'NodeSelector', ($scope, Grails, NodeSelector) ->
-        $scope.pathway = Grails.getResource($scope).get {action: 'show'}
+.controller('PathwayEditorCtrl', ['$scope', 'Grails', 'NodeSelector','PathwayPersistence', ($scope, Grails, NodeSelector,PathwayPersistence) ->
+
+        $scope.controller = "pathways" # override because we want to use the RestController endpoints
+        $scope.pathway = Grails.getRestResource($scope).get {action: 'show'}
 
         $scope.selectNode = (node) ->
             NodeSelector.selectNode(node)
@@ -29,7 +31,11 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
             # 4. Update the NodeSelector so it doesn't reference the old object
             NodeSelector.selectNode(null)
 
-
+        $scope.save = () ->
+            grailsResponse = PathwayPersistence.save($scope, $scope.pathway)
+            if grailsResponse.hasErrors
+                for error in grailsResponse.errors
+                    console.log error
 
 
     ])
@@ -102,27 +108,28 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 
         # TODO is it a good idea to use DOM IDs here? Probably not...
         $scope.addNode = ->
+            nodeX = 0
+            nodeY = 0
             selectedNode = NodeSelector.getSelectedNode()
             if selectedNode
                 sWidth=$('#node'+selectedNode.id).width()
                 sX = selectedNode.x
                 if(sX==NaN)
                     sX= $('#model-panel').scrollLeft() + 150
-                node.x = sX + sWidth +50
-                node.y = selectedNode.y
+                nodeX = sX + sWidth + 50
+                nodeY = selectedNode.y
             else
-                node.x = $('#model-panel').scrollLeft() + 150 + (Math.random()*300)
-                node.y = $('#model-panel').scrollTop() + 150 + (Math.random()*300)
+                nodeX = $('#model-panel').scrollLeft() + 150 + (Math.random()*300)
+                nodeY = $('#model-panel').scrollTop() + 150 + (Math.random()*300)
 
-
-
-            nodeX = 100 + (Math.random()*300)
-            nodeY = 100 + (Math.random()*300)
             newNode = {
                 name: "New node"
                 id: "LOCAL" + nextLocalId()
+                pathway: $scope.pathway.id
                 nodes: []
                 links: []
+                x: nodeX
+                y: nodeY
             }
             $scope.pathway.nodes.push newNode
             NodeSelector.selectNode(newNode)

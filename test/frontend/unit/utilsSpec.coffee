@@ -7,6 +7,7 @@ describe 'service', ->
     beforeEach inject (_$httpBackend_, $rootScope, Grails) ->
         setup.httpBackend = _$httpBackend_
         setup.scope = $rootScope.$new()
+        setup.scope.grailsAppName = 'testapp'
         setup.grails = Grails
 
     afterEach ->
@@ -14,6 +15,30 @@ describe 'service', ->
         setup.httpBackend.verifyNoOutstandingRequest();
 
     describe 'Grails', ->
+
+        it 'should call base URL with controller', ->
+            setup.httpBackend.expectGET('/testapp/pathways.json').respond()
+            setup.scope.controller = 'pathways'
+            setup.grails.getRestResource(setup.scope).get()
+            setup.httpBackend.flush()
+        it 'should call base URL with ID when ID is specified', ->
+            setup.httpBackend.expectGET('/testapp/pathways/2.json').respond()
+            setup.scope.controller = 'pathways'
+            setup.scope.action = 'show'
+            setup.scope.id = '2'
+            setup.grails.getRestResource(setup.scope).get()
+            setup.httpBackend.flush()
+        it 'should use a PUT request for update', ->
+            setup.httpBackend.expectPUT('/testapp/pathways/2.json').respond()
+            setup.scope.controller = 'pathways'
+            setup.scope.action = 'update'
+            setup.scope.id = '2'
+            setup.grails.getRestResource(setup.scope).update("somepayload")
+            setup.httpBackend.flush()
+
+
+
+
 
         it 'should call url with controller, action, and id', ->
             setup.httpBackend.expectGET('/testapp/grailsControllerName/grailsActionName/grailsId.json').respond()

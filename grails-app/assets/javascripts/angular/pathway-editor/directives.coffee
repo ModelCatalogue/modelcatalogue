@@ -72,7 +72,7 @@ angular.module('pathway.directives', [])
               else
                 # TODO this should be extracted so the directive takes a function to add the link as a parameter
                 scope.pathway.links.push {
-                    id: 'LOCAL'+scope.getNextLinkId(),
+                    id: 'LOCALLINK'+scope.getNextLinkId(),
                     source: info.source.id.replace(/node/, ""),
                     target: info.target.id.replace(/node/, "")
                 }

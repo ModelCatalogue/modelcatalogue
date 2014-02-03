@@ -67,7 +67,7 @@ grails.hibernate.cache.queries = false
 
 environments {
 	development {
-		grails.logging.jul.usebridge = true
+        grails.logging.jul.usebridge = true
 		
 		//disable mail send functionality
 		grails.mail.disabled=true
@@ -112,6 +112,7 @@ log4j = {
 	debug 	'grails.app.services.grails.plugin.springsecurity.ui.SpringSecurityUiService'
 	info 	'org.springframework.security'
 	debug  	'uk.co.mdc.mail'		// Dummy mail output for dev
+    info    'uk.co.mdc.pathways'
 }
 
 

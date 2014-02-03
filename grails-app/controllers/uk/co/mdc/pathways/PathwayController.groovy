@@ -7,7 +7,7 @@ import grails.transaction.Transactional
 import org.springframework.dao.DataIntegrityViolationException
 
 @Secured(['ROLE_USER'])
-class PathwayController extends RestfulController{
+class PathwayController extends RestfulController<Pathway>{
 
     def pathwayService
 
@@ -15,6 +15,10 @@ class PathwayController extends RestfulController{
         super(Pathway)
     }
 
+    @Override
+    def index() {
+        list()
+    }
 
     def list() {
         def model = [items: pathwayService.topLevelPathways()]
@@ -36,18 +40,34 @@ class PathwayController extends RestfulController{
         }
     }
 
-    @Transactional
-    def update(Pathway pathway){
-            if(pathway == null){
-                respond pathway
-            }
 
-        pathwayService.update(pathway)
+
+    @Override
+    @Transactional
+    def update(){
+        Pathway pathway = queryForResource(params.id)
+        if (pathway == null) {
+            notFound()
+            return
+        }
+
+        def idMappings = [:]
+        def clientPathway = request.JSON
+        //pathway = pathwayService.update(pathway, clientPathway, idMappings)
+        pathway = pathwayService.update(pathway, clientPathway, idMappings)
+
+        def response = [
+                pathway: pathway,
+                idMappings: idMappings
+        ]
+
         if (pathway.hasErrors()) {
-            respond pathway.errors // if you have a static edit page add ", view: 'edit'"
+            response.hasErrors = true
+            //FIXME should return errors
         }
         respond pathway
     }
+
 
     def delete(Pathway pathway) {
 

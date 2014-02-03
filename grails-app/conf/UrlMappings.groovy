@@ -13,7 +13,9 @@ class UrlMappings {
 				// apply constraints here
 			}
 		}
-		
+
+        "/pathways"(resources: "pathway")
+
 		name pendingUsers: "/role/pendingUsers"( controller: "role", action: "listPendingUsers" )
 		name importData: "/admin/importData"(view:"admin/importData")
 

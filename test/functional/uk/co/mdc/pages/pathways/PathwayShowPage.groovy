@@ -9,10 +9,10 @@ import uk.co.mdc.pages.BasePageWithNav;
 
 class PathwayShowPage extends BasePageWithNav{
 	
-	static url = "/pathway/show/*"
+	static url = "/pathways/*"
 	
 	static at = {
-		url == "/pathway/show/*" &&
+		url == "/pathway/*" &&
 		title == "Pathway Editor"
 	}
 	

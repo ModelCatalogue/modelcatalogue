@@ -62,12 +62,6 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-<sec:ifNotLoggedIn>
-                        <li><a href="#">Introduction</a></li>
-                        <li><a href="#">Documentation</a></li>
-                        <li><a href="#">Download</a></li>
-                        <li><a href="#">Contact</a></li>
-</sec:ifNotLoggedIn>
 <sec:ifLoggedIn>
                         <li><a href="${createLink(uri: '/dashboard/')}">Dashboard</a></li>
                         <!-- Metadata curation menu -->
@@ -77,7 +71,7 @@
                         <li class="dropdown">
                             <a id="nav-pathway-expand" class="dropdown-toggle" data-toggle="dropdown" href="#">Pathways <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li id="nav-pathway-link"><g:link elementId="listPathwaysLink" action="list" controller="pathway"> List pathways </g:link></li>
+                                <li id="nav-pathway-link"><g:link elementId="listPathwaysLink" action="index" controller="pathway"> List pathways </g:link></li>
                                 <li><a id="createPathwayLink" href="#" data-toggle="modal" data-target="#createPathwayModal"> Create pathway </a></li>
                             </ul>
                         </li>

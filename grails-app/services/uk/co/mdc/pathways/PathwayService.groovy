@@ -1,7 +1,6 @@
 package uk.co.mdc.pathways
 
 import org.springframework.security.access.prepost.PostAuthorize
-import org.springframework.security.access.prepost.PostFilter
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.model.Permission
@@ -16,17 +15,6 @@ class PathwayService {
 	def aclUtilService
 	def springSecurityService
 
-
-    // TODO get
-    // TODO create
-    // TODO update
-    // TODO delete
-
-	/* **************************** ADD PERMISSIONS *****************************************
-	 * calls add permission with the relevant permission when called with an integer
-	 * permission input
-	 ********************************************************************************* */
-		
 	void addPermission(Pathway pathwaysModel, String roleOrUsername, int permission){
 		addPermission pathwaysModel, roleOrUsername, aclPermissionFactory.buildFromMask(permission)
 	}
@@ -36,33 +24,102 @@ class PathwayService {
     void addPermission(Pathway pathway, String roleOrUsername, Permission permission) {
         aclUtilService.addPermission pathway, roleOrUsername, permission
     }
-	
-	/* **************************** ADD GROUP PERMISSIONS *****************************************
-	 * adds permission to the relevant groups
-	 ********************************************************************************* */
-	
-//	void addGroupPermissions(PathwaysModel pathwaysModelInstance, Collection roles){
-//
-//		//Grant admin users administrative permissions
-//		addPermission pathwaysModelInstance, 'ROLE_ADMIN', BasePermission.ADMINISTRATION
-//
-//		//grant users in the same groups as the current user read/write/delete permissions on the pathway
-//		roles.each{ role ->
-//			role = role.toString()
-//			if(role!="ROLE_USER"){
-//				addPermission pathwaysModelInstance, role , BasePermission.READ
-//				addPermission pathwaysModelInstance, role , BasePermission.WRITE
-//				addPermission pathwaysModelInstance, role , BasePermission.DELETE
-//			}
-//		}
-//
-//	}
 
-    @Transactional
+    /**
+     *
+     * Because links depend on nodes, we're assuming that all nodes have been created at this point, and
+     * there aren't any invalid references loitering.
+     * @param pathway
+     * @param nodesToCreate a map defining the nodes to be created, with the frontend ID as a key and the Node as the value
+     * @return
+     */
     @PreAuthorize("hasPermission(#pathway, write) or hasPermission(#pathway, admin)")
-    Pathway update(Pathway pathway) {
-        pathway.save()
+    Pathway update(Pathway pathway, def clientPathway, def idMappings) {
+
+        cleanAndCreateNodes(clientPathway, idMappings)
+        log.error("No worries from cleanAndCreate")
+        //cleanAndCreateLinks(clientPathway, idMappings)
+        log.error(pathway.validate())
+        log.error(pathway.hasErrors())
+        //pathway.properties = clientPathway
+        //pathway.save(failOnError: true)
         return pathway
+    }
+
+    private void cleanAndCreateNodes(def unsavedPathway, def idMappings){
+        unsavedPathway.nodes.each{ node ->
+            if(node.id =~ /^LOCAL/){
+                // need to create node
+                def oldId = node.id
+                node.id = null
+                log.error("Parent: "+unsavedPathway.id)
+                Pathway parent = get(unsavedPathway.id)
+                node.pathway = parent
+                log.error(node)
+                Node savedNode = new Node()
+                savedNode.properties = node
+                savedNode.save(failOnError: true)
+                parent.addToNodes(savedNode)
+
+                node.id = savedNode.id
+                idMappings[oldId] = savedNode.id
+                log.error " mapping "+ oldId + " to " + idMappings[oldId]
+            }
+            cleanAndCreateNodes(node, idMappings)
+            log.error "leaving cleanandcreate for "+node.id
+        }
+    }
+
+    /**
+     * Utility method to clean a list of links, replacing LOCAL ids with
+     * the IDs of the persisted objects, using the idMappings map. Where a link doesn't exist, it will be saved and the ID
+     * added to the mappings table
+     *
+     * A sample idMappings object might look like: ['LOCAL1':12, 'LOCAL2':144]
+     *
+     * @param unsavedPathway The unsaved pathway map, containing uncoerced, unvalidated values.
+     * @param idMappings a map of local to newly created database IDs
+     */
+    void cleanAndCreateLinks( def unsavedPathway, def idMappings){
+
+        unsavedPathway.links.each{ link ->
+            if(link.source =~ /^LOCAL/){
+                log.error(idMappings)
+                if(!idMappings[link.source]){
+                    throw new IllegalArgumentException("Node ID is not valid: "+link.source)
+                }else{
+                    link.source = idMappings[link.source]
+                }
+            }
+            if(link.target =~ /^LOCAL/){
+                log.error(idMappings)
+                if(!idMappings[link.target]){
+                    throw new IllegalArgumentException("Node ID is not valid: "+link.target)
+                }else{
+                    link.target = idMappings[link.target]
+                }
+            }
+
+            Pathway parent = get(unsavedPathway.id)
+            Link savedLink;
+            if(link.id =~ /^LOCALLINK/){
+                def oldId = link.id
+                link.id = null
+                link.pathway = parent
+                savedLink = Link.newInstance(link)
+                savedLink.save(failOnError: true)
+                parent.addToLinks(savedLink).save(failOnError: true)
+                idMappings[oldId] = savedLink.id
+
+            }else{
+                savedLink = Link.get(link.id)
+                savedLink.properties = link
+                savedLink.save(failOnError: true)
+            }
+        }
+        unsavedPathway.nodes.each{ childNode ->
+            cleanAndCreateLinks(childNode, idMappings)
+        }
     }
 
     /**
@@ -130,44 +187,4 @@ class PathwayService {
 	Pathway get(long id) {
 	   Pathway.get id
 	}
-
-//	@PreAuthorize("hasRole('ROLE_USER')")
-//	@PostFilter("hasPermission(filterObject, read) or hasPermission(filterObject, admin)")
-//	List<Pathway> search(String sSearch) {
-//		def searchResult = PathwaysModel.search(sSearch)
-//	    searchResult.results
-//	}
-
-
-//	@PreAuthorize("hasRole('ROLE_USER')")
-//	@PostFilter("hasPermission(filterObject, read) or hasPermission(filterObject, admin)")
-//	List<Pathway> list(Map parameters) {
-//		Pathway.list parameters
-//	}
-
-
-//    /**
-//     * no restrictions on the count method
-//     */
-//	int count() {
-//        PathwaysModel.count()
-//    }
-	
-
-
-
-	
-//	@Transactional @PreAuthorize("hasPermission(#pathway, admin)")
-//	void deletePermission(PathwaysModel pathwaysModelInstance, String roleOrUsername, Permission permission) {
-//		def acl = aclUtilService.readAcl(pathwaysModelInstance)
-//
-//		// Remove all permissions associated with this particular
-//		// recipient (string equality to KISS)
-//		acl.entries.eachWithIndex {
-//			entry, i -> if (entry.sid.equals(roleOrUsername) && entry.permission.equals(permission)) {
-//				acl.deleteAcl i
-//			}
-//		}
-//		aclService.updateAcl acl
-//	}
 }

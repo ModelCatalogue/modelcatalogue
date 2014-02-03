@@ -23,14 +23,8 @@ beans = {
 			mailService(uk.co.mdc.mail.DummyMailService)
 		}
 	}
-	
-	apiAuthFilter(APIAuthenticationFilters) {
-		authenticationManager = ref("authenticationManager")
-		rememberMeServices = ref("rememberMeServices")
-		springSecurityService = ref("springSecurityService")
-	}
-	
-	
+
+
 	customObjectMarshallers( CustomObjectMarshallers ) {
 		marshallers = [
             new DataElementMarshaller(),

@@ -13,7 +13,7 @@ class Pathway {
             links: Link
     ]
     static mappedBy = [
-            nodes: 'parent',
+            nodes: 'pathway',
             links: 'pathway'
     ]
 

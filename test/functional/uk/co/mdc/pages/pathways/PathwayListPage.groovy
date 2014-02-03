@@ -4,10 +4,10 @@ import uk.co.mdc.pages.BasePageWithNav;
 
 class PathwayListPage extends BasePageWithNav{
 	
-	static url = "pathway/list"
+	static url = "pathways"
 	
 	static at = {
-		url == "pathway/list" &&
+		url == "pathways" &&
 		title == "All pathways"
 	}
 	
