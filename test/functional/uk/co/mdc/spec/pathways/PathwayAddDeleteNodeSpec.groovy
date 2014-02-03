@@ -65,82 +65,22 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 							
 		}
 
-    def "Check that When I create a node with no description then the description is blank" () {
+    def "Check that When I create a node then the description is blank" () {
 
         at PathwayShowPage
 
-        when: "I click on create Node"
-        addNodeButton.click()
+        when: "I create a Node"
+        def node = createNode()
+        node.click()
 
-        then: "the create node modal pops up"
-        waitFor{
-            modalLabel.text() == "Create Node"
-        }
-
-        when: "I fill in the name and click create node"
-        createNodeName = "testNode"
-        createNodeButton.click()
-
-        then: "the node appears in the interface with the testNode title"
-
-        waitFor{
-            newNodeTitleDiv.displayed
-        }
-
-        when: "I click on the node I have just created"
-        newNodeTitleDiv.click()
-
-        then: "the description of the node is null"
+        then: "the description of the node is empty"
         propertiesDescription == ""
 
-        then: "I delete the node"
+        cleanup: "I delete the node"
         deleteSelectedElementButton.click()
 
     }
 
-    def "Clear content of the Create node form after the user has cancelled the action"(){
-        at PathwayShowPage
-
-        when: "I click on create Node"
-        addNodeButton.click()
-
-        then: "the create node modal pops up"
-        waitFor{
-            modalLabel.text() == "Create Node"
-        }
-
-        when: "I fill in the name, click cancel node and click on create Node again"
-        createNodeName = "testNode"
-        createNodeDescription = "testDesc"
-        cancelCreateNodeButton.click()
-        addNodeButton.click()
-
-        then: "Name and description textboxes are empty"
-        createNodeName == ""
-        createNodeDescription==""
-    }
-
-
-    def "Validate node name is not blank in Create Node Modal"(){
-
-        at PathwayShowPage
-
-        when: "I click on create Node"
-        addNodeButton.click()
-
-        then: "the create node modal pops up"
-        waitFor{
-            modalLabel.text() == "Create Node"
-        }
-
-        when: "The node name is blank and click create node"
-        createNodeName = ""
-        createNodeDescription = ""
-        createNodeButton.click()
-
-        then: "the system sends a message to the user to note name is a compulsory field"
-        !isErrorNodeName()
-    }
     /**
      * added by Soheil to solve MC-125
      (Problem:Creating a second node places it over the first one)
@@ -149,15 +89,12 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
     {
         at PathwayShowPage
 
-        def nodeNumber1
-        def selectedNode
-
-        when:"I click on create Node and add a new node"
-        nodeNumber1 = createNode("Node Number 1","Description Number 1");
-        selectedNode = getSelectedNode()
+        when:"I  add a new node"
+        def node = createNode()
+        def selectedNode = getSelectedNode()
 
         then:"The New node should be selected automatically"
-        nodeNumber1.attr("id") == selectedNode.attr("id")
+        node == selectedNode
     }
 
     /**
@@ -173,7 +110,7 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
         def selectedNode
 
         when: "I create a node"
-        node1 = createNode("Node Number 1","Description Number 1");
+        node1 = createNode();
         selectedNode = getSelectedNode()
 
 
@@ -182,7 +119,7 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 
 
         when: "I create another node"
-        node2  = createNode("Node Number 2","Description Number 2");
+        node2  = createNode();
         selectedNode = getSelectedNode()
 
 
@@ -191,7 +128,7 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 
 
         and: "And the second node should be aligned properly bedside the first node"
-        node2.x > node1.x +   getNodeWidth(node2.attr("id")) + 50 //50: the default value used in AppViewModel.js(self.saveNode method)
+        node2.x > node1.x + getNodeWidth(node2.attr("id")) + 50 //50: the default value used in AppViewModel.js(self.saveNode method)
         node2.y == node1.y
 
     }

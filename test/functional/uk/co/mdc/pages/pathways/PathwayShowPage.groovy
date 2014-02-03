@@ -36,7 +36,7 @@ class PathwayShowPage extends BasePageWithNav{
 		pathwayCanvas { $(".jsplumb-container") }
 
         goToParentButton { $("i", class: "fa-reply") }
-		deleteSelectedElementButton {$("#properties-panel").find("button", text: contains("Delete"))}
+		deleteSelectedElementButton {$("div", text: "Properties").parent().find("button", text: contains("Delete"))}
 		propertiesName {js.exec("return document.getElementById('txt-properties-name').value")}
 		modalLabel { $("#createNodeModalLabel") }
 		createNodeName { $("#createNodeName") }
@@ -101,17 +101,17 @@ class PathwayShowPage extends BasePageWithNav{
     /**
      * Create a node on the canvas and return it
      */
-    def createNode(String name) {
+    def createNode() {
 
         def preCreationNodes = getNodeIds()
         addNodeButton.click()
-
-
 
         def postCreationNodes = getNodeIds()
         postCreationNodes.removeAll(preCreationNodes)
 
         assert postCreationNodes.size() == 1
+        def node = getNode(postCreationNodes[0])
+
         return getNode(postCreationNodes[0])
 
     }

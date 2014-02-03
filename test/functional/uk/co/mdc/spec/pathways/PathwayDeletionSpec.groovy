@@ -120,7 +120,7 @@ class PathwayDeletionSpec extends GebReportingSpec {
 
         then: "the deleted item isn't present"
         waitFor{
-            !getPathwayLink("A special pathway to be deleted")
+            !pathwayList.find("a", text: "A special pathway to be deleted")
         }
 
     }

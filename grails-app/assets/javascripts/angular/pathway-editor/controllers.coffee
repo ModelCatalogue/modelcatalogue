@@ -100,15 +100,32 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
                     if(response?)
                         return response
 
+        # TODO is it a good idea to use DOM IDs here? Probably not...
         $scope.addNode = ->
-            $scope.pathway.nodes.push {
+            selectedNode = NodeSelector.getSelectedNode()
+            if selectedNode
+                sWidth=$('#node'+selectedNode.id).width()
+                sX = selectedNode.x
+                if(sX==NaN)
+                    sX= $('#model-panel').scrollLeft() + 150
+                node.x = sX + sWidth +50
+                node.y = selectedNode.y
+            else
+                node.x = $('#model-panel').scrollLeft() + 150 + (Math.random()*300)
+                node.y = $('#model-panel').scrollTop() + 150 + (Math.random()*300)
+
+
+
+            nodeX = 100 + (Math.random()*300)
+            nodeY = 100 + (Math.random()*300)
+            newNode = {
                 name: "New node"
                 id: "LOCAL" + nextLocalId()
-                x: 100 + (Math.random()*300)
-                y: 100 + (Math.random()*300)
                 nodes: []
                 links: []
             }
+            $scope.pathway.nodes.push newNode
+            NodeSelector.selectNode(newNode)
 
         lastLocalId = 0
         nextLocalId = ->
