@@ -9,7 +9,7 @@ class Pathway {
 	String  description
 	
 	static hasMany = [
-            nodes: uk.co.mdc.pathways.Node,
+            nodes: Node,
             links: Link
     ]
     static mappedBy = [

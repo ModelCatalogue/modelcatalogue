@@ -33,13 +33,13 @@ class PathwayService {
      * @param nodesToCreate a map defining the nodes to be created, with the frontend ID as a key and the Node as the value
      * @return
      */
+    @Transactional
     @PreAuthorize("hasPermission(#pathway, write) or hasPermission(#pathway, admin)")
     Pathway update(Pathway pathway, def clientPathway, def idMappings) {
 
         assert clientPathway.id == pathway.id
 
-        cleanAndCreateNodes(clientPathway, idMappings)
-
+        createLocalNodes(clientPathway, idMappings)
         cleanAndCreateLinks(clientPathway, idMappings)
 
         pathway.properties = clientPathway
@@ -54,10 +54,11 @@ class PathwayService {
      * @param idMappings
      * @return
      */
-    void createOrSaveNodesForPathway( def clientPathway, def idMappings ){
+    @Transactional
+    void createLocalNodes( def clientPathway, def idMappings ){
         def savedPathway = Pathway.get(clientPathway?.id)
         if(!savedPathway){
-            throw new IllegalArgumentException("clientPathway does not have a valid and present ID "+clientPathway?.id)
+            throw new IllegalArgumentException("clientPathway '"+clientPathway.name+"' does not have a valid and present ID "+clientPathway?.id)
         }
 
         clientPathway.nodes.each{ node ->
@@ -66,52 +67,25 @@ class PathwayService {
                 println "adding node "+node.name
                 def oldId = node.id
                 node.id = null
-                node.pathway = savedPathway
 
-                Node savedNode = new Node()
+                if(idMappings[node.pathway]){
+                    node.pathway = idMappings[node.pathway]
+                }
 
-                savedNode.properties = node.findAll { key, value -> key != 'nodes' && key != 'links'}
-                savedNode.pathway = savedPathway
-
-                savedNode.save()
-                node.id = savedNode.id
+                Node savedNode = Node.newInstance(node.findAll { key, value -> key != 'nodes' && key != 'links'}).save(failOnError: true)
                 savedPathway.addToNodes(savedNode)
+
                 idMappings[oldId] = savedNode.id
+
+                // Set the node ID to match the saved node ID (so subsequent calls down the tree can find the parent...
+                node.id = savedNode.id
             }
-            // else save
 
             // finally recurse
-            createOrSaveNodesForPathway(node, idMappings)
+            createLocalNodes(node, idMappings)
 
         }
     }
-
-//    void cleanAndCreateNodes(def unsavedPathway, def idMappings){
-//        unsavedPathway.nodes.each{ node ->
-//            if(node.id =~ /^LOCAL/){
-//                // need to create node
-//                def oldId = node.id
-//                node.id = null
-//                log.error("Parent: "+unsavedPathway.id)
-//                Pathway parent = get(unsavedPathway.id)
-//                node.pathway = parent
-//                log.error(node)
-//                Node savedNode = new Node()
-//
-//
-//
-//                savedNode.properties = node
-//                savedNode.save(failOnError: true)
-//                parent.addToNodes(savedNode)
-//
-//                node.id = savedNode.id
-//                idMappings[oldId] = savedNode.id
-//                log.error " mapping "+ oldId + " to " + idMappings[oldId]
-//            }
-//            cleanAndCreateNodes(node, idMappings)
-//            log.error "leaving cleanandcreate for "+node.id
-//        }
-//    }
 
     /**
      * Utility method to clean a list of links, replacing LOCAL ids with
@@ -123,11 +97,11 @@ class PathwayService {
      * @param unsavedPathway The unsaved pathway map, containing uncoerced, unvalidated values.
      * @param idMappings a map of local to newly created database IDs
      */
+    @Transactional
     void cleanAndCreateLinks( def unsavedPathway, def idMappings){
 
         unsavedPathway.links.each{ link ->
             if(link.source =~ /^LOCAL/){
-                log.error(idMappings)
                 if(!idMappings[link.source]){
                     throw new IllegalArgumentException("Node ID is not valid: "+link.source)
                 }else{
@@ -135,7 +109,6 @@ class PathwayService {
                 }
             }
             if(link.target =~ /^LOCAL/){
-                log.error(idMappings)
                 if(!idMappings[link.target]){
                     throw new IllegalArgumentException("Node ID is not valid: "+link.target)
                 }else{
