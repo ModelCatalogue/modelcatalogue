@@ -1,6 +1,25 @@
-angular.module('pathway.directives', [])
 
-  .directive('mcGraphContainer', ->
+###
+
+# Directives for the pathway editor
+
+###
+module = angular.module('pathway.directives', [])
+
+
+###
+    @ngdoc directive
+    @name mc-graph-container
+    @element div
+
+    @param pathway the pathway (or subpathway to bind to
+    @param options jsPlumb options
+    @param upALevel a function which returns true if the pathway has a parent which can be navigated to
+
+    @description
+    A canvas element to draw jsPLumb nodes and connections on.
+###
+module.directive('mcGraphContainer', ->
     defaultOptions = {
       Endpoint: [ 'Dot', { radius: 1 } ],
       Anchor: 'Continuous',
@@ -80,8 +99,21 @@ angular.module('pathway.directives', [])
     }
   )# end directive
 
-  # Handle the nodes
-  .directive('mcGraphNode',  ->
+
+###
+    @ngdoc directive
+    @name mc-graph-node
+    @element div
+
+    @param node the node in the model to bind to
+    @param isSelected: a function which returns true if the node is currently selected
+    @param selectNode: a function which is called if a node is clicked (selected), passing the node as a parameter
+    @param dblClick: a function which is called if a node is double clicked, passing the node as a parameter
+
+    @description
+    A canvas element to draw jsPLumb nodes and connections on.
+###
+module.directive('mcGraphNode',  ->
     return {
     replace: true,
     transclude: true,
@@ -112,17 +144,17 @@ angular.module('pathway.directives', [])
     }
   )# End of directive
 
-  #Handle the links
-  .directive('mcGraphLink', ->
+#Handle the links
+module.directive('mcGraphLink', ->
     return {
     restrict: 'A',
     requires: '^graphContainer', #Tie this directive to graphContainer
     scope: {
       link: '=graphLink',
     },
-    link: (scope, iElement, iAttrs) ->
+    link: (scope, iElement, iAttrs, $timeout) ->
       #FIXME: Needed the timeout to make sure the dom nodes are available. Need a better solution.
-      setTimeout(->
+      $timeout(->
         jsPlumb.connect({
           source: "node" + scope.link.source,
           target: "node" + scope.link.target,

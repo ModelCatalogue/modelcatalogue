@@ -1,4 +1,3 @@
-import groovy_metadata_registry.APIAuthenticationFilters
 import uk.co.mdc.pathways.PathwayMarshaller
 import util.marshalling.CustomObjectMarshallers
 import uk.co.mdc.model.DataElementMarshaller

@@ -36,39 +36,82 @@ class PathwayService {
     @PreAuthorize("hasPermission(#pathway, write) or hasPermission(#pathway, admin)")
     Pathway update(Pathway pathway, def clientPathway, def idMappings) {
 
+        assert clientPathway.id == pathway.id
+
         cleanAndCreateNodes(clientPathway, idMappings)
-        log.error("No worries from cleanAndCreate")
-        //cleanAndCreateLinks(clientPathway, idMappings)
-        log.error(pathway.validate())
-        log.error(pathway.hasErrors())
-        //pathway.properties = clientPathway
-        //pathway.save(failOnError: true)
+
+        cleanAndCreateLinks(clientPathway, idMappings)
+
+        pathway.properties = clientPathway
+        pathway.save(failOnError: true)
         return pathway
     }
 
-    private void cleanAndCreateNodes(def unsavedPathway, def idMappings){
-        unsavedPathway.nodes.each{ node ->
+    /**
+     * Adds or saves nodes for a given pathway (or subpathway :)).
+     * This method assumes the ID in the clientPathway is valid and persisted
+     * @param clientPathway
+     * @param idMappings
+     * @return
+     */
+    void createOrSaveNodesForPathway( def clientPathway, def idMappings ){
+        def savedPathway = Pathway.get(clientPathway?.id)
+        if(!savedPathway){
+            throw new IllegalArgumentException("clientPathway does not have a valid and present ID "+clientPathway?.id)
+        }
+
+        clientPathway.nodes.each{ node ->
+            // if new, create
             if(node.id =~ /^LOCAL/){
-                // need to create node
+                println "adding node "+node.name
                 def oldId = node.id
                 node.id = null
-                log.error("Parent: "+unsavedPathway.id)
-                Pathway parent = get(unsavedPathway.id)
-                node.pathway = parent
-                log.error(node)
-                Node savedNode = new Node()
-                savedNode.properties = node
-                savedNode.save(failOnError: true)
-                parent.addToNodes(savedNode)
+                node.pathway = savedPathway
 
+                Node savedNode = new Node()
+
+                savedNode.properties = node.findAll { key, value -> key != 'nodes' && key != 'links'}
+                savedNode.pathway = savedPathway
+
+                savedNode.save()
                 node.id = savedNode.id
+                savedPathway.addToNodes(savedNode)
                 idMappings[oldId] = savedNode.id
-                log.error " mapping "+ oldId + " to " + idMappings[oldId]
             }
-            cleanAndCreateNodes(node, idMappings)
-            log.error "leaving cleanandcreate for "+node.id
+            // else save
+
+            // finally recurse
+            createOrSaveNodesForPathway(node, idMappings)
+
         }
     }
+
+//    void cleanAndCreateNodes(def unsavedPathway, def idMappings){
+//        unsavedPathway.nodes.each{ node ->
+//            if(node.id =~ /^LOCAL/){
+//                // need to create node
+//                def oldId = node.id
+//                node.id = null
+//                log.error("Parent: "+unsavedPathway.id)
+//                Pathway parent = get(unsavedPathway.id)
+//                node.pathway = parent
+//                log.error(node)
+//                Node savedNode = new Node()
+//
+//
+//
+//                savedNode.properties = node
+//                savedNode.save(failOnError: true)
+//                parent.addToNodes(savedNode)
+//
+//                node.id = savedNode.id
+//                idMappings[oldId] = savedNode.id
+//                log.error " mapping "+ oldId + " to " + idMappings[oldId]
+//            }
+//            cleanAndCreateNodes(node, idMappings)
+//            log.error "leaving cleanandcreate for "+node.id
+//        }
+//    }
 
     /**
      * Utility method to clean a list of links, replacing LOCAL ids with

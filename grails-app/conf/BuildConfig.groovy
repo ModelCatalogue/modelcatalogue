@@ -7,9 +7,10 @@ grails.project.source.level = 1.6
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 // uncomment (and adjust settings) to fork the JVM to isolate classpaths
-//grails.project.fork = [
+grails.project.fork = [
+    test: false
 //   run: [maxMemory:1024, minMemory:64, debug:false, maxPerm:256]
-//]
+]
 
 
 // Grails 2.3 uses Aether by default

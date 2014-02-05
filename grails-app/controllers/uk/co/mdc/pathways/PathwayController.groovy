@@ -43,7 +43,6 @@ class PathwayController extends RestfulController<Pathway>{
 
 
     @Override
-    @Transactional
     def update(){
         Pathway pathway = queryForResource(params.id)
         if (pathway == null) {
@@ -53,19 +52,19 @@ class PathwayController extends RestfulController<Pathway>{
 
         def idMappings = [:]
         def clientPathway = request.JSON
-        //pathway = pathwayService.update(pathway, clientPathway, idMappings)
         pathway = pathwayService.update(pathway, clientPathway, idMappings)
 
         def response = [
                 pathway: pathway,
                 idMappings: idMappings
         ]
-
-        if (pathway.hasErrors()) {
+        //FIXME should return errors
+        if(pathway.hasErrors()){
             response.hasErrors = true
-            //FIXME should return errors
+            response.errors = pathway.errors
         }
-        respond pathway
+
+        respond response
     }
 
 
