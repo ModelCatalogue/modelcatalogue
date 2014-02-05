@@ -145,14 +145,14 @@ module.directive('mcGraphNode',  ->
   )# End of directive
 
 #Handle the links
-module.directive('mcGraphLink', ->
+module.directive('mcGraphLink', ["$timeout", ($timeout) ->
     return {
     restrict: 'A',
     requires: '^graphContainer', #Tie this directive to graphContainer
     scope: {
       link: '=graphLink',
     },
-    link: (scope, iElement, iAttrs, $timeout) ->
+    link: (scope, iElement, iAttrs ) ->
       #FIXME: Needed the timeout to make sure the dom nodes are available. Need a better solution.
       $timeout(->
         jsPlumb.connect({
@@ -164,4 +164,4 @@ module.directive('mcGraphLink', ->
         }).canvas.id = scope.link.id; # Give the resulting svg node an id for simpler retrieval
       , 1)
     }
-  )
+  ])

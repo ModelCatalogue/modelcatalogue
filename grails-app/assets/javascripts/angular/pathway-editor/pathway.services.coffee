@@ -8,23 +8,24 @@ angular.module('pathway.services', ['ngResource'])
 .service 'NodeSelector', ->
         selectedNode = null
 
-        selectNode: (node) ->
-            selectedNode = node
-
-        isSelected: (node) ->
-            selectedNode == node
-
-        getSelectedNode: ->
-            selectedNode
+        selectNode: (node) -> selectedNode = node
+        isSelected: (node) -> selectedNode == node
+        getSelectedNode: -> selectedNode
 
 .service 'PathwayPersistence', ['Grails', (Grails) ->
 
         fixNodeIds = (node, idMappings) ->
             for node in node.nodes
-                console.log "node "+ node.id + idMappings[node.id]
                 node.id = idMappings[node.id] if idMappings[node.id]
-                console.log "       -> "+node.id
                 fixNodeIds(node, idMappings)
+            return
+        fixLinkIds = (node, idMappings) ->
+            for node in node.nodes
+                for link in node.links
+                    link.id = idMappings[link.id] if idMappings[link.id]
+                    link.source = idMappings[link.source] if idMappings[link.source]
+                    link.target = idMappings[link.target] if idMappings[link.target]
+                fixLinkIds(node, idMappings)
             return
 
         # Save the pathway.
@@ -39,6 +40,7 @@ angular.module('pathway.services', ['ngResource'])
                 # If there aren't any errors lets update the local references
                 if !response.hasErrors
                     fixNodeIds(pathway, response.idMappings)
+                    fixLinkIds(pathway, response.idMappings)
 
             return grailsResponse
     ]
