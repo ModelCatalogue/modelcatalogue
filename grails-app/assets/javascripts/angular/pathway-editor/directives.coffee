@@ -145,7 +145,7 @@ module.directive('mcGraphNode',  ->
   )# End of directive
 
 #Handle the links
-module.directive('mcGraphLink', ["$timeout", ($timeout) ->
+module.directive('mcGraphLink', ["$timeout"] (->
     return {
     restrict: 'A',
     requires: '^graphContainer', #Tie this directive to graphContainer
@@ -164,4 +164,4 @@ module.directive('mcGraphLink', ["$timeout", ($timeout) ->
         }).canvas.id = scope.link.id; # Give the resulting svg node an id for simpler retrieval
       , 1)
     }
-  ])
+  )
