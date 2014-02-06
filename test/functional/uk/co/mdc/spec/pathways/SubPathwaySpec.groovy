@@ -43,7 +43,7 @@ class SubPathwaySpec extends GebReportingSpec {
         hasParentNodeStyle(nodeElement)
 
         when: "I create a new node"
-        newNode = createNode("I'm here!")
+        newNode = createNode()
 
         then: "That node is not marked as a parent"
         !hasParentNodeStyle(newNode)

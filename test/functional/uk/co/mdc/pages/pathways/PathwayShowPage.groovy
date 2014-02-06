@@ -88,21 +88,15 @@ class PathwayShowPage extends BasePageWithNav{
         waitFor{
             node.displayed
         }
-        node.click()
 
-        node.click() // make this work!!!
-        node.click()
+        interact { doubleClick(node) }
 
         waitFor{
             goToParentButton.displayed
         }
-        createNode("Some temp node")
+        createNode()
         // Return to the original screen
         goToParentButton.click()
-
-        //waitFor{
-        //    !goToParentButton.displayed
-        //}
     }
 
     /**
