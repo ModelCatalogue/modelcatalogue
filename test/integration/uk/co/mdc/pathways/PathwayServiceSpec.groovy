@@ -95,7 +95,7 @@ class PathwayServiceSpec extends IntegrationSpec{
                 version: 1
          ]),
 
-         createPathwayAndUseId(JSON.parse(new FileInputStream("test/integration/uk/co/mdc/pathways/pathwayUpdatePUT.json"), "UTF-8"))
+         //createPathwayAndUseId(JSON.parse(new FileInputStream("test/integration/uk/co/mdc/pathways/pathwayUpdatePUT.json"), "UTF-8"))
         ]
     }
 

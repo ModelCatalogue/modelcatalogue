@@ -94,7 +94,7 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
         def selectedNode = getSelectedNode()
 
         then:"The New node should be selected automatically"
-        node == selectedNode
+        node.@id == selectedNode.@id
     }
 
     /**

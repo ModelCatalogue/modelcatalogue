@@ -24,7 +24,7 @@ class NodeSpec extends spock.lang.Specification {
 			description: "One half of the flowerpot men",
 			x: 10,
 			y: 15,
-            parent: new Pathway(
+            pathway: new Pathway(
                     name: "pathway 1",
                     userVersion: "1.0",
                     isDraft: true,
@@ -43,7 +43,7 @@ class NodeSpec extends spock.lang.Specification {
 		node1.description == expected.description
 		node1.x.toInteger() == expected.x
 		node1.y.toInteger() == expected.y
-        node1.parent == expected.parent
+        node1.pathway == expected.pathway
 
 		//
 		// Ensure name can't be null

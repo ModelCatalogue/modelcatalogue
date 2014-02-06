@@ -1,6 +1,8 @@
 package uk.co.mdc.pathways
 
+import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
+import groovy.mock.interceptor.MockFor
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -10,6 +12,7 @@ import spock.lang.Unroll
  * Created by rb on 23/01/2014.
  */
 @TestFor(PathwayService)
+@Mock([Pathway, Node, Link])
 class PathwayServiceUnitSpec extends Specification {
 
     def "topLevelPathways returns the correct number of draft pathways"() {

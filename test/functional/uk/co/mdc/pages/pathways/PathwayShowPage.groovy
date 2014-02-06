@@ -12,7 +12,7 @@ class PathwayShowPage extends BasePageWithNav{
 	static url = "/pathways/*"
 	
 	static at = {
-		url == "/pathway/*" &&
+		url == "/pathways/*" &&
 		title == "Pathway Editor"
 	}
 	
@@ -37,14 +37,12 @@ class PathwayShowPage extends BasePageWithNav{
 
         goToParentButton { $("i", class: "fa-reply") }
 		deleteSelectedElementButton {$("div", text: "Properties").parent().find("button", text: contains("Delete"))}
-		propertiesName {js.exec("return document.getElementById('txt-properties-name').value")}
-		modalLabel { $("#createNodeModalLabel") }
-		createNodeName { $("#createNodeName") }
-		createNodeDescription { $("#createNodeDescription") }
-		createNodeButton { $("#createNodeButton") }
-		newNodeTitleDiv { pathwayCanvas.find("div", text: "testNode")}
 
-        editModal { module PathwayEditModal }
+        propertiesName { $("a", 'editable-text':"selectedNode.name")}
+        propertiesEditName { propertiesName.siblings("form").find("input", type: "text")}
+        propertiesEditSubmit { propertiesName.siblings("form").find("button", type: "submit")}
+        propertiesEditCancel { propertiesName.siblings("form").find("button", type: "button")}
+
 	}
 
     def getNodeIds(){
