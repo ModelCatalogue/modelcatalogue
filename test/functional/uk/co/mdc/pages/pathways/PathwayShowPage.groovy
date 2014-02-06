@@ -9,53 +9,50 @@ import uk.co.mdc.pages.BasePageWithNav;
 
 class PathwayShowPage extends BasePageWithNav{
 	
-	static url = "/pathwaysModel/show/*" 
+	static url = "/pathways/*"
 	
 	static at = {
-		url == "/pathwaysModel/show/*" &&
-		title == "Show Pathway"
+		url == "/pathways/*" &&
+		title == "Pathway Editor"
 	}
 	
 	
 	
 	static content = {
-		pathwayName  { 	$("h1#pathwayName") }
-		addNodeButton { $("#addNode") }
+		pathwayName  { 	$("#pathwayName") }
+        pathwayUserVersion { $("#userVersion") }
+        pathwayDescription { $("#pathwayDescription") }
+        pathwayIsDraft { $("#pathwayIsDraft") }
+
+		addNodeButton { pathwayCanvas.find("i", class: "fa-plus-square-o") }
 		node2(required:false) { $("#node7") }
 		addFormModal { $("#AddFormModal") }
-		addFormButton { $("#addFormToNode") }
+		addFormButton { $("h5", text: "Forms").find("i") }
 		formDesignTableFirstRow { $("#formDesignTable tbody tr", 0) }
 		formDesignTableRows { $("#formDesignTable tbody tr") }
 		formDesignTableFRLink { formDesignTableFirstRow.find("a") }
 		formDesignCartListFirstItem { $("#formCartList li") }
-        editInfoButton { $("#editPathwayInfo") }
-		viewSubPathwayButton { $("#viewSubPathway") }
-		addSubPathwayButton { $("#addSubPathway") }
-		updatePathwayModal { $("#updatePathwayModal") }
-		createPathwayForm { $("form#createPathwayForm") }
-		pathwayInfoName { js.exec("return document.getElementById('txt-nameUpdate').value")}
-		pathwayInfoDescription { js.exec("return document.getElementById('txt-descUpdate').value")}
-		pathwayInfoVersionNo { js.exec("return document.getElementById('txt-versionNoUpdate').value")}
-		pathwayInfoIsDraft  { js.exec("return document.getElementById('select-isDraftUpdate').value")}
+
 		pathwayCanvas { $(".jsplumb-container") }
 
-        goToParentButton { $("#goToParent") }
+        goToParentButton { $("i", class: "fa-reply") }
+		deleteSelectedElementButton {$("div", text: "Properties").parent().find("button", text: contains("Delete"))}
 
-		deleteSelectedElementButton {$("#deleteSelectedElement")}
-		propertiesName {js.exec("return document.getElementById('txt-properties-name').value")}
-        propertiesDescription{js.exec("return document.getElementById('txt-desc').value")}
-		modalLabel { $("#createNodeModalLabel") }
-        createNode{$("#CreateNode")}
-		createNodeName { $("#createNodeName") }
-		createNodeDescription { $("#createNodeDescription") }
-		createNodeButton { $("#createNodeButton") }
-        cancelCreateNodeButton {$("#cancelCreateNodeButton")}
-        errorNodeName { $('#errorNodeName')}
-		newNodeTitleDiv { pathwayCanvas.find("div", text: "testNode")}
+        propertiesName { $("a", 'editable-text':"selectedNode.name")}
+        propertiesEditName { propertiesName.siblings("form").find("input", type: "text")}
+        propertiesDescription { $("a", 'editable-text':"selectedNode.description")}
 
-        editModal { module PathwayEditModal }
+        saveButton { $("button", text: "Save") }
 
 	}
+
+    def getXeditableSubmit(def editableValue){
+        return editableValue.siblings("form").find("button", type: "submit")
+    }
+
+    def getXeditableCancel(def editableValue){
+        return editableValue.siblings("form").find("button", type: "button")
+    }
 
     def getNodeIds(){
         def ids = []
@@ -88,13 +85,16 @@ class PathwayShowPage extends BasePageWithNav{
      * @return
      */
     def createSubpathway(def node){
+        waitFor{
+            node.displayed
+        }
 
-        node.click()
-        viewSubPathwayButton.click()
+        interact { doubleClick(node) }
 
         waitFor{
             goToParentButton.displayed
         }
+        createNode()
         // Return to the original screen
         goToParentButton.click()
     }
@@ -102,35 +102,19 @@ class PathwayShowPage extends BasePageWithNav{
     /**
      * Create a node on the canvas and return it
      */
-    def createNode(String name,String description) {
-        def preCreationNodeIds = getNodeIds()
+    def createNode() {
 
+        def preCreationNodes = getNodeIds()
         addNodeButton.click()
 
-        waitFor{
-            modalLabel.displayed
-        }
+        def postCreationNodes = getNodeIds()
+        postCreationNodes.removeAll(preCreationNodes)
 
-        createNodeName = name
-        createNodeDescription = description
-        createNodeButton.click()
-        waitFor {
-            !modalLabel.displayed
-        }
+        assert postCreationNodes.size() == 1
+        def node = getNode(postCreationNodes[0])
 
-        waitFor{
-            addNodeButton.displayed
-        }
+        return getNode(postCreationNodes[0])
 
-        def postCreationNodeIds = getNodeIds()
-
-        assert postCreationNodeIds.size() == preCreationNodeIds.size() + 1
-
-        Boolean changed= postCreationNodeIds.removeAll(preCreationNodeIds)
-        assert  changed
-
-        assert postCreationNodeIds.size() == 1
-        return getNode(postCreationNodeIds[0])
     }
 
     /**
@@ -151,7 +135,6 @@ class PathwayShowPage extends BasePageWithNav{
     }
 
     /**
-
      * Checks if the errorNodeName label is in red => the node name textbox is empty
      * @return
      */
@@ -176,5 +159,7 @@ class PathwayShowPage extends BasePageWithNav{
     {
         return  $('#node'+nodeId).width;
     }
+
+
 
 }

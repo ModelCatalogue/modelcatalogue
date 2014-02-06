@@ -5,8 +5,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Model Catalogue - Dashboard</title>
 
-<link rel="stylesheet" href="${resource(dir: 'css', file: 'font-awesome.min.css')}" type="text/css">
-
 </head>
 <body>
     <h2>Dashboard</h2>
@@ -65,14 +63,14 @@
 		  					<td>
 			  					<ul>
 			  						<g:each var="pathway" in="${draftPathways}">
-                                        <li><g:link controller="pathwaysModel" action="show" id="${pathway.id}">${pathway.name}</g:link> </li>
+                                        <li><g:link controller="pathway" action="show" id="${pathway.id}">${pathway.name}</g:link> </li>
 									</g:each>
 			  					</ul>
 			  				</td>
 		  					<td>
 			  					<ul>
 			  						<g:each var="pathway" in="${finalizedPathways}">
-                                        <li><g:link controller="pathwaysModel" action="show" id="${pathway.id}">${pathway.name}</g:link> </li>
+                                        <li><g:link controller="pathway" action="show" id="${pathway.id}">${pathway.name}</g:link> </li>
 									</g:each>
 			  					</ul>
 			  				</td>

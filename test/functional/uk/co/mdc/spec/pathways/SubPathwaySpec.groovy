@@ -43,42 +43,10 @@ class SubPathwaySpec extends GebReportingSpec {
         hasParentNodeStyle(nodeElement)
 
         when: "I create a new node"
-        newNode = createNode("I'm here!")
+        newNode = createNode()
 
         then: "That node is not marked as a parent"
         !hasParentNodeStyle(newNode)
 
-        cleanup: "Remove our new nodes"
-        deleteNode(newNode)
-
-        nodeElement = getNode(nodeId)
-        deleteNode(nodeElement)
-
-    }
-
-
-	def "View a Pathway and add a pathway to a Node on the pathway as admin"() {
-
-        at PathwayShowPage
-
-        when: "I click on a node"
-        node2.click()
-
-        then: "the view sub pathway button is visible in the properties panel"
-        waitFor {
-            viewSubPathwayButton.displayed
-        }
-        viewSubPathwayButton.@type=="button"
-
-        when: "I click on the view sub pathway button"
-        viewSubPathwayButton.click()
-
-        then: "I am taken to the show pathway page for it"
-        at PathwayShowPage
-
-        and: "it displays the name of the pathway"
-        waitFor{
-            pathwayName.text() == "Anaesthesia and Operating Patient."
-        }
     }
 }

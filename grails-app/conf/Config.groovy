@@ -13,8 +13,8 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 // }
 
 grails.project.groupId = uk.co.mdc // change this to alter the default package name and Maven publishing destination
+grails.mime.use.accept.header = true // required to play nicely with Angular's JSON requests
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
-grails.mime.use.accept.header = false
 grails.mime.types = [
 	all:           '*/*',
 	atom:          'application/atom+xml',
@@ -30,6 +30,7 @@ grails.mime.types = [
 		'application/json',
 		'text/json'
 	],
+    hal:           ['application/hal+json','application/hal+xml'],
 	multipartForm: 'multipart/form-data',
 	rss:           'application/rss+xml',
 	text:          'text/plain',
@@ -66,7 +67,7 @@ grails.hibernate.cache.queries = false
 
 environments {
 	development {
-		grails.logging.jul.usebridge = true
+        grails.logging.jul.usebridge = true
 		
 		//disable mail send functionality
 		grails.mail.disabled=true
@@ -111,6 +112,7 @@ log4j = {
 	debug 	'grails.app.services.grails.plugin.springsecurity.ui.SpringSecurityUiService'
 	info 	'org.springframework.security'
 	debug  	'uk.co.mdc.mail'		// Dummy mail output for dev
+    info    'uk.co.mdc.pathways'
 }
 
 
@@ -160,20 +162,23 @@ grails{
 
 			securityConfigType = "Annotation"
 			controllerAnnotations.staticRules = [
-                '/':                    ['IS_AUTHENTICATED_ANONYMOUSLY'],
-                // Bower dependencies
-                '/bower_components/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
+                '/':                            ['IS_AUTHENTICATED_ANONYMOUSLY'],
+
+                // Asset pipeline
+                '/assets/**':       ['IS_AUTHENTICATED_ANONYMOUSLY'],
+
 				// Javascript
-				'/js/**':      			['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/js/vendor/**':  		['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/plugins/**/js/**':	['IS_AUTHENTICATED_ANONYMOUSLY'],
+				'/js/**':      			        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+				'/js/vendor/**':  		        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+				'/plugins/**/js/**':	        ['IS_AUTHENTICATED_ANONYMOUSLY'],
 				// CSS
-				'/**/css/**':      		['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/css/**': 				['IS_AUTHENTICATED_ANONYMOUSLY'],
-                '/**/*.less':           ['IS_AUTHENTICATED_ANONYMOUSLY'],
+				'/**/css/**':      		        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+				'/css/**': 				        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+                '/**/*.less':                   ['IS_AUTHENTICATED_ANONYMOUSLY'],
 				// Images
-				'/images/**': 			['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/img/**': 				['IS_AUTHENTICATED_ANONYMOUSLY'],
+				'/images/**': 			        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+				'/img/**': 				        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+
 				// Anonymously acessible pages, e.g. registration & login
 				'/login/*':    			['IS_AUTHENTICATED_ANONYMOUSLY'],
 				'/logout/*':    		['IS_AUTHENTICATED_ANONYMOUSLY'],
@@ -254,3 +259,27 @@ coffeescript.modules = {
         defaultBundle angularTests
     }
 }
+
+// Uncomment and edit the following lines to start using Grails encoding & escaping improvements
+
+/* remove this line 
+// GSP settings
+grails {
+    views {
+        gsp {
+            encoding = 'UTF-8'
+            htmlcodec = 'xml' // use xml escaping instead of HTML4 escaping
+            codecs {
+                expression = 'html' // escapes values inside null
+                scriptlet = 'none' // escapes output from scriptlets in GSPs
+                taglib = 'none' // escapes output from taglibs
+                staticparts = 'none' // escapes output from static template parts
+            }
+        }
+        // escapes all not-encoded output at final stage of outputting
+        filteringCodecForContentType {
+            //'text/html' = 'html'
+        }
+    }
+}
+remove this line */

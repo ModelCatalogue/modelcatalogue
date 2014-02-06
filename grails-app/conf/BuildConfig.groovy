@@ -7,9 +7,10 @@ grails.project.source.level = 1.6
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 // uncomment (and adjust settings) to fork the JVM to isolate classpaths
-//grails.project.fork = [
+grails.project.fork = [
+    test: false
 //   run: [maxMemory:1024, minMemory:64, debug:false, maxPerm:256]
-//]
+]
 
 
 // Grails 2.3 uses Aether by default
@@ -100,7 +101,9 @@ grails.project.dependency.resolution = {
         runtime ":hibernate:3.6.10.6"
         runtime ":jquery:1.8.3"
         runtime ":resources:1.1.6"
-        runtime ":coffeescript-resources:0.3.8"
+
+        compile ":coffee-asset-pipeline:1.5.0"
+        compile ":less-asset-pipeline:1.5.0"
 
         // The following are dead, we shouldn't use them!
         compile ":csv:0.3.1"

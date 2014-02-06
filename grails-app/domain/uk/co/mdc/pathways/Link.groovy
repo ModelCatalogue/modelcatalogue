@@ -1,16 +1,10 @@
 package uk.co.mdc.pathways
 
-import uk.co.mdc.model.Collection;
+class Link {
+    // The owning pathway. We define the ownership because we want
+    // the delete to cascade from Pathway to Link (but not vice-versa)
+	static belongsTo = [pathway: Pathway]
 
-class Link extends PathwayElement{
-	
 	Node source
 	Node target
-
-	static belongsTo = [pathwaysModel: PathwaysModel]
-	
-	static constraints = {
-		pathwaysModel nullable: true
-	}
-	
 }

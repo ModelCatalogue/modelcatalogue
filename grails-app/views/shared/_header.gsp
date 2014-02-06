@@ -25,6 +25,8 @@
 <r:require modules="application"/>
 
 
+
+
 <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
 <!--[if lt IE 9]>
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"/>
@@ -34,10 +36,15 @@
 
 <g:layoutHead />
 <r:layoutResources />
+
+    <asset:stylesheet href="datatables/media/css/jquery.dataTables.css"/>
+
+    <asset:stylesheet href="angular-xeditable/dist/css/xeditable.css"/>
+    <asset:stylesheet href="application.css"/>
 </head>
 <body>
 
-	<g:render template="/pathwaysModel/createPathwayModal" />
+	<g:render template="/pathway/createPathwayModal" />
 	<g:render template="/formDesign/createFormModal" />
     <!-- BEGIN WRAP. We use the wrap to enable a sticky footer element-->
     <div id="wrap">
@@ -55,12 +62,6 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-<sec:ifNotLoggedIn>
-                        <li><a href="#">Introduction</a></li>
-                        <li><a href="#">Documentation</a></li>
-                        <li><a href="#">Download</a></li>
-                        <li><a href="#">Contact</a></li>
-</sec:ifNotLoggedIn>
 <sec:ifLoggedIn>
                         <li><a href="${createLink(uri: '/dashboard/')}">Dashboard</a></li>
                         <!-- Metadata curation menu -->
@@ -70,7 +71,7 @@
                         <li class="dropdown">
                             <a id="nav-pathway-expand" class="dropdown-toggle" data-toggle="dropdown" href="#">Pathways <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li id="nav-pathway-link"><g:link elementId="listPathwaysLink" action="list" controller="PathwaysModel"> List pathways </g:link></li>
+                                <li id="nav-pathway-link"><g:link elementId="listPathwaysLink" action="index" controller="pathway"> List pathways </g:link></li>
                                 <li><a id="createPathwayLink" href="#" data-toggle="modal" data-target="#createPathwayModal"> Create pathway </a></li>
                             </ul>
                         </li>

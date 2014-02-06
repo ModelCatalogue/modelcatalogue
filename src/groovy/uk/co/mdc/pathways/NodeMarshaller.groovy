@@ -13,19 +13,15 @@ class NodeMarshaller {
 		JSON.registerObjectMarshaller(Node) { Node node ->
 				
 			return [
-			'id': node.id,
-			'name' : node?.name,
-			'description': node?.description,
-			'subModelId': node?.subModel?.id,
-			'subModelName': node?.subModel?.name,
-			'x' : node.x,
-			'y' : node.y,
-			'mandatoryInputs': node?.mandatoryInputs,
-			'mandatoryOutputs': node?.mandatoryOutputs,
-			'optionalInputs': node?.optionalInputs,
-			'optionalOutputs': node?.optionalOutputs,
-			'pathwaysModelVersion': node?.pathwaysModel.version,
-			'version' : node.version
+			    'id':           node.id,
+			    'name' :        node?.name,
+			    'description':  node?.description,
+			    'x' :           node.x,
+			    'y' :           node.y,
+			    'version' :     node.version,
+                'nodes' :       node.nodes,
+                'links' :       node.links,
+                'pathway':      node.pathway?.id
 			]
 		}
 	}
