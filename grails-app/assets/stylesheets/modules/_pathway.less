@@ -19,25 +19,25 @@
     .opacity(0.8);
     .box-shadow(5px 5px 5px @mc-colour-1-lightest);
     .transition(background-color 0.15s ease-in);
-    // TODO: Can this transition be made to work?
-    //.transition-transform(scale(1.5) 0.15s ease-in);
     border: 1px solid @mc-colour-1-darker;
     color: @mc-colour-1-darker;
     cursor: move;
     background-color: white;
     font-size: 11px;
-  }
 
-  .node:hover {
-    background-color: @mc-colour-2-lightest;
-    border: 2px solid @mc-colour-1;
-    padding: 2.4em;
-    transform: translate(-0.4em, -0.4em);
-    color: black;
+    &:hover {
+      background-color: @mc-colour-2-lightest;
+      border: 1px solid @mc-colour-1;
+      color: black;
+    }
+
+    &.selectedItem, .selectedItem:hover {
+      background-color: @mc-colour-2-lightest;
+    }
   }
 
   .ep {
-    display: none;
+    display: inline-block;;
     position: absolute;
     width: 1em;
     height: 1em;
@@ -49,10 +49,6 @@
     -webkit-transition: -webkit-box-shadow 0.25s ease-in;
     -moz-transition: -moz-box-shadow 0.25s ease-in;
     transition: box-shadow 0.25s ease-in; */
-  }
-
-  .node:hover .ep {
-    display: inline-block;
   }
 
   .connector {
@@ -85,10 +81,6 @@
     //  stroke: @mc-colour-1-darker;
   }
 
-  .selectedItem, .selectedItem:hover {
-    background-color: @mc-colour-2;
-    color: #ffffff;
-  }
 
   .canvas {
     width: 3000px;
