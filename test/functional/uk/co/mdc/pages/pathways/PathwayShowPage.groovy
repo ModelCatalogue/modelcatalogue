@@ -40,10 +40,19 @@ class PathwayShowPage extends BasePageWithNav{
 
         propertiesName { $("a", 'editable-text':"selectedNode.name")}
         propertiesEditName { propertiesName.siblings("form").find("input", type: "text")}
-        propertiesEditSubmit { propertiesName.siblings("form").find("button", type: "submit")}
-        propertiesEditCancel { propertiesName.siblings("form").find("button", type: "button")}
+        propertiesDescription { $("a", 'editable-text':"selectedNode.description")}
+
+        saveButton { $("button", text: "Save") }
 
 	}
+
+    def getXeditableSubmit(def editableValue){
+        return editableValue.siblings("form").find("button", type: "submit")
+    }
+
+    def getXeditableCancel(def editableValue){
+        return editableValue.siblings("form").find("button", type: "button")
+    }
 
     def getNodeIds(){
         def ids = []

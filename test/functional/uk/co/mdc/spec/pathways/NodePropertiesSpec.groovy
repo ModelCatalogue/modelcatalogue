@@ -54,7 +54,7 @@ class NodePropertiesSpec extends GebReportingSpec{
 
         propertiesName.click()
         propertiesEditName <<  newName
-        propertiesEditSubmit.click() // clicking anywhere should do it
+        getXeditableSubmit(propertiesName).click() // clicking anywhere should do it
 
         then:
         waitFor {

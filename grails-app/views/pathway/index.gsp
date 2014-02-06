@@ -26,7 +26,7 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="item in list.items">
-                                <td><a href="/model_catalogue/pathway/show/{{item.id}}">{{item.name}}</a></td>
+                                <td><a href="/model_catalogue/pathways/{{item.id}}">{{item.name}}</a></td>
                                 <td>{{item.description}}</td>
                                 <td>{{item.userVersion}}</td>
                                 <td>{{item.isDraft}}</td>

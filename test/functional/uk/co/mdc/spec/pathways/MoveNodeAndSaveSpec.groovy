@@ -40,10 +40,11 @@ class MoveNodeAndSaveSpec extends GebReportingSpec {
 	    then: "The node position has moved by 100px down"
 	    node2.y == node2Y + 100
 
-	    when: "I go back to the pathway"
+	    when: "I save and go back to the pathway"
+        saveButton.click()
         nav.goToPathwayListPage()
         at PathwayListPage
-	    dataTableTMLink.click()
+        getPathwayLinks()[0].click()
 
         then: "it displays the name of the pathway"
         at PathwayShowPage

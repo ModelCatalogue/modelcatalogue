@@ -74,7 +74,10 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
         node.click()
 
         then: "the description of the node is empty"
-        propertiesDescription == ""
+        waitFor{
+            propertiesDescription.displayed
+            propertiesDescription.text() == "empty"
+        }
 
         cleanup: "I delete the node"
         deleteSelectedElementButton.click()
@@ -94,7 +97,7 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
         def selectedNode = getSelectedNode()
 
         then:"The New node should be selected automatically"
-        node.@id == selectedNode.@id
+        node.attr("id") == selectedNode.attr("id")
     }
 
     /**
