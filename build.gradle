@@ -54,6 +54,7 @@ dependencies {
     test "org.seleniumhq.selenium:selenium-support:${webDriverVersion}"
     test "org.seleniumhq.selenium:selenium-firefox-driver:${webDriverVersion}"
     test "org.seleniumhq.selenium:selenium-chrome-driver:${webDriverVersion}"
+    test "org.seleniumhq.selenium:selenium-remote-driver:${webDriverVersion}"
 
 //    // Required because of bug in 2.37.0 of WebDriver:
 //    test "org.apache.httpcomponents:httpclient:4.3.1"

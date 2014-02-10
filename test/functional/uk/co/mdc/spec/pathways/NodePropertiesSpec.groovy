@@ -12,7 +12,7 @@ import uk.co.mdc.pages.pathways.PathwayShowPage
  */
 class NodePropertiesSpec extends GebReportingSpec{
 
-    def newName = "My new name prefix "
+    def newName = "My new name"
     def newDesc = "A swanky description"
 
     def setup(){
@@ -35,6 +35,7 @@ class NodePropertiesSpec extends GebReportingSpec{
         def oldName = propertiesName.text()
 
         propertiesName.click()
+        propertiesEditName.value("")
         propertiesEditName <<  newName
         pathwayName.click() // clicking anywhere should do it
 
@@ -50,15 +51,14 @@ class NodePropertiesSpec extends GebReportingSpec{
         def node = getNode( getNodeIds()[0])
         node.click()
 
-        def oldName = propertiesName.text()
-
         propertiesName.click()
+        propertiesEditName.value("")
         propertiesEditName <<  newName
         getXeditableSubmit(propertiesName).click() // clicking anywhere should do it
 
         then:
         waitFor {
-            node.text() == newName + oldName
+            node.text() == newName
         }
     }
 
@@ -68,15 +68,14 @@ class NodePropertiesSpec extends GebReportingSpec{
         def node = getNode( getNodeIds()[0])
         node.click()
 
-        def oldName = propertiesName.text()
-
         propertiesName.click()
+        propertiesEditName.value("")
         propertiesEditName <<  newName
         propertiesEditName <<  Keys.ENTER
 
         then:
         waitFor {
-            node.text() == newName + oldName
+            node.text() == newName
         }
     }
 }

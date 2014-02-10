@@ -3,8 +3,12 @@
  See: http://www.gebish.org/manual/current/configuration.html
  */
 
+
+import org.openqa.selenium.Platform
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.remote.DesiredCapabilities
+import org.openqa.selenium.remote.RemoteWebDriver
 
 reportsDir = new File("target/geb-reports")
 reportOnTestFailureOnly = false
@@ -43,4 +47,17 @@ environments {
 		driver = { new FirefoxDriver() }
 	}
 
+    sauce {
+        //baseUrl = 'http://mc.test/model_catalogue/'
+        String username = System.getenv("SAUCE_ONDEMAND_USERNAME");
+        String apiKey = System.getenv("SAUCE_ONDEMAND_ACCESS_KEY");
+        if(username == null || apiKey == null){
+            System.err.println("Sauce OnDemand credentials not set.");
+        }
+        DesiredCapabilities capabillities = DesiredCapabilities.chrome();
+        capabillities.setCapability("name", "ModelCatalogue");
+        capabillities.setCapability("platform", Platform.LINUX);
+        capabillities.setCapability("selenium-version", "2.39.0");
+        driver = { new RemoteWebDriver(new URL("http://${username}:${apiKey}@ondemand.saucelabs.com:80/wd/hub"), capabillities) }
+    }
 }
