@@ -1,6 +1,11 @@
 package uk.co.mdc.pathways
 
+import uk.co.mdc.forms.FormDesign
+import uk.co.mdc.model.DataElement
 
+/**
+ * A pathway object. Pathways contain <b>nodes</b>, which are connected by <b>links</b>.
+ */
 class Pathway {
 	
 	String  name
@@ -10,7 +15,11 @@ class Pathway {
 	
 	static hasMany = [
             nodes: Node,
-            links: Link
+            links: Link,
+
+            // FIXME this should be injected using an AST transformation, or through extension.
+            forms: FormDesign,
+            dataElements: DataElement
     ]
     static mappedBy = [
             nodes: 'pathway',
@@ -18,9 +27,11 @@ class Pathway {
     ]
 
     static constraints = {
-        description nullable: true
-		nodes       nullable: true
-        links       nullable: true
+        description     nullable: true
+		nodes           nullable: true
+        links           nullable: true
+        forms           nullable: true
+        dataElements    nullable: true
     }
 
     static mapping = {

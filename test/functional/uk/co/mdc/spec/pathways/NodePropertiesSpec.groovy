@@ -65,7 +65,7 @@ class NodePropertiesSpec extends GebReportingSpec{
     def "Updating properties when pressing return updates the view"(){
 
         when: "I edit the name of a node and leave the textbox and refresh the page"
-        def node = pathwayCanvas.find(".node")[1]
+        def node = getNode( getNodeIds()[0])
         node.click()
 
         def oldName = propertiesName.text()

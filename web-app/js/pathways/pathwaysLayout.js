@@ -11,7 +11,7 @@ $(document).ready(function () {
 		livePaneResizing:	true,
 		showDebugMessages:	true,   // log and/or display messages from debugging & testing code
 		west: { size: '20%' },
-        east: { size: '25%' }
+        east: { size: '200px' }
 	});
 
 	$(window).resize(function(){
