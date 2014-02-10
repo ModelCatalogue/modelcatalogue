@@ -76,7 +76,7 @@ class PathwayShowPage extends BasePageWithNav{
      * @return
      */
     def getNode(String nodeId){
-        return pathwayCanvas.find("div", id: nodeId)
+        return pathwayCanvas?.find("div", id: nodeId)
     }
 
     /**

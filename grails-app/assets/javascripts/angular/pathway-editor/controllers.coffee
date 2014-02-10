@@ -5,12 +5,9 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
         $scope.controller = "pathways" # override because we want to use the RestController endpoints
         $scope.pathway = Grails.getRestResource($scope).get {action: 'show'}
 
-        $scope.selectNode = (node) ->
-            NodeSelector.selectNode(node)
-        $scope.isSelected = (node) ->
-            NodeSelector.isSelected(node)
-        $scope.selectedNode = ->
-            NodeSelector.getSelectedNode()
+        $scope.selectNode = NodeSelector.selectNode
+        $scope.isSelected = NodeSelector.isSelected
+        $scope.selectedNode = NodeSelector.getSelectedNode
 
         $scope.deleteNode = (node) ->
 
@@ -74,15 +71,14 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 .controller('GraphCanvasCtrl', ['$scope', 'NodeSelector', ($scope, NodeSelector) ->
         $scope.pathway = $scope.$parent.pathway
 
-        $scope.selectNode = (node) ->
-            NodeSelector.selectNode(node)
+        $scope.selectNode = NodeSelector.selectNode
+        $scope.isSelected = NodeSelector.isSelected
 
         $scope.viewSubpathway = (node) ->
             jsPlumb.deleteEveryEndpoint(); # FIXME this should be handled in the directive. Controllers are for data model, directives are for DOM manipulation
             $scope.pathway = node
 
-        $scope.isSelected = (node) ->
-            NodeSelector.isSelected(node)
+
 
         $scope.levelsAbove = false
 

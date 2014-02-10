@@ -15,8 +15,8 @@ class PathwayService {
 	def aclUtilService
 	def springSecurityService
 
-	void addPermission(Pathway pathwaysModel, String roleOrUsername, int permission){
-		addPermission pathwaysModel, roleOrUsername, aclPermissionFactory.buildFromMask(permission)
+	void addPermission(Pathway pathway, String roleOrUsername, int permission){
+		addPermission pathway, roleOrUsername, aclPermissionFactory.buildFromMask(permission)
 	}
 
     @PreAuthorize("hasPermission(#pathway, admin)")
