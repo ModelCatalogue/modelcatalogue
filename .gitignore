@@ -4,6 +4,8 @@
 
 # Gradle build cache
 /.gradle
+/build/
+/buildPlugins/
 
 # web application files bootstrap data
 /web-app/WEB-INF/bootstrap-data
