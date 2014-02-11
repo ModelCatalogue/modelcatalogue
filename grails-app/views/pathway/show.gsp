@@ -58,9 +58,9 @@
                  up-a-level="goUp()"
                  ng-controller="GraphCanvasCtrl"
                  class="jsplumb-container canvas">
-                    <div>
-                        <i class="fa fa-reply fa-2x" ng-click="upALevel()"  ng-show="levelsAbove"></i><br>
-                        <i class="fa fa-plus-square-o fa-2x" ng-click="addNode()"></i>
+                    <div class="palette">
+                        <i class="fa fa-2x fa-plus-square " ng-click="addNode()"></i>
+                        <i class="fa fa-2x fa-reply" ng-click="upALevel()"  ng-show="levelsAbove"></i><br>
                     </div>
                     <div mc-graph-node graph-node="node" select-node="selectNode(node)" dbl-click="viewSubpathway(node)" is-selected="isSelected(node)" ng-repeat="node in pathway.nodes"></div>
                     <div mc-graph-link graph-link="link" ng-repeat="link in pathway.links"></div>
