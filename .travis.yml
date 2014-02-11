@@ -1,0 +1,14 @@
+language: groovy
+
+jdk:
+  - oraclejdk7
+  - openjdk7
+  
+addons:
+  sauce_connect:
+    username: ryanbrooks
+
+env:
+  global:
+    secure: Z6bunL2a0k7OeS1o1A6/7DgTD3bc4IkefLxiRi24AnbhiROpGyauqgvHgRhQb6fKes4NPF8bwlc0xD3UHV6oXztQZJDQKz1Q66Rjolc0D7CcG7in6iCJwANzsPqrGbp8asBYuVsALAMDF7GH+5ZGxtThBeFo2M7IKHm4yVGmfAs=
+
