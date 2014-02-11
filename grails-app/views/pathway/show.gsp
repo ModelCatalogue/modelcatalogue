@@ -59,8 +59,14 @@
                  ng-controller="GraphCanvasCtrl"
                  class="jsplumb-container canvas">
                     <div class="palette">
-                        <i class="fa fa-2x fa-plus-square " ng-click="addNode()"></i>
-                        <i class="fa fa-2x fa-reply" ng-click="upALevel()"  ng-show="levelsAbove"></i><br>
+                        <span class="fa-stack">
+                            <i class="fa fa-stack-2x fa-square" style="color: #ffffff"></i>
+                            <i class="fa fa-stack-2x fa-plus-square" ng-click="addNode()"></i>
+                        </span>
+                        <span class="fa-stack">
+                            <i class="fa fa-stack-2x fa-reply" ng-click="upALevel()"  ng-show="levelsAbove"></i>
+                        </span>
+                        <br>
                     </div>
                     <div mc-graph-node graph-node="node" select-node="selectNode(node)" dbl-click="viewSubpathway(node)" is-selected="isSelected(node)" ng-repeat="node in pathway.nodes"></div>
                     <div mc-graph-link graph-link="link" ng-repeat="link in pathway.links"></div>

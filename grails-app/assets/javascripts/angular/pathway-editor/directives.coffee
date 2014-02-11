@@ -66,7 +66,7 @@ module.directive('mcGraphContainer', ->
 			return nextId
 
 	#templateUrl: 'templates/pathway/jsPlumbCanvas.html',
-	link: (scope, iElement, iAttrs) ->
+	link: (scope, iElement, $compile) ->
 		if scope.options
 			jsPlumb.importDefaults(scope.options)
 		else
@@ -74,26 +74,33 @@ module.directive('mcGraphContainer', ->
 
 		jsPlumb.unbind("dblclick");
 		# Listen for link creation and add to the list of links
+
+		#connectionId = info.connection.getParameter("connectionId", connectionId)
 		jsPlumb.bind "connection", (info) ->
+			sourceId = "#{info.source.id}".replace(/node/, "")
+			targetId = "#{info.target.id}".replace(/node/, "")
+
 			connectionId = info.connection.getParameter("connectionId", connectionId)
 			if not connectionId
-				connectionId = 'connection_' + info.source.id + '_' + info.target.id
-
+				console.log "evaluation"
 				# We only allow one link to occur between two nodes
 				exists = false
 				for link in scope.pathway.links
-					console.log 'connection_node' + link.source + '_node' + link.target
-					if connectionId is 'connection_node' + link.source + '_node' + link.target
+					# Need to coerce the IDs to strings just in case they're numbers in the map
+					if sourceId == "#{link.source}" and targetId == "#{link.target}"
 						exists = true
+						console.log 'source: ' + link.source + ', target: ' + link.target + ' already exists'
 				if exists
-					jsPlumb.detach(info)
+					jsPlumb.detach(info.connection)
 				else
+					console.log "Adding link, source: " + sourceId + ', target: ' + targetId
 					# TODO this should be extracted so the directive takes a function to add the link as a parameter
 					scope.pathway.links.push {
 						id: 'LOCALLINK' + scope.getNextLinkId(),
-						source: info.source.id.replace(/node/, ""),
-						target: info.target.id.replace(/node/, "")
+						source: sourceId,
+						target: targetId
 					}
+			return
 	}
 ) # end directive
 
@@ -124,6 +131,7 @@ module.directive('mcGraphNode', ->
 	},
 	templateUrl: 'templates/pathway/jsPlumbNode.html',
 	link: (scope, iElement, iAttrs) ->
+
 		jsPlumb.makeSource($('.ep', iElement), {
 			parent: iElement
 		});

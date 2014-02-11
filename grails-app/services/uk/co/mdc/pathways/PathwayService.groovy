@@ -42,7 +42,8 @@ class PathwayService {
         createLocalNodes(clientPathway, idMappings)
         cleanAndCreateLinks(clientPathway, idMappings)
 
-        pathway.properties = clientPathway
+        // Only grab the attributes of the current pathway - deep nodes have been saved in the last 2 method calls
+        pathway.properties = clientPathway.findAll { key, value -> key != 'nodes' && key != 'links'}
         pathway.save(failOnError: true)
         return pathway
     }
@@ -79,6 +80,12 @@ class PathwayService {
 
                 // Set the node ID to match the saved node ID (so subsequent calls down the tree can find the parent...
                 node.id = savedNode.id
+            }
+            // otherwise just save
+            else{
+                Node nodeInstance = Node.get(node.id)
+                nodeInstance.properties = node.findAll { key, value -> key != 'nodes' && key != 'links'}
+                nodeInstance.save(failOnError: true)
             }
 
             // finally recurse
@@ -129,8 +136,12 @@ class PathwayService {
 
             }else{
                 savedLink = Link.get(link.id)
-                savedLink.properties = link
-                savedLink.save(failOnError: true)
+                if(savedLink){
+                    savedLink.properties = link
+                    savedLink.save(failOnError: true)
+                }else{
+                    log.error("Could not find link " + link.id)
+                }
             }
         }
         unsavedPathway.nodes.each{ childNode ->

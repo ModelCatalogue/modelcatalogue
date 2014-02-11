@@ -24,7 +24,7 @@ class PathwayShowPage extends BasePageWithNav{
         pathwayDescription { $("#pathwayDescription") }
         pathwayIsDraft { $("#pathwayIsDraft") }
 
-		addNodeButton { pathwayCanvas.find("i", class: "fa-plus-square-o") }
+		addNodeButton { pathwayCanvas.find("i", class: "fa-plus-square") }
 		node2(required:false) { $("#node7") }
 		addFormModal { $("#AddFormModal") }
 		addFormButton { $("h5", text: "Forms").find("i") }
@@ -42,7 +42,7 @@ class PathwayShowPage extends BasePageWithNav{
         propertiesEditName { propertiesName.siblings("form").find("input", type: "text")}
         propertiesDescription { $("a", 'editable-text':"selectedNode.description")}
 
-        saveButton { $("button", text: "Save") }
+        saveButton { $("button", text: "Save pathway") }
 
 	}
 

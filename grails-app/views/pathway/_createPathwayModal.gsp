@@ -17,12 +17,10 @@
 			</div>
 			<div class="modal-body">
 				<form class="form" role="form" id="createPathwayForm" action="${request.contextPath}/pathway/save" method="post">
-					<input type="hidden" name="createPathway" value="createPathway">
-					<div class="form-group">
+                    <div class="form-group">
 						<label for="txt-name" class="control-label">Name: </label> 
 						<input name="name"
-							id="txt-name" type="text" class="form-control"
-							 />
+							id="txt-name" type="text" class="form-control"/>
 					</div>
 					<div class="form-group">
 						<label for="txt-desc" class="control-label">Description: </label>

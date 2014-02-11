@@ -33,6 +33,10 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
             if grailsResponse.hasErrors
                 for error in grailsResponse.errors
                     console.log error
+            else
+	            # node IDs may have been fixed, redraw
+	            console.log("redrawing")
+	            jsPlumb.repaintEverything();
 
 
     ])

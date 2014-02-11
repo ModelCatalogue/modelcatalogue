@@ -16,13 +16,13 @@
 				<div class="message" role="status">${flash.message}</div>
 				</g:if>
 				<div id="pathwayList" ng-controller="ListCtrl" class="ng-cloak">
-                    <table id="pathwayList">
+                    <table>
                         <thead>
-                        <td><g:message code="pathway.name" /></td>
-                        <td><g:message code="pathway.description" /></td>
-                        <td><g:message code="pathway.userVersion" /></td>
-                        <td><g:message code="pathway.isDraft" /></td>
-                        <td>actions</td>
+                        <th><g:message code="pathway.name" /></th>
+                        <th><g:message code="pathway.description" /></th>
+                        <th><g:message code="pathway.userVersion" /></th>
+                        <th><g:message code="pathway.isDraft" /></th>
+                        <th>actions</td>
                         </thead>
                         <tbody>
                             <tr ng-repeat="item in list.items">
@@ -35,6 +35,7 @@
                         </tbody>
                     </table>
 				</div>
+                <button class="btn btn-large btn-primary" data-toggle="modal" data-target="#createPathwayModal"><i class="glyphicon glyphicon-plus"></i>&nbsp;Create a new pathway</button>
 			</div>
             <script type="text/ng-template" id="templates/deleteConfirmation.html">
                 <div style="width: 300px;">
