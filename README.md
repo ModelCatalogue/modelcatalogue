@@ -3,6 +3,8 @@ Model Catalogue
 
 The Model Catalogue is an open source metadata registry, pathway and forms generator based upon ISO standards.
 
+[![Build Status](https://travis-ci.org/ModelCatalogue/modelcatalogue.png?branch=develop)](https://travis-ci.org/ModelCatalogue/modelcatalogue)
+
 # Building Model Catalogue
 
 This project is built in Grails, but also has as few front-end dependencies we manage with Bower.
