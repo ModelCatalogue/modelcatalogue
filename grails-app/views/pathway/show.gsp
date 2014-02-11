@@ -19,7 +19,6 @@
 <!-- FIXME remove hardcoded grails app name and put it in params -->
 <div ng-app="pathway-editor" ng-init="${grailsParams}; grailsAppName='model_catalogue'" class="pathwayEditor">
 <div ng-controller="PathwayEditorCtrl" class="ng-cloak">
-    <button type="button" class="btn btn-primary" ng-click="save()">Save</button>
     <div class="row">
         <div class="col-xs-12">
             <div class="pull-right">
@@ -40,11 +39,17 @@
 
     <div id="container" class="row" >
 
-         <div class="ui-layout-west panel panel-primary" >
-             <ul>
-                 <li ng-repeat="node in pathway.nodes"
-                     ng-include="'templates/pathway/pathwayTreeView.html'"></li>
-             </ul>
+         <div class="ui-layout-west" >
+             <button type="button" class="btn btn-success btn-lg btn-block" ng-click="save()">Save pathway</button>
+             <div class="panel panel-primary">
+                 <div class="panel-body">
+                     <h4>Tree view</h4>
+                     <ul>
+                         <li ng-repeat="node in pathway.nodes"
+                             ng-include="'templates/pathway/pathwayTreeView.html'"></li>
+                     </ul>
+                 </div>
+             </div>
          </div>
 
         <div class="ui-layout-center panel panel-primary">
@@ -63,7 +68,7 @@
         </div>
 
         <!-- If selectedItem is undefined, the right panel will be empty -->
-        <div class="ui-layout-east large-rounded panel panel-primary" ng-controller="NodePropertiesCtrl">
+        <div class="ui-layout-east panel panel-primary" ng-controller="NodePropertiesCtrl">
             <div class="panel-heading">
                 Properties
             </div>
