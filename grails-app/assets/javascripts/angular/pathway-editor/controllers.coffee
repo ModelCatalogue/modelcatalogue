@@ -35,7 +35,6 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
                     console.log error
             else
 	            # node IDs may have been fixed, redraw
-	            console.log("redrawing")
 	            jsPlumb.repaintEverything();
 
 
@@ -81,6 +80,17 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
         $scope.viewSubpathway = (node) ->
             jsPlumb.deleteEveryEndpoint(); # FIXME this should be handled in the directive. Controllers are for data model, directives are for DOM manipulation
             $scope.pathway = node
+
+
+        $scope.$watch(->
+            NodeSelector.getSelectedNode()
+        , (selectedNode) ->
+	        return if selectedNode is null
+	        newParent = getParentOfSelectedNode($scope.$parent.pathway, selectedNode)
+	        if (newParent isnt $scope.pathway)
+	            jsPlumb.deleteEveryEndpoint() # FIXME this should be handled in the directive. Controllers are for data model, directives are for DOM manipulation
+	            $scope.pathway = newParent
+        , false) # Just check for object equality
 
 
 

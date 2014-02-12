@@ -129,6 +129,8 @@ module.directive('mcGraphNode', ->
 		selectNode: '&',
 		dblClick: '&'
 	},
+
+
 	templateUrl: 'templates/pathway/jsPlumbNode.html',
 	link: (scope, iElement, iAttrs) ->
 
@@ -145,7 +147,8 @@ module.directive('mcGraphNode', ->
 				scope.node.x = Math.floor(ui.position.left);
 
 		});
-
+		scope.$watch 'node.name', ->
+			jsPlumb.repaintEverything()
 	}
 ) # End of directive
 
