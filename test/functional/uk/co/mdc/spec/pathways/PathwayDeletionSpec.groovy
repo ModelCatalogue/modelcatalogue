@@ -26,13 +26,19 @@ class PathwayDeletionSpec extends GebReportingSpec {
     }
 
     def "Check deletion can be cancelled"(){
+
+        String pathwayName = "test pathway 4"
         when:
-        createPathway("Test pathway 4")
+        createPathway(pathwayName)
 
         to PathwayListPage
-        def pathway = getPathwayLink("Test pathway 4")
+        waitFor {
+            getPathwayLink(pathwayName)
+        }
+        def pathway = getPathwayLink(pathwayName)
 
         then: "The delete button is visible but the confirmation is not"
+
         getDeleteButton(pathway).displayed
         !getDeleteAbortButton(pathway).displayed
         !getDeleteConfirmationButton(pathway).displayed
@@ -62,12 +68,13 @@ class PathwayDeletionSpec extends GebReportingSpec {
 
     def "Check deletion can be confirmed"(){
 
+        String pathwayName = "Deletable pathway"
         /**
          * Let's create a pathway to delete (so we don't hurt any other tests.
          */
         when: "I create a pathway"
         at PathwayListPage
-        createPathway("This is a sample pathway")
+        createPathway(pathwayName)
 
         then: "I'm taken to the pathway editor"
         waitFor{
@@ -84,7 +91,9 @@ class PathwayDeletionSpec extends GebReportingSpec {
          */
         when: "I go to the page and click on the link"
         to PathwayListPage
-        assert goToPathway("This is a sample pathway")
+        waitFor{
+            goToPathway(pathwayName)
+        }
 
         then: "I'm at the right page"
         at PathwayShowPage
@@ -92,7 +101,10 @@ class PathwayDeletionSpec extends GebReportingSpec {
 
         when:
         to PathwayListPage
-        def pathwayItem = getPathwayLink("This is a sample pathway")
+        waitFor {
+            getPathwayLink(pathwayName)
+        }
+        def pathwayItem = getPathwayLink(pathwayName)
 
         then: "The delete button is visible but the confirmation is not"
         getDeleteButton(pathwayItem).displayed
@@ -112,7 +124,7 @@ class PathwayDeletionSpec extends GebReportingSpec {
 
         then: "the deleted item isn't present"
         waitFor{
-            !pathwayList.find("a", text: "This is a sample pathway")
+            !pathwayList.find("a", text: pathwayName)
         }
 
     }

@@ -85,26 +85,20 @@
                 <h4><a href="#" editable-text="selectedNode.name">{{ selectedNode.name || "empty" }}</a></h4>
                 <p><a href="#" editable-text="selectedNode.description">{{ selectedNode.description || "empty" }}</a></p>
 
+                <div mc-thing-picker
+                     widget-name="Data Elements"
+                     selected-things="selectedNode.dataElements"
+                     all-things="selectedNode.dataElements"
+                ></div>
+
+                <div mc-thing-picker
+                        widget-name="Forms"
+                        selected-things="selectedNode.forms"
+                        ></div>
+
                 <button type="button" class="btn btn-danger btn-xs" ng-click="deleteNode()">
                     <i class="fa fa-trash-o"></i> Delete
                 </button>
-
-                <h5>Forms <i class="fa fa-plus-square-o" ng-click="addForm()"></i></h5>
-                <ul>
-                    <li ng-repeat="form in selectedNode.forms">
-                        {{form.name}}
-                         <i class="fa fa-minus-square-o" ng-click="removeForm(form)"></i>
-                    </li>
-                </ul>
-
-                <h5>Data elements <i class="fa fa-plus-square-o" ng-click="addDataElement()"></i></h5>
-                <ul>
-                    <li ng-repeat="element in selectedNode.dataElements">
-                        {{element.name}}
-                        <!-- FIXME: Add data element collections to list (possibly a little folder icon? -->
-                        <i class="fa fa-minus-square-o" ng-click="removeDataElement(element)"></i>
-                    </li>
-                </ul>
             </div>
         </div>
     </div>

@@ -1,5 +1,4 @@
 package uk.co.mdc.utils.importers
-import org.json.simple.JSONObject
 import org.springframework.security.acls.domain.BasePermission
 import uk.co.mdc.model.SchemaSpecification;
 import uk.co.mdc.model.Collection;
@@ -146,8 +145,9 @@ class ImportNHICService {
 			def dec = importDataElementConcepts(categories, null);
 			def dataTypes = [tokens[5]]
 			def dataType = importDataTypes(tokens[3],dataTypes);
-			def ext = new JSONObject();
-			ext.put("NHIC Identifier", tokens[0]);
+			def ext = [
+                    "NHIC Identifier": tokens[0]
+			]
 
 			def cd = findOrCreateConceptualDomain("TRA", "NHIC : Renal Transplantation")
 
@@ -172,8 +172,9 @@ class ImportNHICService {
 			def dec = importDataElementConcepts(categories, null);
 			def dataTypes = [tokens[5]]
 			def dataType = importDataTypes(tokens[3],dataTypes);
-			def ext = new JSONObject();
-			ext.put("NHIC Identifier", tokens[0]);
+			def ext = [
+			    "NHIC Identifier": tokens[0]
+            ]
 
 			def cd = findOrCreateConceptualDomain("ICU", "NHIC : Intensive Care")
 
@@ -297,20 +298,22 @@ class ImportNHICService {
 			def dec = importDataElementConcepts(categories, null);
 			def dataTypes = [tokens[5]]
 			def dataType = importDataTypes(tokens[3],dataTypes);
-			def ext = new JSONObject();
-			ext.put("NHIC Identifier", tokens[0]);
-			ext.put("Link to existing definition", tokens[6]);
-			ext.put("Notes from GD/JCIS", tokens[7]);
-			ext.put("[Optional] Local Identifier", tokens[8]);
-			ext.put("A: How is the data item collected", tokens[9]);
-			ext.put("B. How is the data item stored, within the centre?", tokens[10]);
-			ext.put("C. How would you describe the existing coverage?", tokens[11]);
-			ext.put("D. How would you describe the existing quality?", tokens[12]);
-			ext.put("E. How hard would it be to achieve a score of 1 for Parts A to D?", tokens[13]);
-			ext.put("F. what  are the circumstances of data collection?  where and when is the data recorded?  who is responsible for data entry?", tokens[14]);
-			ext.put("G. is there a particular form (or data standard, or proforma) used for the collection of the data?   If so, please supply a copy or reference. ", tokens[15]);
-			ext.put("H. if the data is stored in a local database or data warehouse, what is the name and version of the database application?", tokens[16]);
-			ext.put("E2. Source for column E - how data established?", tokens[17]);
+            def ext = [
+                    "NHIC Identifier": tokens[0],
+                    "Link to existing definition": tokens[6],
+                    "Notes from GD/JCIS": tokens[7],
+                    "[Optional] Local Identifier": tokens[8],
+                    "A: How is the data item collected": tokens[9],
+                    "B. How is the data item stored, within the centre?": tokens[10],
+                    "C. How would you describe the existing coverage?": tokens[11],
+                    "D. How would you describe the existing quality?": tokens[12],
+                    "E. How hard would it be to achieve a score of 1 for Parts A to D?": tokens[13],
+                    "F. what  are the circumstances of data collection?  where and when is the data recorded?  who is responsible for data entry?": tokens[14],
+                    "G. is there a particular form (or data standard, or proforma) used for the collection of the data?   If so, please supply a copy or reference. ": tokens[15],
+                    "H. if the data is stored in a local database or data warehouse, what is the name and version of the database application?": tokens[16],
+                    "E2. Source for column E - how data established?": tokens[17]
+            ]
+
 
 			def cd = findOrCreateConceptualDomain("CAN", "NHIC : Ovarian Cancer")
 

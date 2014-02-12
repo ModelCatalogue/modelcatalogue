@@ -85,6 +85,8 @@ class PathwayService {
             else{
                 Node nodeInstance = Node.get(node.id)
                 nodeInstance.properties = node.findAll { key, value -> key != 'nodes' && key != 'links'}
+                nodeInstance.dataElements = null// node.dataElements
+                nodeInstance.forms = node.forms
                 nodeInstance.save(failOnError: true)
             }
 
@@ -163,7 +165,9 @@ class PathwayService {
 	@Transactional
 	@PreAuthorize("hasRole('ROLE_USER')")
 	Pathway create(Pathway pathway) {
-
+        if(!pathway){
+            return null
+        }
         pathway.save()
 
         // Update permissions for owner (read for all, write + delete for owner

@@ -104,7 +104,7 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
      * added by Soheil to solve MC-125
      (Problem:Creating a second node places it over the first one)
      */
-    def "When new nodes are added, the second one should appear properly besides the first one"()
+    def "When new nodes are added, the second one should appear properly underneath the first one"()
     {
         at PathwayShowPage
 
@@ -130,9 +130,9 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
         node2.attr("id") == selectedNode.attr("id")
 
 
-        and: "And the second node should be aligned properly bedside the first node"
-        node2.x > node1.x + getNodeWidth(node2.attr("id")) + 50 //50: the default value used in AppViewModel.js(self.saveNode method)
-        node2.y == node1.y
+        and: "And the second node should be aligned properly underneath the first node"
+        node2.x == node1.x
+        node2.y == node1.y + selectedNode.height + 50
 
     }
 }

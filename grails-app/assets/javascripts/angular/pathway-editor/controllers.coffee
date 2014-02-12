@@ -112,15 +112,12 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
             nodeY = 0
             selectedNode = NodeSelector.getSelectedNode()
             if selectedNode
-                sWidth=$('#node'+selectedNode.id).width()
-                sX = selectedNode.x
-                if(sX==NaN)
-                    sX= $('#model-panel').scrollLeft() + 150
-                nodeX = sX + sWidth + 50
-                nodeY = selectedNode.y
+                nodeX = selectedNode.x
+                nodeY = selectedNode.y + $('#node'+selectedNode.id).outerHeight() + 50
             else
-                nodeX = $('#model-panel').scrollLeft() + 150 + (Math.random()*300)
-                nodeY = $('#model-panel').scrollTop() + 150 + (Math.random()*300)
+	            # FIXME get rid of the JQuery selector here - DOM should occur in the directive...
+                nodeX = $('.ui-layout-center').scrollLeft() + 50 + (Math.random()*150)
+                nodeY = $('.ui-layout-center').scrollTop() + 50 + (Math.random()*150)
 
             newNode = {
                 name: "New node"

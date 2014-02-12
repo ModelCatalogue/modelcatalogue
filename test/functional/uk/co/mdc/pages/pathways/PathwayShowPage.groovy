@@ -152,14 +152,6 @@ class PathwayShowPage extends BasePageWithNav{
     }
 
 
-    /**
-     * Get the node width based of the node id
-     */
-    def getNodeWidth(def nodeId)
-    {
-        return  $('#node'+nodeId).width;
-    }
-
 
 
 }

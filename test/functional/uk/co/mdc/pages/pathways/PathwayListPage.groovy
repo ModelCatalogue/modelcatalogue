@@ -40,7 +40,7 @@ class PathwayListPage extends BasePageWithNav{
         return dataTableRows.find("a")
     }
     boolean goToPathway(String title){
-        def link = pathwayList.find("a", text: "$title")
+        def link = getPathwayLink(title)
         if(link){
             link.click()
             return true
@@ -60,7 +60,7 @@ class PathwayListPage extends BasePageWithNav{
         }
     }
 
-    def getPathwayLink(pathwayName){
+    def getPathwayLink(String pathwayName){
         return pathwayList.find("a", text: pathwayName)
     }
 

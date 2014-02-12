@@ -31,7 +31,7 @@ class MoveNodeAndSaveSpec extends GebReportingSpec {
 
 	    given:"I am on the dashboard view in a 1024x768 browser window and login as admin"
 
-	    when: "I drag and drop the first row of the form list"
+	    when: "I drag and drop the node"
 	    def node2Y = node2.y
 	    interact {
 	    	dragAndDropBy(node2, 0, 100)

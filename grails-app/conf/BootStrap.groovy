@@ -554,150 +554,6 @@ class BootStrap {
 		if(!Pathway.count()){
 
 			//Add a form to the pathways
-			
-//						def rulepw1 = new Rule(
-//								name: 'display section rule',
-//								predicate: 'question1 > 5',
-//								consequence: 'display'
-//								).save(failOnError:true)
-//
-//						def inputFieldpw1 = new InputField(
-//
-//								defaultValue: 'test default',
-//								placeholder: 'test placeholder',
-//								maxCharacters: 11,
-//								unitOfMeasure: 'test UOM',
-//								dataType: string,
-//								format: 'test format',
-//
-//								).save(failOnError: true)
-//
-//						def inputFieldpw2 = new InputField(
-//
-//								defaultValue: 'test default',
-//								placeholder: 'test placeholder',
-//								maxCharacters: 20,
-//								unitOfMeasure: 'test2 UOM',
-//								dataType: string,
-//								format: 'test format2',
-//
-//								).save(failOnError: true)
-//
-//						def inputFieldpw3 = new InputField(
-//
-//								defaultValue: 'te3st default',
-//								placeholder: 'test3 placeholder',
-//								maxCharacters: 13,
-//								unitOfMeasure: 'tes3t UOM',
-//								dataType: date,
-//								format: 'test forma3t',
-//
-//								).save(failOnError: true)
-//
-//						def inputFieldpw4 = new InputField(
-//
-//								defaultValue: 'test default',
-//								placeholder: 'test placeholder',
-//								maxCharacters: 9,
-//								unitOfMeasure: 'test UOM',
-//								dataType: string,
-//								format: 'test format',
-//
-//								).save(failOnError: true)
-//
-//						def inputFieldpw5 = new InputField(
-//
-//								defaultValue: 'test default',
-//								placeholder: 'test pladasceholder',
-//								maxCharacters: 11,
-//								unitOfMeasure: 'test UOM',
-//								dataType: string,
-//								format: 'test format',
-//
-//								).save(failOnError: true)
-//
-//						def questionpw1 = new QuestionElement(
-//								designOrder: 1,
-//								prompt: 'how old are you',
-//								style: 'this style1',
-//								label: 'how old are you?',
-//								additionalInstructions: 'more instructions',
-//								inputField: inputFieldpw1
-//								).save(failOnError: true)
-//
-//						def questionpw2 = new QuestionElement(
-//								designOrder: 2,
-//								prompt: 'operation reference',
-//								style: 'this style3',
-//								label: 'origin of referral',
-//								additionalInstructions: 'more instructions2 ',
-//								inputField: inputFieldpw2
-//								).save(failOnError: true)
-//
-//
-//
-//						def questionpw3 = new QuestionElement(
-//								designOrder: '3',
-//								prompt: 'this is the thirs question',
-//								style: 'this style5',
-//								label: 'what is your favorite colour ?',
-//								additionalInstructions: 'more instructions',
-//								inputField: inputFieldpw3
-//								).save(failOnError: true)
-//
-//						def questionpw4 = new QuestionElement(
-//								designOrder: 4,
-//								prompt: 'this is the 4th question',
-//								style: 'this style5',
-//								label: 'what is your favorite animal ?',
-//								additionalInstructions: 'more instructions',
-//								inputField: inputFieldpw4
-//								).save(failOnError: true)
-//
-//						def questionpw5 = new QuestionElement(
-//								designOrder: 5,
-//								prompt: 'this is the 5th question',
-//								style: 'this style5',
-//								label: 'what is your favorite car ?',
-//								additionalInstructions: 'more instructions',
-//								inputField: inputFieldpw5
-//								).save(failOnError: true)
-//
-//
-//						def formDesignPW = new FormDesign(
-//						name:'formDesignNamepw1',
-//						versionNo:'V0.145',
-//						isDraft:true,
-//						description:'test description 1'
-//						).save(failOnError: true)
-//
-//
-//						def sectionpw1 = new SectionElement(
-//								title: 'sectionpw1',
-//								designOrder: 1
-//								).save(failOnError:true)
-//
-//						def sectionpw2 = new SectionElement(
-//								title: 'sectionpw2',
-//								designOrder: 2
-//								).save(failOnError:true)
-//
-//						sectionpw1.addToQuestionElements(questionpw1)
-//						sectionpw1.addToQuestionElements(questionpw2)
-//						sectionpw1.addToQuestionElements(questionpw3)
-//
-//
-//						sectionpw2.addToRules(rulepw1)
-//						sectionpw2.addToQuestionElements(questionpw4)
-//						sectionpw2.addToQuestionElements(questionpw5)
-//
-//						formDesignPW.addToFormDesignElements(sectionpw1)
-//						formDesignPW.addToFormDesignElements(sectionpw2)
-//						//End add form
-//
-
-
-
             def pathway1 = new Pathway(
                     name: 'Transplanting and Monitoring Pathway',
                     userVersion: '0.2',
@@ -714,6 +570,9 @@ class BootStrap {
                     y: '330px',
                     parent: pathway1,
             ).save(failOnError:true)
+            .addToDataElements(DataElement.get(1))
+            .addToDataElements(DataElement.get(2))
+            //.addToForms(FormDesign.get(1))
 
             Node node1 = new Node(
                     name: 'Guard Patient',
