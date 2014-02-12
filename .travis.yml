@@ -16,9 +16,5 @@ env:
 #
 #script:
 #  - TERM=dumb ./gradlew check
-
-branches:
-  only:
-    - master
     
 script: npm install && bower install && ./grailsw refresh-dependencies && ./grailsw test-app
