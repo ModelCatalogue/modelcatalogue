@@ -7,7 +7,7 @@ module.exports = function(config) {
 		browsers: [
             'Chrome',
             //'Firefox', // Firefox is slow!
-            'Safari'
+            //'Safari'
         ],
 		reporters: ['progress', 'junit', 'coverage'],
 		singleRun: false,
@@ -32,9 +32,13 @@ module.exports = function(config) {
             // App under test
             'grails-app/assets/javascripts/**/*.coffee',
 
-            // Tests
+            // Mocks
             'test/js/lib/angular/angular-mocks.js',
-            //'test/frontend/lib/angular/angular-scenario.js',
+
+            // Templates
+            'grails-app/assets/javascripts/angular/**/*.html',
+
+            // Finally... tests
             'test/js/**/*.coffee',
             'test/js/unit**/*.js'
 		],
@@ -48,11 +52,13 @@ module.exports = function(config) {
 			'karma-firefox-launcher',
 			'karma-safari-launcher',
 			'karma-junit-reporter',
-            'karma-coffee-preprocessor'
+            'karma-coffee-preprocessor',
+            'karma-ng-html2js-preprocessor'
 		],
 
         preprocessors: {
-            '**/*.coffee': ['coffee']
+            '**/*.coffee': ['coffee'],
+            '**/*.html': ['ng-html2js']
         },
 
         coffeePreprocessor: {
@@ -65,6 +71,16 @@ module.exports = function(config) {
             transformPath: function(path) {
                 return path.replace(/\.js$/, '.coffee');
             }
+        },
+
+        /**
+         * Angular template loader.
+         * see http://daginge.com/technology/2013/12/14/testing-angular-templates-with-jasmine-and-karma/
+         */
+        ngHtml2JsPreprocessor: {
+            moduleName: 'templates',
+            stripPrefix: 'grails-app/assets/javascripts/',
+            prependPrefix:'/model_catalogue/assets/'
         }
 	});
 };
