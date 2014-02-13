@@ -33,10 +33,10 @@ module.exports = function(config) {
             'grails-app/assets/javascripts/**/*.coffee',
 
             // Tests
-            'test/frontend/lib/angular/angular-mocks.js',
+            'test/js/lib/angular/angular-mocks.js',
             //'test/frontend/lib/angular/angular-scenario.js',
-            'test/frontend/**/*.coffee',
-            'test/frontend/unit**/*.js'
+            'test/js/**/*.coffee',
+            'test/js/unit**/*.js'
 		],
 		exclude: [
 		],

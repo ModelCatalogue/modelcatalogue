@@ -123,6 +123,10 @@ grails.views.javascript.library="jquery"
 
 
 grails{
+    assets{
+        excludes = ["**/*.less"]
+        includes = ["/application.less"]
+    }
 	plugins{
 		springsecurity{
 
@@ -259,6 +263,8 @@ coffeescript.modules = {
         defaultBundle angularTests
     }
 }
+
+
 
 // Uncomment and edit the following lines to start using Grails encoding & escaping improvements
 
