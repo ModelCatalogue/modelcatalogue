@@ -17,4 +17,4 @@ env:
 #script:
 #  - TERM=dumb ./gradlew check
     
-script: npm install && bower install && ./grailsw refresh-dependencies && ./grailsw test-app -Dgeb.env=sauce
+script: npm install && bower install && ./grailsw refresh-dependencies && ./grailsw test-app -Dgeb.env=sauce --plain-output
