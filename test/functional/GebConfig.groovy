@@ -55,8 +55,9 @@ environments {
             throw new IllegalArgumentException("Sauce OnDemand credentials not set.")
         }
         DesiredCapabilities capabillities = DesiredCapabilities.chrome();
-        capabillities.setCapability("name", "ModelCatalogue");
+        capabillities.setCapability("tunnel-identifier", System.getenv("TRAVIS_JOB_NUMBER"));
         capabillities.setCapability("platform", Platform.LINUX);
+        capabillities.setCapability("name", "ModelCatalogue");
         capabillities.setCapability("selenium-version", "2.39.0");
         driver = { new RemoteWebDriver(new URL("http://${username}:${apiKey}@ondemand.saucelabs.com:80/wd/hub"), capabillities) }
     }
