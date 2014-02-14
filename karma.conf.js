@@ -28,9 +28,10 @@ module.exports = function(config) {
             'grails-app/assets/bower_components/jquery/jquery.js',
             'grails-app/assets/bower_components/angular/angular.js',
             'grails-app/assets/bower_components/angular-resource/angular-resource.js',
+            'grails-app/assets/bower_components/ng-table/ng-table.js',
 
             // App under test
-            'grails-app/assets/javascripts/**/*.coffee',
+            'grails-app/assets/javascripts/**/!(*Spec).coffee',
 
             // Mocks
             'test/js/lib/angular/angular-mocks.js',
@@ -39,6 +40,7 @@ module.exports = function(config) {
             'grails-app/assets/javascripts/angular/**/*.html',
 
             // Finally... tests
+            'grails-app/assets/javascripts/**/*Spec.coffee',
             'test/js/**/*.coffee',
             'test/js/unit**/*.js'
 		],

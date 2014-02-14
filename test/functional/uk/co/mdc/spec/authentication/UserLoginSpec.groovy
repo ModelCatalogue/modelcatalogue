@@ -64,7 +64,7 @@ class UserLoginSpec extends GebReportingSpec {
 		password = "password1"
 		submitButton.click(DashboardPage)
 
-		then: 'Then an error message is displayed stating the combination is incorrect and I can try again'
+		then: 'I am taken to the dashboard page'
 		waitFor{
 			at DashboardPage
 		}
