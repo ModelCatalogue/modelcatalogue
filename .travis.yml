@@ -12,7 +12,7 @@ env:
   - secure: VjUJlnSD1y/zGU+frWFv+rzelAQXGT+6WAZk7BsiLAtMFm/rqjFNsQylCAOLOWu098/bCE48hTJ38n7KoQXdv0gZT7/foqRO1EiZJdAxX703Y8+XBVUc8dqGwDbG7uZutTRjIsU0XcCCTuZHoe2yhu3uXVfiwzvO3XpPACHKrP4=
 before_install:
 - "export DISPLAY=:99.0"
-- "sh -e /etc/init.d/xvfb start" - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+- "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
 install:
 - TERM=dumb ./gradlew assemble
 script: npm install && bower install && ./grailsw refresh-dependencies && ./grailsw
