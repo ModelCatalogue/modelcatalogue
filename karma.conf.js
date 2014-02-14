@@ -9,7 +9,7 @@ module.exports = function(config) {
             //'Firefox', // Firefox is slow!
             //'Safari'
         ],
-		reporters: ['progress', 'junit', 'coverage'],
+		reporters: ['progress', 'junit', 'coverage', 'osx'],
 		singleRun: false,
         autoWatch : true,
 
@@ -53,7 +53,8 @@ module.exports = function(config) {
 			'karma-safari-launcher',
 			'karma-junit-reporter',
             'karma-coffee-preprocessor',
-            'karma-ng-html2js-preprocessor'
+            'karma-ng-html2js-preprocessor',
+            'karma-osx-reporter'
 		],
 
         preprocessors: {
