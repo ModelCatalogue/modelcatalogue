@@ -1,13 +1,13 @@
 {
   "name": "ModelCatalogue",
   "version": "1.0.0",
-  "description": "Model Catalogue ===",
+  "description": "Model Catalogue",
   "main": "build.gradle",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "bower": "~1.2.8",
+    "bower": "~1.2.8"
   },
   "devDependencies": {
     "karma": "~0.10",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/amilward/MDR.git"
+    "url": "git://github.com/ModelCatalogue/modelcatalogue.git"
   },
   "keywords": [
     "metadata"
@@ -30,7 +30,7 @@
   "author": "Ryan Brooks",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/amilward/MDR/issues"
+    "url": "https://github.com/ModelCatalogue/modelcatalogue/issues"
   },
-  "homepage": "https://github.com/amilward/MDR"
+  "homepage": "https://github.com/ModelCatalogue/modelcatalogue"
 }
