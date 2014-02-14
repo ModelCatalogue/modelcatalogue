@@ -49,8 +49,8 @@ environments {
 
     sauce {
         //baseUrl = 'http://mc.test/model_catalogue/'
-        String username = System.getenv("SAUCE_ONDEMAND_USERNAME");
-        String apiKey = System.getenv("SAUCE_ONDEMAND_ACCESS_KEY");
+        String username = System.getenv("$SAUCE_USERNAME");
+        String apiKey = System.getenv("$SAUCE_ACCESS_KEY");
         if(username == null || apiKey == null){
             System.err.println("Sauce OnDemand credentials not set.");
         }
