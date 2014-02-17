@@ -21,6 +21,7 @@ class BootStrap {
 	def sessionFactory
 	def springSecurityService
 	def grailsApplication
+    def importNHICService
 
 	def init = { servletContext ->
 
@@ -42,6 +43,7 @@ class BootStrap {
 			}
 			development {
 				importDevData()
+               // importNHICService.importData()
 			}
 		}
 	}
