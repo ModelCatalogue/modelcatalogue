@@ -11,7 +11,7 @@
 
 @grailsAppName = 'model_catalogue'
 @angularAppName = 'pathway-editor'
-angular.module(angularAppName, ['pathway.services', 'pathway.directives', 'pathway.controllers', "xeditable", "ngTable", "utils"])
+angular.module(angularAppName, ['pathway.services', 'pathway.directives', 'pathway.controllers', "xeditable", "utils"])
 
 .run (editableOptions, editableThemes) ->
 	editableThemes.bs3.inputClass = 'input-sm'
