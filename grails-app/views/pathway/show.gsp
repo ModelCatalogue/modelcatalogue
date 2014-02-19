@@ -45,7 +45,8 @@
                  <div class="panel-body">
                      <h4>Tree view</h4>
                      <ul>
-                         <li ng-repeat="node in pathway.nodes"
+                         <li class="tree-node"
+                             ng-repeat="node in pathway.nodes"
                              ng-include="'templates/pathway/pathwayTreeView.html'"></li>
                      </ul>
                  </div>
@@ -105,7 +106,7 @@
 <script type="text/ng-template" id="templates/pathway/pathwayTreeView.html">
     <span ng-click="selectNode(node)"  ng-class="{selectedItem: isSelected(node)}">{{node.name}}</span>
     <ul>
-        <li ng-repeat="node in node.nodes" ng-include="'templates/pathway/pathwayTreeView.html'" pathway="node"></li>
+        <li class="tree-node" ng-repeat="node in node.nodes" ng-include="'templates/pathway/pathwayTreeView.html'" pathway="node"></li>
     </ul>
 </script>
 
