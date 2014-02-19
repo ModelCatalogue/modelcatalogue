@@ -21,7 +21,7 @@ deploy:
   provider: heroku
   api_key:
     secure: ezlLAmvShA0/7T0UuSPgkNTdQaXGEz3jQgKnKDsamr/J0tjucA3OeUss/jGUxU8RpBvYezExJE+6uXHWm9718nLpKKczzP4PrXGpr8tCTQWoVGW8s+VDzmOqevGQ2tR5RYJSqZC2Sn/UPXyBhE6fUhDoenKvWLnPiyI41mDfdYE=
-  app: modelcatalogue-staging
-  on:
-    repo: ModelCatalogue/modelcatalogue
-    branch: develop
+  app:
+    master: modelcatalogue
+    develop: modelcatalogue-staging
+

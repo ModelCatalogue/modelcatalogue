@@ -1,4 +1,11 @@
-angular.module('utils', ['ngResource'])
+#= require angular/utils/thingPicker.js
+
+angular.module('utils', ['ngResource',
+	'utils.thingPicker'
+])
+
+
+# FIXME refactor everything below this into separate modules and include above
 
 #
 # The Grails resource, used for all interaction with the Grails environment.
@@ -35,39 +42,3 @@ angular.module('utils', ['ngResource'])
 					$scope.onConfirm()
 		}
 
-
-#
-# A widget to select one or more things from a list of things
-#
-.directive 'mcThingPicker', ->
-		return{
-			replace: true,
-			templateUrl: '/model_catalogue/assets/angular/utils/_thing-picker-widget.html',
-			scope: {
-				widgetName: '@'
-				allThings: '='
-				selectedThings: '='
-			}
-			controller: ($scope) ->
-				$scope.addMode  = false
-				$scope.compress = false
-				$scope.tempSelectedThings = new Array()
-				$scope.removeThing = (thing) ->
-					index = $scope.selectedThings.indexOf(thing)
-					if index > -1
-						$scope.selectedThings.splice(index, 1)
-				$scope.confirm = ->
-					# Replace the selectedThings without changing the reference
-					$scope.selectedThings.length = 0;
-					Array.prototype.push.apply($scope.selectedThings, $scope.tempSelectedThings);
-					# Clear everything out using the cancel
-					clearTempThings()
-				$scope.cancel = ->
-					clearTempThings()
-
-				clearTempThings = ->
-					# Empty the tempSelectedThings
-					$scope.tempSelectedThings.length = 0
-					# Get out of addMode
-					$scope.addMode = false
-		}

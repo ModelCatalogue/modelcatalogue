@@ -29,6 +29,7 @@
     "font-awesome": "~4.0.3"
   },
   "resolutions": {
-    "jquery": ">= 1.9.0"
+    "jquery": ">= 1.9.0",
+    "angular": "1.2.12-build.2222+sha.c5f69e3"
   }
 }

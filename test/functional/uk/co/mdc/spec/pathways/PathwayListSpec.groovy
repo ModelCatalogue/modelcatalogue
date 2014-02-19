@@ -36,6 +36,7 @@ class PathwayListSpec extends GebReportingSpec{
 
         and: "the pathways list does not contain a known subpathway"
         !getPathwayLink("Guarding Patient on recovery and transfer to nursing ward").displayed
+
     }
 
     def "Check that subpathways are not displayed on the pathways list page"(){
@@ -52,7 +53,6 @@ class PathwayListSpec extends GebReportingSpec{
 
         and: "the pathways list does not contain a known subpathway"
         !getPathwayLink("Guarding Patient on recovery and transfer to nursing ward").displayed
-
 
     }
 }

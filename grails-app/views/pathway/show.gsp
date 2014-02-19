@@ -45,7 +45,8 @@
                  <div class="panel-body">
                      <h4>Tree view</h4>
                      <ul>
-                         <li ng-repeat="node in pathway.nodes"
+                         <li class="tree-node"
+                             ng-repeat="node in pathway.nodes"
                              ng-include="'templates/pathway/pathwayTreeView.html'"></li>
                      </ul>
                  </div>
@@ -84,7 +85,9 @@
                 <p>Select a node to view it's properties</p>
             </div>
             <div class="panel-body" ng-show="selectedNode">
-                <h4><a href="#" editable-text="selectedNode.name">{{ selectedNode.name || "empty" }}</a></h4>
+                <h4><a href="#" editable-text="selectedNode.name">{{ selectedNode.name || "empty" }}</a><button type="button" class="btn btn-danger btn-xs pull-right" ng-click="deleteNode()">
+                    <i class="fa fa-trash-o"></i> Delete
+                </button></h4>
                 <p><a href="#" editable-text="selectedNode.description">{{ selectedNode.description || "empty" }}</a></p>
 
                 <div mc-thing-picker
@@ -97,10 +100,6 @@
                         widget-name="Forms"
                         selected-things="selectedNode.forms"
                         ></div>
-
-                <button type="button" class="btn btn-danger btn-xs" ng-click="deleteNode()">
-                    <i class="fa fa-trash-o"></i> Delete
-                </button>
             </div>
         </div>
     </div>
@@ -109,7 +108,7 @@
 <script type="text/ng-template" id="templates/pathway/pathwayTreeView.html">
     <span ng-click="selectNode(node)"  ng-class="{selectedItem: isSelected(node)}">{{node.name}}</span>
     <ul>
-        <li ng-repeat="node in node.nodes" ng-include="'templates/pathway/pathwayTreeView.html'" pathway="node"></li>
+        <li class="tree-node" ng-repeat="node in node.nodes" ng-include="'templates/pathway/pathwayTreeView.html'" pathway="node"></li>
     </ul>
 </script>
 

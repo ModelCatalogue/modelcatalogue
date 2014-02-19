@@ -17,7 +17,7 @@ class UrlMappings {
         "/pathways"(resources: "pathway")
 
 		name pendingUsers: "/role/pendingUsers"( controller: "role", action: "listPendingUsers" )
-		name importData: "/admin/importData"(view:"admin/importData")
+		name importData: "/admin/importData"(controller: "dataImport")
 
         "/"(view:"/index")
 

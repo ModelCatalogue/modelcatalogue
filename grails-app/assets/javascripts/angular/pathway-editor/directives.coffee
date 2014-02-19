@@ -76,6 +76,7 @@ module.directive('mcGraphContainer', ->
 
 
 
+
 		#Handleing clicks and doule click on container
 		DELAY=200
 		clicks=0
@@ -180,11 +181,13 @@ module.directive('mcGraphNode', ->
 		jsPlumb.makeTarget(iElement);
 
 		jsPlumb.draggable(iElement, {
-			containment: 'parent',
+			containment: 'parent'
+			drag: (event, ui) ->
+				jsPlumb.repaint(iElement)
 			stop: (event, ui) ->
-				scope.node.y = Math.floor(ui.position.top);
-				scope.node.x = Math.floor(ui.position.left);
-
+				scope.node.y = Math.floor(ui.position.top)
+				scope.node.x = Math.floor(ui.position.left)
+				jsPlumb.repaint(iElement)
 		});
 		scope.$watch 'node.name', ->
 			jsPlumb.repaintEverything()
