@@ -37,7 +37,9 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 	            # node IDs may have been fixed, redraw
 	            jsPlumb.repaintEverything();
 
-
+        $scope.deleteKeyPressed = (event, node) ->
+            if event.keyCode == 46
+                $scope.deleteNode(node)
     ])
 
 .controller('NodePropertiesCtrl', ['$scope', 'NodeSelector', ($scope, NodeSelector) ->

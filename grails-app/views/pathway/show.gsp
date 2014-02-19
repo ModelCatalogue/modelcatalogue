@@ -46,6 +46,7 @@
                      <h4>Tree view</h4>
                      <ul>
                          <li class="tree-node"
+                             ng-keyup="deleteKeyPressed($event, node)" tabindex="{{100 + $index}}"
                              ng-repeat="node in pathway.nodes"
                              ng-include="'templates/pathway/pathwayTreeView.html'"></li>
                      </ul>
@@ -106,12 +107,12 @@
 <script type="text/ng-template" id="templates/pathway/pathwayTreeView.html">
     <span ng-click="selectNode(node)"  ng-class="{selectedItem: isSelected(node)}">{{node.name}}</span>
     <ul>
-        <li class="tree-node" ng-repeat="node in node.nodes" ng-include="'templates/pathway/pathwayTreeView.html'" pathway="node"></li>
+        <li class="tree-node" ng-keyup="deleteKeyPressed($event, node)" tabindex="{{100 + $index}}" ng-repeat="node in node.nodes" ng-include="'templates/pathway/pathwayTreeView.html'" pathway="node"></li>
     </ul>
 </script>
 
 <script type="text/ng-template" id="templates/pathway/jsPlumbNode.html">
-<div class="node" id="node{{node.id}}" ng-click="selectNode()" ng-dblclick="dblClick()"  ng-class="{selectedItem: isSelected()}" style="left: {{node.x}}px; top: {{node.y}}px">
+<div class="node" id="node{{node.id}}" ng-click="selectNode(node, $event)" ng-dblclick="dblClick()"  ng-class="{selectedItem: isSelected()}" style="left: {{node.x}}px; top: {{node.y}}px" ng-keyup="$parent.deleteKeyPressed($event, node)" tabindex="{{100 + $index}}">
     <div><i class="fa " ng-class="{'fa-sitemap': node.nodes.length > 0}"></i> <a href="#" editable-text="node.name">{{ node.name || "empty" }}</a></div>
     <div class="fa fa-arrow-circle-o-right ep right"></div>
     <div class="fa fa-arrow-circle-o-left ep left"></div>
