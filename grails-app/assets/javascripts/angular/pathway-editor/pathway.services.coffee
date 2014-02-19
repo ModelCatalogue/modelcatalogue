@@ -14,6 +14,11 @@ angular.module('pathway.services', ['ngResource'])
 			selectedNode == node
 		getSelectedNode: ->
 			selectedNode
+		unSelectNode: ->
+			selectedNode = null
+
+
+
 
 .service 'PathwayPersistence', ['Grails', (Grails) ->
 		fixNodeIds = (node, idMappings) ->
