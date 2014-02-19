@@ -72,7 +72,8 @@ module.directive('mcGraphContainer', ->
 		else
 			jsPlumb.importDefaults(defaultOptions)
 
-		jsPlumb.unbind("dblclick");
+		jsPlumb.unbind("dblclick")
+
 		# Listen for link creation and add to the list of links
 
 		#connectionId = info.connection.getParameter("connectionId", connectionId)
@@ -141,11 +142,13 @@ module.directive('mcGraphNode', ->
 		jsPlumb.makeTarget(iElement);
 
 		jsPlumb.draggable(iElement, {
-			containment: 'parent',
+			containment: 'parent'
+			drag: (event, ui) ->
+				jsPlumb.repaint(iElement)
 			stop: (event, ui) ->
-				scope.node.y = Math.floor(ui.position.top);
-				scope.node.x = Math.floor(ui.position.left);
-
+				scope.node.y = Math.floor(ui.position.top)
+				scope.node.x = Math.floor(ui.position.left)
+				jsPlumb.repaint(iElement)
 		});
 		scope.$watch 'node.name', ->
 			jsPlumb.repaintEverything()
