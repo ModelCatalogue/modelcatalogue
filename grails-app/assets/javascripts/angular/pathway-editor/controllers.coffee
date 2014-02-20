@@ -40,7 +40,7 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 			$scope.deleteKeyPressed = (event, node) ->
 				if event.keyCode == 46
 					$scope.deleteNode(node)
-	])
+		])
 .controller('NodePropertiesCtrl', ['$scope', 'NodeSelector', ($scope, NodeSelector) ->
 		$scope.selectedNode = null
 		$scope.switchToSubPathway = ->
