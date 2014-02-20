@@ -18,7 +18,7 @@
 <g:set var="grailsParams" value="${params.collect{ it.key + '=\'' + it.value + '\''}.join('; ')}" />
 <!-- FIXME remove hardcoded grails app name and put it in params -->
 <div ng-app="pathway-editor" ng-init="${grailsParams}; grailsAppName='model_catalogue'" class="pathwayEditor">
-<div ng-controller="PathwayEditorCtrl" class="ng-cloak">
+<div ng-controller="PathwayEditorCtrl" class="ng-cloak" >
     <div class="row">
         <div class="col-xs-12">
             <div class="pull-right">
@@ -58,6 +58,8 @@
             <div mc-graph-container
                  pathway="pathway"
                  up-a-level="goUp()"
+                 add-node="addNode()"
+                un-select-node="unSelectNode()"
                  ng-controller="GraphCanvasCtrl"
                  class="jsplumb-container canvas">
                     <div class="palette">
