@@ -15,8 +15,7 @@ before_install:
 - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
 install:
 - TERM=dumb ./gradlew assemble
-script: npm install && bower install && ./grailsw refresh-dependencies && ./grailsw
-  test-app --plain-output
+script: npm install && bower install && ./grailsw refresh-dependencies && ./grailsw test-app --plain-output
 deploy:
   provider: heroku
   api_key:
