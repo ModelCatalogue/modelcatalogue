@@ -45,6 +45,10 @@ grails.mime.types = [
 //NEED TO REMOVE IN PRODUCTION - DISABLING JAVASCRIPT BUNDLING
 grails.resources.debug=true
 
+// REQUIRED FIX FOR CVE-2014-0053, see http://cxsecurity.com/issue/WLB-2014020172?utm_source=twitterfeed&utm_medium=twitter&utm_content=bugtraq,+wlb,+cxsecurity
+grails.resources.adhoc.includes = ['/images/**', '/css/**', '/js/**', '/plugins/**']
+grails.resources.adhoc.excludes = ['/WEB-INF/**']
+
 grails.converters.encoding = "UTF-8"
 
 // scaffolding templates configuration
