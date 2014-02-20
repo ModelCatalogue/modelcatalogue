@@ -135,4 +135,59 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
         node2.y == node1.y + selectedNode.height + 50
 
     }
+
+    def "When on pathway and double click on a blank space, a new node should be added"()
+    {
+        at PathwayShowPage
+
+        def preCreationNodeIds
+        def postCreationNodeIds
+
+        when:"On the pathway and double click an blank space"
+        preCreationNodeIds = getNodeIds()
+        interact { doubleClick(pathwayCanvas) }
+        postCreationNodeIds      = getNodeIds()
+        postCreationNodeIds.removeAll(preCreationNodeIds)
+
+        then:"a new node is added"
+        assert postCreationNodeIds.size() == 1
+
+        then: "the new node is selected"
+        assert postCreationNodeIds[0]
+        assert getSelectedNode()
+        assert postCreationNodeIds[0] == getSelectedNode().attr("id")
+
+    }
+
+    def "When on Pathway and click on a blank space, the selected node should be unSelected" ()
+    {
+        at PathwayShowPage
+        def allNodes
+        def seletedNode
+
+        when:"On the pathway"
+        allNodes = getAllNodes()
+
+        then:"Some nodes should be there"
+        assert allNodes[0]
+
+        when: "click on a node"
+        seletedNode=allNodes[0]
+        seletedNode.click()
+
+
+        then:"the node should be selected"
+        assert seletedNode.attr("id") == getSelectedNode().attr("id")
+
+
+        when:"click on a blank space on Container"
+        pathwayCanvas.click()
+
+
+        then: "the selected node should be unSelected and no node is selected"
+        waitFor(1){
+            getSelectedNode().size()==0
+        }
+        assert !seletedNode.classes().contains('selectedItem')
+    }
 }
