@@ -24,7 +24,9 @@ class MoveNodeAndSaveSpec extends GebReportingSpec {
         at PathwayListPage
 
         getPathwayLinks()[0].click()
-        at PathwayShowPage
+        waitFor{
+            at PathwayShowPage
+        }
     }
 
     def "Move a node when viewing a pathway with new position saved"() {
@@ -38,7 +40,9 @@ class MoveNodeAndSaveSpec extends GebReportingSpec {
 	    }
 
 	    then: "The node position has moved by 100px down"
-	    node2.y == node2Y + 100
+        waitFor{
+	        node2.y == node2Y + 100
+        }
 
 	    when: "I save and go back to the pathway"
         saveButton.click()
