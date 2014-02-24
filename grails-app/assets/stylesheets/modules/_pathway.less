@@ -24,6 +24,7 @@
     cursor: move;
     background-color: white;
     font-size: 11px;
+    white-space: nowrap;
 
     &:hover {
       background-color: @mc-colour-2-lightest;
@@ -31,6 +32,13 @@
       color: black;
     }
   }
+
+  .tree-node {
+    span:hover {
+      cursor: pointer;
+    }
+  }
+
   .selectedItem, .selectedItem:hover {
     background-color: @mc-colour-2-lightest;
   }
@@ -78,6 +86,7 @@
 
 
   .canvas {
+    position: relative;
     width: 3000px;
     height: 3000px;
     -webkit-border-radius: 6px;

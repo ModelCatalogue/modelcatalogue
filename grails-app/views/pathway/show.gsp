@@ -18,7 +18,7 @@
 <g:set var="grailsParams" value="${params.collect{ it.key + '=\'' + it.value + '\''}.join('; ')}" />
 <!-- FIXME remove hardcoded grails app name and put it in params -->
 <div ng-app="pathway-editor" ng-init="${grailsParams}; grailsAppName='model_catalogue'" class="pathwayEditor">
-<div ng-controller="PathwayEditorCtrl" class="ng-cloak">
+<div ng-controller="PathwayEditorCtrl" class="ng-cloak" >
     <div class="row">
         <div class="col-xs-12">
             <div class="pull-right">
@@ -45,7 +45,8 @@
                  <div class="panel-body">
                      <h4>Tree view</h4>
                      <ul>
-                         <li ng-repeat="node in pathway.nodes"
+                         <li class="tree-node"
+                             ng-repeat="node in pathway.nodes"
                              ng-include="'templates/pathway/pathwayTreeView.html'"></li>
                      </ul>
                  </div>
@@ -56,6 +57,8 @@
             <div mc-graph-container
                  pathway="pathway"
                  up-a-level="goUp()"
+                 add-node="addNode()"
+                un-select-node="unSelectNode()"
                  ng-controller="GraphCanvasCtrl"
                  class="jsplumb-container canvas">
                     <div class="palette">
@@ -105,7 +108,7 @@
 <script type="text/ng-template" id="templates/pathway/pathwayTreeView.html">
     <span ng-click="selectNode(node)"  ng-class="{selectedItem: isSelected(node)}">{{node.name}}</span>
     <ul>
-        <li ng-repeat="node in node.nodes" ng-include="'templates/pathway/pathwayTreeView.html'" pathway="node"></li>
+        <li class="tree-node" ng-repeat="node in node.nodes" ng-include="'templates/pathway/pathwayTreeView.html'" pathway="node"></li>
     </ul>
 </script>
 

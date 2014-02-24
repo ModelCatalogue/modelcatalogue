@@ -20,7 +20,7 @@ class UrlMappings {
         "/api/forms"(version:'1.0', resources:"form", namespace:'v1')
 
 		name pendingUsers: "/role/pendingUsers"( controller: "role", action: "listPendingUsers" )
-		name importData: "/admin/importData"(view:"admin/importData")
+		name importData: "/admin/importData"(controller: "dataImport")
 
         "/"(view:"/index")
 

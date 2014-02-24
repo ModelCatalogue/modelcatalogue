@@ -26,10 +26,11 @@
     "angular-xeditable": "~0.1.8",
     "jsplumb": "~1.5.5",
     "jquery.layout": "*",
-    "font-awesome": "~4.0.3"
+    "font-awesome": "~4.0.3",
+    "ng-table": "~0.3.1"
   },
   "resolutions": {
     "jquery": ">= 1.9.0",
-    "angular": "1.2.12-build.2222+sha.c5f69e3"
+    "angular": "~1.2.14"
   }
 }

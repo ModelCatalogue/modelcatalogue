@@ -63,7 +63,7 @@
 
 
 
-  <asset:javascript src="jquery/jquery.js"/>
+  <asset:javascript src="jquery/dist/jquery.js"/>
   <asset:javascript src="jquery-ui/ui/jquery-ui.js"/>
   <asset:javascript src="bootstrap/dist/js/bootstrap.js"/>
   <asset:javascript src="datatables/media/js/jquery.dataTables.js"/>

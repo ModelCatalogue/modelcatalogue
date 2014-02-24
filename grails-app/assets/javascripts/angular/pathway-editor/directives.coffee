@@ -57,6 +57,8 @@ module.directive('mcGraphContainer', ->
 		pathway: '='
 		options: '@',
 		upALevel: '&',
+		addNode:	'&',
+		unSelectNode:	'&'
 	},
 	controller: ($scope) ->
 		$scope.hasParent = true
@@ -71,6 +73,44 @@ module.directive('mcGraphContainer', ->
 			jsPlumb.importDefaults(scope.options)
 		else
 			jsPlumb.importDefaults(defaultOptions)
+
+
+
+
+		#Handleing clicks and doule click on container
+		DELAY=200
+		clicks=0
+		timer=null
+		handleClick = (e)->
+			if angular.element(e.target).hasClass('jsplumb-container')
+				clicks++
+				if (clicks==1)
+					timer = setTimeout(->
+						scope.unSelectNode()
+						scope.$apply()
+						e.stopPropagation();
+						clicks=0
+						return
+					, DELAY
+					)
+				else
+					clearTimeout timer
+					scope.addNode()
+					scope.$apply()
+					e.stopPropagation()
+					clicks = 0
+					return
+
+
+		#Bind click and dblClick
+		iElement.bind 'click', (e)->
+			handleClick(e)
+
+		#Disable text selection in pathway canvas, this also helps to disable
+		#text selection while dblclicking
+		iElement.bind 'selectstart', (e) ->
+			e.preventDefault()
+
 
 		jsPlumb.unbind("dblclick");
 		# Listen for link creation and add to the list of links
@@ -141,11 +181,13 @@ module.directive('mcGraphNode', ->
 		jsPlumb.makeTarget(iElement);
 
 		jsPlumb.draggable(iElement, {
-			containment: 'parent',
+			containment: 'parent'
+			drag: (event, ui) ->
+				jsPlumb.repaint(iElement)
 			stop: (event, ui) ->
-				scope.node.y = Math.floor(ui.position.top);
-				scope.node.x = Math.floor(ui.position.left);
-
+				scope.node.y = Math.floor(ui.position.top)
+				scope.node.x = Math.floor(ui.position.left)
+				jsPlumb.repaint(iElement)
 		});
 		scope.$watch 'node.name', ->
 			jsPlumb.repaintEverything()

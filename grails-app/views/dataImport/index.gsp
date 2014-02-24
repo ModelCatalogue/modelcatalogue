@@ -13,6 +13,11 @@
       <div>
         <ul>
           <li><g:link controller="dataImport" action="importDataSet" params="[dataset: 'nhic']">Import NHIC dataset</g:link></li>
+            <ul>
+                <g:each in="${nhicFiles}" var="file">
+                    <li><g:link controller="dataImport" action="importDataSet" params="[dataset: 'nhic', nhicFile: file]">Only ${file}</g:link></li>
+                </g:each>
+            </ul>
         </ul>
       </div>
       

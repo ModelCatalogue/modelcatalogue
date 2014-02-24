@@ -1,5 +1,3 @@
-#= require ng-table/ng-table.js
-
 module = angular.module('utils.thingPicker', ["ngTable"])
 
 module.controller 'ThingPickerCtrl', ($scope) ->
