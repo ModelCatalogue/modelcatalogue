@@ -34,7 +34,12 @@ class MoveNodeAndSaveSpec extends GebReportingSpec {
 	    given:"I am on the dashboard view in a 1024x768 browser window and login as admin"
 
 	    when: "I drag and drop the node"
-	    def node2Y = node2.y
+
+        waitFor{
+            node2.y //give Angular/JSplumb a chance to render it
+        }
+
+	    int node2Y = node2.y
 	    interact {
 	    	dragAndDropBy(node2, 0, 100)
 	    }
