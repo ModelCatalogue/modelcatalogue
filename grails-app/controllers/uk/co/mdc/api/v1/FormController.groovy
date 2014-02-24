@@ -1,4 +1,4 @@
-package uk.co.mdc.forms.v1
+package uk.co.mdc.api.v1
 
 import grails.rest.RestfulController
 import uk.co.mdc.forms.FormDesign
