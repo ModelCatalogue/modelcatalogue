@@ -77,9 +77,9 @@
 		  				</tr>
 		  			</tbody>
 		  		</table>
-	  			<button id="dashCreatePathway" class="btn btn-large btn-primary" data-toggle="modal" data-target="#createPathwayModal"><i class="glyphicon glyphicon-plus"></i>&nbsp;Create a new Pathway Model</button>
+	  			<button id="dashCreatePathway" class="btn btn-large btn-primary" data-toggle="modal" data-target="#createPathwayModal"><i class="fa fa-plus"></i>&nbsp;Create a new Pathway Model</button>
 
-		  		<button class="btn btn-large btn-info"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;Return to the Dashboard</button>
+		  		<button class="btn btn-large btn-info"><i class="fa fa-long-arrow-left"></i></i>&nbsp;Return to the Dashboard</button>
 	  		</div>
 	  	</div>
 	  	<div class="dashboard-page dashboard-page-disabled" id="dashboard-forms">
@@ -116,8 +116,8 @@
 		  				</tr>
 		  			</tbody>
 		  		</table>
-                <button id="dashCreateForm" class="btn btn-large btn-primary" data-toggle="modal" data-target="createFormModal"><i class="glyphicon glyphicon-plus"></i>&nbsp;Create a new Form Model</button>
-		  		<button class="dashboard-return btn btn-large btn-info"><i class="glyphicon glyphicon-arrow-left"></i>&nbsp;Return to the Dashboard</button>
+                <button id="dashCreateForm" class="btn btn-large btn-primary" data-toggle="modal" data-target="createFormModal"><i class="fa fa-plus"></i></i>&nbsp;Create a new Form Model</button>
+		  		<button class="dashboard-return btn btn-large btn-info"><i class="fa fa-long-arrow-left"></i>&nbsp;Return to the Dashboard</button>
 	  		</div>
 	  	</div>
         <div class="dashboard-page dashboard-page-disabled" id="dashboard-deployments">
@@ -129,7 +129,7 @@
 					to model databases, schemas and tables, services and data-feeds,
 					and physical locations. Please try again soon!</p>
 
-		  		<button class="dashboard-return btn btn-default"><i class="icon-arrow-left"></i>&nbsp;Return to the Dashboard</button>
+		  		<button class="dashboard-return btn btn-default"><i class="fa fa-long-arrow-left"></i>&nbsp;Return to the Dashboard</button>
 	  		</div>
 	  	</div>
 	  	<div class="dashboard-page dashboard-page-disabled" id="dashboard-projects">
@@ -141,14 +141,14 @@
 					place to come to organise collaborations, and keep track of
 					user-created and automatically-generated artefacts. Please try
 					again soon!</p>
-		  		<button class="dashboard-return btn btn-default"><i class="icon-arrow-left"></i>&nbsp;Return to the Dashboard</button>
+		  		<button class="dashboard-return btn btn-default"><i class="fa fa-long-arrow-left"></i>&nbsp;Return to the Dashboard</button>
 	  		</div>
 	  	</div>
 	  	<div class="dashboard-page dashboard-page-disabled" id="dashboard-metadata">
 	  		<div class="dashboard-wrapper">
 		  		<h2>Metadata Curation</h2>
                 <h3>Under construction!</h3>
-		  		<button class="dashboard-return btn btn-default"><i class="icon-arrow-left"></i>&nbsp;Return to the Dashboard</button>
+		  		<button class="dashboard-return btn btn-default"><<i class="fa fa-long-arrow-left"></i>&nbsp;Return to the Dashboard</button>
 	  		</div>
 	  	</div>
 	  	<div class="dashboard-page dashboard-page-disabled" id="dashboard-profile">
@@ -158,7 +158,7 @@
 		  		<h3>Under construction!</h3>
 				<p>This feature is not yet finished! This will be the place
 					where you change your user profile. Please try again soon!</p>
-				<button class="dashboard-return btn btn-default"><i class="icon-arrow-left"></i>&nbsp;Return to the Dashboard</button>
+				<button class="dashboard-return btn btn-default"><i class="fa fa-long-arrow-left"></i>&nbsp;Return to the Dashboard</button>
 	  		</div>
 	  	</div>
 	</div><!-- End div dashboard -->
