@@ -10,7 +10,6 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 			$scope.selectedNode = NodeSelector.getSelectedNode
 
 			$scope.deleteNode = (node) ->
-
 				# 1. Remove the node
 				index = $scope.pathway.nodes.indexOf(node)
 				$scope.pathway.nodes.splice(index, 1);
@@ -40,12 +39,26 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 
 		])
 
-.controller('NodePropertiesCtrl', ['$scope', 'NodeSelector', ($scope, NodeSelector) ->
+.controller('NodePropertiesCtrl', ['$scope', 'NodeSelector','Grails',($scope, NodeSelector,Grails) ->
+
+		$scope.allDataElements = Grails.getResource($scope).get {controller :'DataElement',action: 'dataTables'}
+		$scope.allForms = Grails.getResource($scope).get {controller :'FormDesign',action: 'dataTables'}
+
+
+		$scope.getAllDataElements = ->
+			$scope.allDataElements.aaData
+
+
+		$scope.getAllForms = ->
+			$scope.allForms.aaData
+
+
 		$scope.selectedNode = null
 		$scope.switchToSubPathway = ->
 			console.log("FIXME: this should switch the pathway viewer's scope to node " + $scope.selectedNode.id)
 
 		$scope.deleteNode = ->
+			debugger;
 			# FIXME, change this so it doesn't reference parent
 			$scope.$parent.deleteNode($scope.selectedNode)
 
@@ -67,6 +80,7 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 			NodeSelector.getSelectedNode()
 		, (selectedNode) ->
 			$scope.selectedNode = selectedNode
+
 		, false # Just check for object equality
 		)
 	])

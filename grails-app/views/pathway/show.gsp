@@ -77,7 +77,7 @@
         </div>
 
         <!-- If selectedItem is undefined, the right panel will be empty -->
-        <div class="ui-layout-east panel panel-primary" ng-controller="NodePropertiesCtrl">
+        <div class="ui-layout-east panel panel-primary" ng-controller="NodePropertiesCtrl" >
             <div class="panel-heading">
                 Properties
             </div>
@@ -93,13 +93,14 @@
                 <div mc-thing-picker
                      widget-name="Data Elements"
                      selected-things="selectedNode.dataElements"
-                     all-things="selectedNode.dataElements"
+                     all-things="getAllDataElements()"
                 ></div>
 
                 <div mc-thing-picker
                         widget-name="Forms"
                         selected-things="selectedNode.forms"
-                        ></div>
+                        all-things="getAllForms()"
+                ></div>
             </div>
         </div>
     </div>
