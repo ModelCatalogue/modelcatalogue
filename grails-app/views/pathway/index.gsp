@@ -35,7 +35,7 @@
                         </tbody>
                     </table>
 				</div>
-                <button class="btn btn-large btn-primary" data-toggle="modal" data-target="#createPathwayModal"><i class="glyphicon glyphicon-plus"></i>&nbsp;Create a new pathway</button>
+                <button class="btn btn-large btn-primary" data-toggle="modal" data-target="#createPathwayModal"><i class="fa fa-plus"></i>&nbsp;Create a new pathway</button>
 			</div>
             <script type="text/ng-template" id="templates/deleteConfirmation.html">
                 <div style="width: 300px;">
