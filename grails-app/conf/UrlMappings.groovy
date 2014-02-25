@@ -16,6 +16,10 @@ class UrlMappings {
 
         "/pathways"(resources: "pathway")
 
+        // API endpoints
+        "/api/forms"(version:'1.0', resources:"form", namespace:'v1')
+        "/api/dataelements"(version:'1.0', resources:"dataElement", namespace:'v1')
+
 		name pendingUsers: "/role/pendingUsers"( controller: "role", action: "listPendingUsers" )
 		name importData: "/admin/importData"(controller: "dataImport")
 
