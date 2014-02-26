@@ -26,8 +26,12 @@ class PathwayController extends RestfulController<Pathway>{
     }
 
     def show(Pathway pathway){
-        def model = [pathway: pathway]
-        respond pathway, [model: model]
+        if(!pathway){
+            def model = [ success: false, msg: [ code: 404, text: "The item could not be found"]]
+            respond model as Object, [status: 404, view: 'error404']
+        }else{
+            respond pathway, [model: [pathway: pathway]]
+        }
     }
 
     @Transactional
