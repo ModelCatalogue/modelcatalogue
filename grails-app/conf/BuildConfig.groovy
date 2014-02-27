@@ -47,6 +47,9 @@ grails.project.dependency.resolution = {
         mavenRepo 'http://maven.restlet.org'
         mavenRepo "http://repo.grails.org/grails/core"
         mavenRepo 'http://repo.spring.io/milestone'
+
+		// Used for Vlad's fixtures plugin
+		mavenRepo 'http://dl.bintray.com/metadata/model-catalogue'
     }
 
     dependencies {
@@ -74,6 +77,8 @@ grails.project.dependency.resolution = {
 
 
         runtime 'mysql:mysql-connector-java:5.1.22'
+
+		test "org.modelcatalogue:simple-fixtures:0.1.2"
     }
 
     plugins {
@@ -108,6 +113,10 @@ grails.project.dependency.resolution = {
 
         // The following are dead, we shouldn't use them!
         compile ":csv:0.3.1"
+
+		// Code quality bits
+		compile ":codenarc:0.20"
+		test ":code-coverage:1.2.7"
     }
  }
 

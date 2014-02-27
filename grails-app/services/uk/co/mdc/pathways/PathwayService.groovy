@@ -196,7 +196,7 @@ class PathwayService {
      * @return a list of pathways (top level only)
      */
     @PreAuthorize("hasRole('ROLE_USER')")
-    List<Pathway> topLevelPathways(def searchCriteria) {
+    List<Pathway> topLevelPathways(Map searchCriteria) {
 
         List<Pathway> pathways
         if(searchCriteria == null){
@@ -215,6 +215,7 @@ class PathwayService {
             }
         }
         // FIXME this should be in the criteria, but I had problems getting that to work :(
+		// This is really problematic because we want to leverage Pathway.list(params) to get offset and max
         return pathways.findAll { it.class == Pathway }
 
     }

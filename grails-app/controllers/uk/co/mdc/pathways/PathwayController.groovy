@@ -17,11 +17,10 @@ class PathwayController extends RestfulController<Pathway>{
 
 	static defaultAction = "list"
 
-    def list() {
-        def model = [items: pathwayService.topLevelPathways()]
-        respond model
-    }
-
+	@Override
+	protected List<Pathway> listAllResources(Map params) {
+		pathwayService.topLevelPathways(params)
+	}
 
     def show(Pathway pathway){
         if(!pathway){
@@ -77,20 +76,20 @@ class PathwayController extends RestfulController<Pathway>{
         def msg
 
         if (!pathway) {
-            msg = message(code: 'default.not.found.message', args: [message(code: 'pathway.label', default: 'Pathway'), pathway.id])
+            msg = message(code: 'default.not.found.message', args: [message(code: 'pathway.label', default: 'Pathway'), params.id])
             model = [errors: true, details: msg]
-            respond model
-        }
 
-        try {
-            pathwayService.delete(pathway)
-            msg = message(code: 'default.deleted.message', args: [message(code: 'pathway.label', default: 'Pathway'), pathway.id])
-            model = [success: true, details: msg]
-        }
-        catch (DataIntegrityViolationException e) {
-            msg = message(code: 'default.not.deleted.message', args: [message(code: 'pathway.label', default: 'Pathway'), pathway.id])
-            model = [errors: true, details: msg]
-        }
+        }else{
+			try {
+				pathwayService.delete(pathway)
+				msg = message(code: 'default.deleted.message', args: [message(code: 'pathway.label', default: 'Pathway'), pathway.id])
+				model = [success: true, details: msg]
+			}
+			catch (DataIntegrityViolationException e) {
+				msg = message(code: 'default.not.deleted.message', args: [message(code: 'pathway.label', default: 'Pathway'), pathway.id])
+				model = [errors: true, details: msg]
+			}
+		}
 
         respond model
     }
