@@ -1,5 +1,6 @@
 package uk.co.mdc.pathways
 
+import grails.validation.ValidationException
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.acls.domain.BasePermission
@@ -161,14 +162,19 @@ class PathwayService {
         pathway.delete()
         aclUtilService.deleteAcl pathway
     }
-	
+
+	/**
+	 * Throws a validation exception if the creation fails
+	 * @param pathwayParams
+	 * @throws ValidationException if the passed params are invalid
+	 */
 	@Transactional
 	@PreAuthorize("hasRole('ROLE_USER')")
-	Pathway create(Pathway pathway) {
-        if(!pathway){
-            return null
-        }
-        pathway.save()
+	Pathway create(Map pathwayParams) {
+		Pathway pathway = new Pathway(pathwayParams)
+
+		pathway.save(failOnError: true) // bubble up the exception to the controller
+
 
         // Update permissions for owner (read for all, write + delete for owner
         addPermission pathway, springSecurityService.authentication.name, BasePermission.READ

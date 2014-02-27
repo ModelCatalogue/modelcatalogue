@@ -15,15 +15,13 @@ class PathwayController extends RestfulController<Pathway>{
         super(Pathway)
     }
 
-    @Override
-    def index() {
-        list()
-    }
+	static defaultAction = "list"
 
     def list() {
         def model = [items: pathwayService.topLevelPathways()]
         respond model
     }
+
 
     def show(Pathway pathway){
         if(!pathway){
@@ -34,15 +32,16 @@ class PathwayController extends RestfulController<Pathway>{
         }
     }
 
-    @Transactional
-    def save(Pathway pathway){
-        pathway = pathwayService.create(pathway)
-        if(pathway.hasErrors()){
-            respond pathway.errors
-        }else{
-            redirect pathway
-        }
-    }
+	/**
+	 * Creates a new instance of the resource for the given parameters, or throws an exception.
+	 *
+	 * @param params The Map representing the new pathway
+	 * @throws grails.validation.ValidationException if the pathway could not be created
+	 * @return The resource instance
+	 */
+	protected Pathway createResource(Map params) {
+		pathwayService.create(params)
+	}
 
 
 
@@ -112,7 +111,6 @@ class PathwayController extends RestfulController<Pathway>{
         def pathway = pathwayService.get(id)
         if (!pathway) {
             flash.message = "Pathway not found with id $params.id"
-            redirect action: list
         }
         pathway
     }
