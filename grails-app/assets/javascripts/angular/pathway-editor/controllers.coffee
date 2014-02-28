@@ -134,3 +134,36 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 			return lastLocalId
 	])
 
+.controller('TreeViewCtrl', ['$scope', 'NodeSelector', ($scope, NodeSelector) ->
+		$scope.rootPathway = $scope.pathway = $scope.$parent.pathway
+
+		# These are already in $parent scope
+#		$scope.selectNode = NodeSelector.selectNode
+#		$scope.isSelected = NodeSelector.isSelected
+#		$scope.unSelectNode = NodeSelector.unSelectNode
+
+		$scope.deleteKeyPressed = (event, node) ->
+			if event && event.keyCode == 46
+				NodeSelector.deleteNode($scope.pathway, node)
+
+		$scope.$watch(->
+			NodeSelector.getSelectedNode()
+		, (selectedNode) ->
+			return if selectedNode is null
+			newParent = getParentOfSelectedNode($scope.$parent.pathway, selectedNode)
+			if (newParent isnt $scope.pathway)
+				$scope.pathway = newParent
+		, false) # Just check for object equality
+
+		getParentOfSelectedNode = (pathway, node)->
+			if pathway is node
+				return node
+			if pathway and pathway.nodes.length > 0
+				if pathway.nodes.indexOf(node) != -1
+					return pathway
+				for subPathway in pathway.nodes
+					response = getParentOfSelectedNode(subPathway, node)
+					if(response?)
+						return response
+	])
+

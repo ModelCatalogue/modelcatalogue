@@ -42,12 +42,12 @@
          <div class="ui-layout-west" >
              <button type="button" class="btn btn-success btn-lg btn-block" ng-click="save()">Save pathway</button>
              <div class="panel panel-primary">
-                 <div class="panel-body">
+                 <div class="panel-body" ng-controller="TreeViewCtrl">
                      <h4>Tree view</h4>
                      <ul>
                          <li class="tree-node"
                              ng-keyup="deleteKeyPressed($event, node)" tabindex="{{100 + $index}}"
-                             ng-repeat="node in pathway.nodes"
+                             ng-repeat="node in rootPathway.nodes"
                              ng-include="'templates/pathway/pathwayTreeView.html'"></li>
                      </ul>
                  </div>
