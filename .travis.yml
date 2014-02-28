@@ -15,12 +15,12 @@ before_install:
 - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
 install:
 - TERM=dumb ./gradlew assemble
-script: npm install && bower install && ./grailsw refresh-dependencies && ./grailsw
-  test-app --plain-output
+script: npm install && bower install && ./grailsw refresh-dependencies && ./grailsw test-app --plain-output
 deploy:
   provider: heroku
   api_key:
     secure: ezlLAmvShA0/7T0UuSPgkNTdQaXGEz3jQgKnKDsamr/J0tjucA3OeUss/jGUxU8RpBvYezExJE+6uXHWm9718nLpKKczzP4PrXGpr8tCTQWoVGW8s+VDzmOqevGQ2tR5RYJSqZC2Sn/UPXyBhE6fUhDoenKvWLnPiyI41mDfdYE=
+  strategy: git
   app:
     master: modelcatalogue
     develop: modelcatalogue-staging

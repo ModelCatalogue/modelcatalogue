@@ -34,7 +34,9 @@ class DashboardSpec extends GebReportingSpec {
         getPathwaysLinks()[0].click()
 
         then:
-        at PathwayShowPage
+        waitFor{
+            at PathwayShowPage
+        }
     }
 
     def "Navigating to a form using the dashboard"(){

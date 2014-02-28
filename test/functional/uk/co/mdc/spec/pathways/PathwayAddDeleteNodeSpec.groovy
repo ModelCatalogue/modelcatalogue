@@ -25,7 +25,9 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
         at PathwayListPage
 
         goToPathwayInList(0)
-        at PathwayShowPage
+        waitFor{
+            at PathwayShowPage
+        }
     }
 
 	def "View a Pathway add a new node and then delete as admin"() {

@@ -21,10 +21,14 @@ class NodePropertiesSpec extends GebReportingSpec{
         at DashboardPage
 
         nav.goToPathwayListPage()
-        at PathwayListPage
+        waitFor{
+            at PathwayListPage
+        }
 
         getPathwayLinks()[0].click()
-        at PathwayShowPage
+        waitFor{
+            at PathwayShowPage
+        }
     }
 
     def "Updating properties and clicking out cancels the update"(){
