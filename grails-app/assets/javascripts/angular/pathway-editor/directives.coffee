@@ -189,8 +189,10 @@ module.directive('mcGraphNode', ->
 				scope.node.x = Math.floor(ui.position.left)
 				jsPlumb.repaint(iElement)
 		});
+		iElement.on 'click', ->
+            iElement.focus()
 		scope.$watch 'node.name', ->
-			jsPlumb.repaintEverything()
+            jsPlumb.repaintEverything()
 	}
 ) # End of directive
 
@@ -198,7 +200,7 @@ module.directive('mcGraphNode', ->
 module.directive('mcGraphLink', ["$timeout", ($timeout) ->
 	return {
 	restrict: 'A',
-	requires: '^graphContainer', #Tie this directive to graphContainer
+	requires: '^mcGraphContainer', #Tie this directive to mcGraphContainer
 	scope: {
 		link: '=graphLink',
 	},
