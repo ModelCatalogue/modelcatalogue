@@ -10,23 +10,7 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 			$scope.selectedNode = NodeSelector.getSelectedNode
 
 			$scope.deleteNode = (node) ->
-
-				# 1. Remove the node
-				index = $scope.pathway.nodes.indexOf(node)
-				$scope.pathway.nodes.splice(index, 1);
-
-				# 2. Remove the links associated with the node from the model
-				angular.forEach($scope.pathway.links, (link)->
-					if link.source == node.id || link.target == node.id
-						index = $scope.pathway.links.indexOf(link)
-						$scope.pathway.links.splice(index, 1)
-				)
-
-				# 3. Prompt jsPlumb to remove the links connecting the node
-				jsPlumb.detachAllConnections($('#node' + node.id))
-
-				# 4. Update the NodeSelector so it doesn't reference the old object
-				NodeSelector.selectNode(null)
+				NodeSelector.deleteNode($scope.pathway, node)
 
 			$scope.save = () ->
 				grailsResponse = PathwayPersistence.save($scope, $scope.pathway)
@@ -37,9 +21,6 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 					# node IDs may have been fixed, redraw
 					jsPlumb.repaintEverything();
 
-			$scope.deleteKeyPressed = (event, node) ->
-				if event.keyCode == 46
-					$scope.deleteNode(node)
 		])
 .controller('NodePropertiesCtrl', ['$scope', 'NodeSelector', ($scope, NodeSelector) ->
 		$scope.selectedNode = null
@@ -79,7 +60,9 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 		$scope.isSelected = NodeSelector.isSelected
 		$scope.unSelectNode = NodeSelector.unSelectNode
 
-
+		$scope.deleteKeyPressed = (event, node) ->
+			if event && event.keyCode == 46
+				NodeSelector.deleteNode($scope.pathway, node)
 
 
 		$scope.viewSubpathway = (node) ->
