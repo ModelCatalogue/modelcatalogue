@@ -23,6 +23,10 @@ repositories {
     maven { url "http://download.java.net/maven/2/" }
     maven { url 'http://maven.restlet.org' }
     maven { url 'http://repo.spring.io/milestone' }
+
+	// Used for Vlad's fixtures plugin
+	maven { url 'http://dl.bintray.com/metadata/model-catalogue' }
+
     mavenLocal()
 }
 
@@ -53,6 +57,9 @@ dependencies {
     test("org.seleniumhq.selenium:selenium-htmlunit-driver:${webDriverVersion}") {
         exclude module: 'xml-apis'
     }
+
+	// Simple fixtures
+	test "org.modelcatalogue:simple-fixtures:0.1.2"
 
     compile "org.grails.plugins:audit-logging:0.5.5.3"
     compile "org.grails.plugins:jquery-ui:1.10.3"

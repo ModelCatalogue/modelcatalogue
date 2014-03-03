@@ -15,30 +15,34 @@ class PathwayController extends RestfulController<Pathway>{
         super(Pathway)
     }
 
-    @Override
-    def index() {
-        list()
-    }
+	static defaultAction = "index"
 
-    def list() {
-        def model = [items: pathwayService.topLevelPathways()]
-        respond model
-    }
+	@Override
+	protected List<Pathway> listAllResources(Map params) {
+		pathwayService.topLevelPathways(params)
+	}
 
-    def show(Pathway pathway){
-        def model = [pathway: pathway]
-        respond pathway, [model: model]
-    }
-
-    @Transactional
-    def save(Pathway pathway){
-        pathway = pathwayService.create(pathway)
-        if(pathway.hasErrors()){
-            respond pathway.errors
+	@Override
+    def show(){
+		Pathway pathway = pathwayService.get(params.id)
+        if(!pathway){
+            def model = [ success: false, msg: [ code: 404, text: "The item could not be found"]]
+            respond model as Object, [status: 404, view: 'error404']
         }else{
-            redirect pathway
+            respond pathway, [model: [pathway: pathway]]
         }
     }
+
+	/**
+	 * Creates a new instance of the resource for the given parameters, or throws an exception.
+	 *
+	 * @param params The Map representing the new pathway
+	 * @throws grails.validation.ValidationException if the pathway could not be created
+	 * @return The resource instance
+	 */
+	protected Pathway createResource(Map params) {
+		pathwayService.create(params)
+	}
 
 
 
@@ -74,20 +78,20 @@ class PathwayController extends RestfulController<Pathway>{
         def msg
 
         if (!pathway) {
-            msg = message(code: 'default.not.found.message', args: [message(code: 'pathway.label', default: 'Pathway'), pathway.id])
+            msg = message(code: 'default.not.found.message', args: [message(code: 'pathway.label', default: 'Pathway'), params.id])
             model = [errors: true, details: msg]
-            respond model
-        }
 
-        try {
-            pathwayService.delete(pathway)
-            msg = message(code: 'default.deleted.message', args: [message(code: 'pathway.label', default: 'Pathway'), pathway.id])
-            model = [success: true, details: msg]
-        }
-        catch (DataIntegrityViolationException e) {
-            msg = message(code: 'default.not.deleted.message', args: [message(code: 'pathway.label', default: 'Pathway'), pathway.id])
-            model = [errors: true, details: msg]
-        }
+        }else{
+			try {
+				pathwayService.delete(pathway)
+				msg = message(code: 'default.deleted.message', args: [message(code: 'pathway.label', default: 'Pathway'), pathway.id])
+				model = [success: true, details: msg]
+			}
+			catch (DataIntegrityViolationException e) {
+				msg = message(code: 'default.not.deleted.message', args: [message(code: 'pathway.label', default: 'Pathway'), pathway.id])
+				model = [errors: true, details: msg]
+			}
+		}
 
         respond model
     }
@@ -108,7 +112,6 @@ class PathwayController extends RestfulController<Pathway>{
         def pathway = pathwayService.get(id)
         if (!pathway) {
             flash.message = "Pathway not found with id $params.id"
-            redirect action: list
         }
         pathway
     }

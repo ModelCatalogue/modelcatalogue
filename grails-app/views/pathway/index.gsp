@@ -25,7 +25,7 @@
                         <th>actions</td>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="item in list.items">
+                            <tr ng-repeat="item in list">
                                 <td><a href="/model_catalogue/pathways/{{item.id}}">{{item.name}}</a></td>
                                 <td>{{item.description}}</td>
                                 <td>{{item.userVersion}}</td>
