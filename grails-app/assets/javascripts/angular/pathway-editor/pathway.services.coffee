@@ -17,6 +17,31 @@ angular.module('pathway.services', ['ngResource'])
 		unSelectNode: ->
 			selectedNode = null
 
+		#
+		# Remove a node from specified pathway.
+		# @param pathway the (sub)pathway the node belongs to
+		# @param node the node to remove
+		deleteNode: (pathway, node) ->
+			# 1. Get index of selected node in pathway
+			index = pathway.nodes.indexOf(node)
+			# If not found, indexOf() returns -1 (i.e. last item's index in array). We don't want that.
+			if index >= 0
+				# 2. Remove the node
+				pathway.nodes.splice(index, 1);
+
+				# 3. Remove the links associated with the node from the model
+				angular.forEach(pathway.links, (link)->
+					if link.source == node.id || link.target == node.id
+						index = pathway.links.indexOf(link)
+						pathway.links.splice(index, 1)
+				)
+
+				# 4. Prompt jsPlumb to remove the links connecting the node
+				jsPlumb.detachAllConnections($('#node' + node.id))
+
+				# 5. Update the NodeSelector so it doesn't reference the old object
+				this.selectNode(null)
+
 
 
 
