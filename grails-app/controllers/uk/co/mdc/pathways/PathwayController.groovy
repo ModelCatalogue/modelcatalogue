@@ -15,14 +15,16 @@ class PathwayController extends RestfulController<Pathway>{
         super(Pathway)
     }
 
-	static defaultAction = "list"
+	static defaultAction = "index"
 
 	@Override
 	protected List<Pathway> listAllResources(Map params) {
 		pathwayService.topLevelPathways(params)
 	}
 
-    def show(Pathway pathway){
+	@Override
+    def show(){
+		Pathway pathway = pathwayService.get(params.id)
         if(!pathway){
             def model = [ success: false, msg: [ code: 404, text: "The item could not be found"]]
             respond model as Object, [status: 404, view: 'error404']

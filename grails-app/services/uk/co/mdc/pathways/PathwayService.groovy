@@ -222,7 +222,7 @@ class PathwayService {
 
 
 	@PostAuthorize("hasPermission(returnObject, read) or hasPermission(returnObject, admin)")
-	Pathway get(long id) {
+	Pathway get(def id) {
 	   Pathway.get id
 	}
 }

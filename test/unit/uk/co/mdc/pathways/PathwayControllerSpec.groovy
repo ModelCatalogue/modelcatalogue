@@ -2,9 +2,7 @@ package uk.co.mdc.pathways
 
 import grails.converters.JSON
 import grails.test.mixin.TestFor
-import org.codehaus.groovy.grails.plugins.testing.GrailsMockErrors
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.validation.Errors
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -26,14 +24,33 @@ class PathwayControllerSpec extends Specification {
 
 	def "defaultAction is list"(){
 		expect:
-		controller.defaultAction == "list"
+		controller.defaultAction == "index"
 	}
 
-	def "show"(){
+	@Unroll
+	def "show pathway #id"(){
 		//TODO
 		// 404 jsonmodel [ success: false, msg: [ code: 404, text: "The item could not be found"]]
 		// 404 html: [status: 404, view: 'error404']
 		// success [pathway: pathway]
+		//given:
+
+
+		when: "I call show()"
+		if( id ) params.id = (Long)id
+		controller.show()
+
+		then: "The list parameters are passed to the service"
+		1 * pathwayService.get(id) >> { pathway }
+
+		and: "The service contents are passed back"
+		(model == [pathway: pathway, pathwayInstance: pathway] && status == 200) ||
+				(pathway == null && model == [ booleanInstanceMap:[ success: false, msg: [ code: 404, text: "The item could not be found"]]] && status == 404 )
+
+		where:
+		id 		| pathway
+		1		| new Pathway(name: "pathway").save()
+		231		| null
 	}
 
 	@Unroll
@@ -170,7 +187,6 @@ class PathwayControllerSpec extends Specification {
 		[persistedPathway, paramsPathway, idMappings, hasErrors] << [
 				[ new Pathway(name: "some pathway"), [:], [somekey: "somenewkey"], false],
 				[ new Pathway(name: "some pathway"), [:], [:], true]
-
 		]
 	}
 
