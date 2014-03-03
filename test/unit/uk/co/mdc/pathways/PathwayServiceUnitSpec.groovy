@@ -15,6 +15,16 @@ import spock.lang.Unroll
 @Mock([Pathway, Node, Link])
 class PathwayServiceUnitSpec extends Specification {
 
+	/**
+	 * FIXME Need to add checks for max, offset params
+	 @Unroll
+	  def "list with max #max, offset #offset"(){
+	  when: "I call list() with max #max & offset #offset params"
+	  then: "The subset of results from pathwayService.topLevelPathways is returned"
+	  and: "The count value is correct"
+	  }
+	 */
+
     def "topLevelPathways returns the correct number of draft pathways"() {
         when: "I create a single draft pathway"
         //mockDomain(Pathway)
