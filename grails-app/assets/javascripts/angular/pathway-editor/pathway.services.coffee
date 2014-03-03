@@ -22,6 +22,7 @@ angular.module('pathway.services', ['ngResource'])
 		# @param pathway the (sub)pathway the node belongs to
 		# @param node the node to remove
 		deleteNode: (pathway, node) ->
+			debugger;
 			# 1. Get index of selected node in pathway
 			index = pathway.nodes.indexOf(node)
 			# If not found, indexOf() returns -1 (i.e. last item's index in array). We don't want that.

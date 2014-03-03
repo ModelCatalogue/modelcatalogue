@@ -86,7 +86,8 @@
                 <p>Select a node to view it's properties</p>
             </div>
             <div class="panel-body" ng-show="selectedNode">
-                <h4><a href="#" editable-text="selectedNode.name">{{ selectedNode.name || "empty" }}</a><button type="button" class="btn btn-danger btn-xs pull-right" ng-click="deleteNode()">
+                <h4><a href="#" editable-text="selectedNode.name">{{ selectedNode.name || "empty" }}</a>
+                    <button type="button" class="btn btn-danger btn-xs pull-right" ng-click="deleteNode()">
                     <i class="fa fa-trash-o"></i> Delete
                 </button></h4>
                 <p><a href="#" editable-text="selectedNode.description">{{ selectedNode.description || "empty" }}</a></p>
@@ -96,6 +97,7 @@
                      selected-things="selectedNode.dataElements"
                      all-things="selectedNode.dataElements"
                 ></div>
+                 </div>
 
                 <div mc-thing-picker
                         widget-name="Forms"

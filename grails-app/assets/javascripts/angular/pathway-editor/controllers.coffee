@@ -10,6 +10,7 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 			$scope.selectedNode = NodeSelector.getSelectedNode
 
 			$scope.deleteNode = (node) ->
+				debugger;
 				NodeSelector.deleteNode($scope.pathway, node)
 
 			$scope.save = () ->
@@ -29,6 +30,7 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 
 		$scope.deleteNode = ->
 			# FIXME, change this so it doesn't reference parent
+			debugger;
 			$scope.$parent.deleteNode($scope.selectedNode)
 
 		$scope.removeForm = (form) ->

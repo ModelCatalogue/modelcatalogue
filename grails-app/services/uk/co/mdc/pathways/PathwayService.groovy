@@ -63,6 +63,16 @@ class PathwayService {
             throw new IllegalArgumentException("clientPathway '"+clientPathway.name+"' does not have a valid and present ID "+clientPathway?.id)
         }
 
+        //find all deleted nodes & removed them from Pathway
+        def deletedNodes = savedPathway.nodes.findAll{ savedNode ->
+            (clientPathway.nodes.count {clientNode-> savedNode.id==clientNode.id})==0
+        };
+
+        deletedNodes.each { node ->
+            println "deleting node "+node.name
+            savedPathway.removeFromNodes(node);
+        }
+
         clientPathway.nodes.each{ node ->
             // if new, create
             if(node.id =~ /^LOCAL/){
@@ -109,6 +119,21 @@ class PathwayService {
      */
     @Transactional
     void cleanAndCreateLinks( def unsavedPathway, def idMappings){
+
+        def savedPathway = Pathway.get(unsavedPathway?.id)
+        if(!savedPathway){
+            throw new IllegalArgumentException("clientPathway '"+unsavedPathway.name+"' does not have a valid and present ID "+unsavedPathway?.id)
+        }
+
+        //find all deleted links & removed them from Pathway
+        def deletedLinks = savedPathway.links.findAll{ savedLink ->
+            (unsavedPathway.links.count {clientLink-> savedLink.id==clientLink.id})==0
+        };
+
+        deletedLinks.each { link ->
+            println "deleting node "+link.id
+            savedPathway.removeFromLinks(link);
+        }
 
         unsavedPathway.links.each{ link ->
             if(link.source =~ /^LOCAL/){
