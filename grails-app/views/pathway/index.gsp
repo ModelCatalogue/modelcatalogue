@@ -25,7 +25,7 @@
                         <th>actions</td>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="item in list.items">
+                            <tr ng-repeat="item in list">
                                 <td><a href="/model_catalogue/pathways/{{item.id}}">{{item.name}}</a></td>
                                 <td>{{item.description}}</td>
                                 <td>{{item.userVersion}}</td>
@@ -35,7 +35,7 @@
                         </tbody>
                     </table>
 				</div>
-                <button class="btn btn-large btn-primary" data-toggle="modal" data-target="#createPathwayModal"><i class="glyphicon glyphicon-plus"></i>&nbsp;Create a new pathway</button>
+                <button class="btn btn-large btn-primary" data-toggle="modal" data-target="#createPathwayModal"><i class="fa fa-plus"></i>&nbsp;Create a new pathway</button>
 			</div>
             <script type="text/ng-template" id="templates/deleteConfirmation.html">
                 <div style="width: 300px;">

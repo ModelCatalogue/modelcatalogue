@@ -1,5 +1,6 @@
 package uk.co.mdc.pathways
 
+import grails.validation.ValidationException
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.acls.domain.BasePermission
@@ -161,14 +162,19 @@ class PathwayService {
         pathway.delete()
         aclUtilService.deleteAcl pathway
     }
-	
+
+	/**
+	 * Throws a validation exception if the creation fails
+	 * @param pathwayParams
+	 * @throws ValidationException if the passed params are invalid
+	 */
 	@Transactional
 	@PreAuthorize("hasRole('ROLE_USER')")
-	Pathway create(Pathway pathway) {
-        if(!pathway){
-            return null
-        }
-        pathway.save()
+	Pathway create(Map pathwayParams) {
+		Pathway pathway = new Pathway(pathwayParams)
+
+		pathway.save(failOnError: true) // bubble up the exception to the controller
+
 
         // Update permissions for owner (read for all, write + delete for owner
         addPermission pathway, springSecurityService.authentication.name, BasePermission.READ
@@ -190,7 +196,7 @@ class PathwayService {
      * @return a list of pathways (top level only)
      */
     @PreAuthorize("hasRole('ROLE_USER')")
-    List<Pathway> topLevelPathways(def searchCriteria) {
+    List<Pathway> topLevelPathways(Map searchCriteria) {
 
         List<Pathway> pathways
         if(searchCriteria == null){
@@ -209,13 +215,14 @@ class PathwayService {
             }
         }
         // FIXME this should be in the criteria, but I had problems getting that to work :(
+		// This is really problematic because we want to leverage Pathway.list(params) to get offset and max
         return pathways.findAll { it.class == Pathway }
 
     }
 
 
 	@PostAuthorize("hasPermission(returnObject, read) or hasPermission(returnObject, admin)")
-	Pathway get(long id) {
+	Pathway get(def id) {
 	   Pathway.get id
 	}
 }

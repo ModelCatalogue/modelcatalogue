@@ -24,7 +24,9 @@ class MoveNodeAndSaveSpec extends GebReportingSpec {
         at PathwayListPage
 
         getPathwayLinks()[0].click()
-        at PathwayShowPage
+        waitFor{
+            at PathwayShowPage
+        }
     }
 
     def "Move a node when viewing a pathway with new position saved"() {
@@ -32,13 +34,20 @@ class MoveNodeAndSaveSpec extends GebReportingSpec {
 	    given:"I am on the dashboard view in a 1024x768 browser window and login as admin"
 
 	    when: "I drag and drop the node"
-	    def node2Y = node2.y
+
+        waitFor{
+            node2.y //give Angular/JSplumb a chance to render it
+        }
+
+	    int node2Y = node2.y
 	    interact {
 	    	dragAndDropBy(node2, 0, 100)
 	    }
 
 	    then: "The node position has moved by 100px down"
-	    node2.y == node2Y + 100
+        waitFor{
+	        node2.y == node2Y + 100
+        }
 
 	    when: "I save and go back to the pathway"
         saveButton.click()

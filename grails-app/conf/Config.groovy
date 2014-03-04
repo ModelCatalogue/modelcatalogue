@@ -130,6 +130,7 @@ grails{
     assets{
         excludes = ["**/*.less"]
         includes = ["/application.less"]
+        less.compiler='less4j' // faster than the default
     }
 	plugins{
 		springsecurity{
