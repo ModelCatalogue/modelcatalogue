@@ -1,9 +1,22 @@
 module = angular.module('utils.thingPicker', ["ngTable"])
 
-module.controller('ThingPickerCtrl',['$scope', ($scope) ->
+module.controller('ThingPickerCtrl',['$scope', 'ngTableParams', ($scope, ngTableParams) ->
+
+	$scope.allThings = new Array()
+	$scope.selectedThings = new Array()
+
 	$scope.addMode  = false
 	$scope.compress = false
 	$scope.tempSelectedThings = new Array()
+
+
+	$scope.toggleSelection = (thing) ->
+		index = $scope.tempSelectedThings.indexOf(thing)
+		if index > -1
+			$scope.tempSelectedThings.splice(index, 1)
+		else
+			$scope.tempSelectedThings.push(thing)
+
 
 	$scope.removeThing = (thing) ->
 		index = $scope.selectedThings.indexOf(thing)
@@ -13,14 +26,9 @@ module.controller('ThingPickerCtrl',['$scope', ($scope) ->
 
 	$scope.confirm = ->
 		# Replace the selectedThings without changing the reference
-		$scope.selectedThings.length = 0;
-		for tempItem in $scope.tempSelectedThings
-			if(tempItem.selected)
-				delete tempItem.selected
-				$scope.selectedThings.push(tempItem)
+		$scope.selectedThings.length = 0
+		Array.prototype.push.apply($scope.selectedThings,$scope.tempSelectedThings);
 		clearTempThings()
-		#Clear everything out using the cancel
-
 
 	$scope.cancel = ->
 		clearTempThings()
@@ -28,20 +36,16 @@ module.controller('ThingPickerCtrl',['$scope', ($scope) ->
 	$scope.setAddMode = ->
 		$scope.addMode = true
 		$scope.compress = false
-		$scope.reRenderItems()
 
-
-	$scope.reRenderItems = ->
-		$scope.tempSelectedThings.length = 0
-		Array.prototype.push.apply($scope.tempSelectedThings,$scope.allThings);
-		for tempItem in $scope.tempSelectedThings
-			tempItem.selected = false
-			for selectedThing in $scope.selectedThings
-				if (selectedThing.id == tempItem.id)
-					tempItem.selected = true
-		return
-
-
+	$scope.tableParams = new ngTableParams {
+		page: 2,  # show first page
+		count: 10 # count per page
+	}, {
+		total: $scope.allThings.length,
+		getData: ($defer, params) ->
+			console.log $scope.allThings.length
+			$defer.resolve($scope.allThings.slice((params.page() - 1) * params.count(), params.page() * params.count()))
+	}
 
 	clearTempThings = ->
 		# Empty the tempSelectedThings
@@ -51,22 +55,18 @@ module.controller('ThingPickerCtrl',['$scope', ($scope) ->
 
 	return
 ])
+
 #
 # A widget to select one or more things from a list of things
 #
 module.directive 'mcThingPicker', ->
 	return{
-	replace: true,
-	templateUrl: '/model_catalogue/assets/angular/utils/thingPicker.html',
-	scope: {
-		widgetName: '@'
-		allThings: '='
-		selectedThings: '='
-	},
-	controller: 'ThingPickerCtrl',
-	link:(scope,element,attr) ->
-		scope.$watch('selectedThings',(newValue,oldValue)->
-			scope.reRenderItems();
-			return
-		)
+		replace: true,
+		templateUrl: '/'+grailsAppName+'/assets/angular/utils/thingPicker.html',
+		scope: {
+			widgetName: '@'
+			allThings: '='
+			selectedThings: '='
+		},
+		controller: 'ThingPickerCtrl'
 	}

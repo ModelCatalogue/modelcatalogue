@@ -8,6 +8,9 @@ utils = angular.module('utils', ['ngResource', 'utils.thingPicker'])
 #
 utils.service 'Grails', ($resource) ->
 	# private REST resource URL resolver
+	getRestAPIResource: (controller, action, id) ->
+		isArray = !id?
+		$resource "/:grailsAppName/api/:controller/:id.json", {grailsAppName: grailsAppName || '', controller: controller || '', id: id || ''}, { 'get': { method: 'GET', isArray: isArray, }, 'update': { method: 'PUT'} }
 	getRestResource: (scope) ->
 		isArray = !scope.id?
 		$resource "/:grailsAppName/:controller/:id.json", {grailsAppName: scope.grailsAppName || '', controller: scope.controller || '', id: scope.id || ''}, { 'get': { method: 'GET', isArray: isArray, }, 'update': { method: 'PUT'} }

@@ -10,10 +10,12 @@
     <div ng-show="addMode && !compress" class="clearfix thing-picker-addMode">
         <div>
             <p ng-hide="allThings && !!allThings.length">No items to choose from!</p>
-            <table ng-table ng-show="allThings && !!allThings.length">
-                <tr ng-repeat="tempThing in tempSelectedThings">
+            <table ng-table="tableParams" ng-show="allThings && !!allThings.length">
+                <p><strong>Page:</strong> {{tableParams.page()}}</p>
+                <p><strong>Count per page:</strong> {{tableParams.count()}}</p>
+                <tr ng-repeat="thing in allThings">
                     <td>
-                        <input id="tempThing{{$index}}"  type="checkbox" ng-checked="tempThing.selected"  ng-model="tempThing.selected" > {{tempThing.name}}
+                        <input type="checkbox" ng-checked="tempSelectedThings.indexOf(thing) > -1" ng-click="toggleSelection(thing)"/> {{thing.name}}
                     </td>
                 </tr>
             </table>

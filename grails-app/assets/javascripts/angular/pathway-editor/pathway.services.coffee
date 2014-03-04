@@ -3,21 +3,22 @@
 # http://claymccoy.blogspot.co.uk/2012/09/grails-with-angularjs-and-coffeescript.html
 #
 
-angular.module('pathway.services', ['ngResource'])
+angular.module('pathway.services', ['ngResource', 'ui.router'])
 
-.service 'NodeSelector', ->
+.service 'NodeSelector', ($state) ->
 		selectedNode = null
 
 		selectNode: (node) ->
 			selectedNode = node
+			if node then $state.go('node', {nodeId:node.id})
 		isSelected: (node) ->
 			selectedNode == node
 		getSelectedNode: ->
 			selectedNode
 		unSelectNode: ->
 			selectedNode = null
+			$state.go('empty')
 
-		#
 		# Remove a node from specified pathway.
 		# @param pathway the (sub)pathway the node belongs to
 		# @param node the node to remove

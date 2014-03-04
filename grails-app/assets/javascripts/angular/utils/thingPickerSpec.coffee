@@ -33,15 +33,15 @@ describe 'ThingPickerCtrl', ->
 			this.$scope.listOfEverything[4],
 		]
 
-		this.$scope.tempSelectedThings=[]
-		Array.prototype.push.apply(this.$scope.tempSelectedThings,this.$scope.listOfEverything)
-		this.$scope.tempSelectedThings[0].selected = true
-		this.$scope.tempSelectedThings[1].selected = true
-		this.$scope.tempSelectedThings[2].selected = true
-		this.$scope.tempSelectedThings[3].selected = true
-		this.$scope.tempSelectedThings[4].selected = true
-		this.$scope.tempSelectedThings[5].selected = true
-		this.$scope.tempSelectedThings[6].selected = true
+		this.$scope.tempSelectedThings= [
+			this.$scope.tempSelectedThings[0],
+			this.$scope.tempSelectedThings[1],
+			this.$scope.tempSelectedThings[2],
+			this.$scope.tempSelectedThings[6],
+			this.$scope.tempSelectedThings[7],
+			this.$scope.tempSelectedThings[10],
+			this.$scope.tempSelectedThings[11]
+		]
 
 
 	describe 'removeThing', ->
@@ -75,12 +75,3 @@ describe 'ThingPickerCtrl', ->
 			this.$scope.cancel()
 			expect(this.$scope.selectedThings.length).toBe 4
 			expect(this.$scope.addMode).toBe(false)
-
-
-	describe 'reRenderItems', ->
-		it 'should be called when setAddMode is called', ->
-			spyOn(this.$scope, "reRenderItems");
-			this.$scope.setAddMode()
-			expect(this.$scope.reRenderItems).toHaveBeenCalled();
-
-
