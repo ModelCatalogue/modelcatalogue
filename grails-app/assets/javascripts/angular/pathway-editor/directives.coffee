@@ -58,7 +58,8 @@ module.directive('mcGraphContainer', ->
 		options: '@',
 		upALevel: '&',
 		addNode:	'&',
-		unSelectNode:	'&'
+		unSelectNode:	'&',
+		unSelectLink: '&'
 	},
 	controller: ($scope) ->
 		$scope.hasParent = true
@@ -83,6 +84,7 @@ module.directive('mcGraphContainer', ->
 		timer=null
 		handleClick = (e)->
 			if angular.element(e.target).hasClass('jsplumb-container')
+				scope.unSelectLink()
 				clicks++
 				if (clicks==1)
 					timer = setTimeout(->
@@ -140,6 +142,8 @@ module.directive('mcGraphContainer', ->
 						source: sourceId,
 						target: targetId
 					}
+					jsPlumb.detach(info.connection)
+					scope.$apply()
 			return
 	}
 ) # end directive
@@ -197,23 +201,56 @@ module.directive('mcGraphNode', ->
 ) # End of directive
 
 #Handle the links
-module.directive('mcGraphLink', ["$timeout", ($timeout) ->
+module.directive('mcGraphLink', ["$timeout","NodeSelector", ($timeout,NodeSelector) ->
 	return {
 	restrict: 'A',
 	requires: '^mcGraphContainer', #Tie this directive to mcGraphContainer
 	scope: {
 		link: '=graphLink',
+		selectLink: '&',
 	},
+	templateUrl: 'templates/pathway/jsPlumbLink.html',
 	link: (scope, iElement, iAttrs) ->
 		#FIXME: Needed the timeout to make sure the dom nodes are available. Need a better solution.
 		$timeout(->
-			jsPlumb.connect({
+			link=jsPlumb.connect({
 				source: "node" + scope.link.source,
 				target: "node" + scope.link.target,
 				parameters: {
 					connectionId: scope.link.id
 				}
-			}).canvas.id = scope.link.id; # Give the resulting svg node an id for simpler retrieval
+			});
+			link.canvas.id = scope.link.id; # Give the resulting svg node an id for simpler retrieval
+			link.bind 'click', ->
+				console.log('link clicked in mcGraphLink')
+				scope.selectLink()
+				NodeSelector.unSelectNode()
+				scope.$apply()
 		, 1)
+
+		#added this watch because of updates in FixLink method and changes in
+		#LinkIds
+		#FIXME it needs to remove the old links which are replaced by the new ones
+		#FIXME like jsPlumb.detach(con) or other
+		scope.$watch "link", ((newValue, oldValue) ->
+			connections = jsPlumb.getConnections()
+			for con in connections
+				if( con._jsPlumb.parameters.connectionId == oldValue.id )
+					if(newValue.id != oldValue.id)
+						link=jsPlumb.connect({
+							source: "node" + newValue.source,
+							target: "node" + newValue.target,
+							parameters: {
+								connectionId: newValue.id
+							}
+						});
+						link.canvas.id = newValue.id;
+						link.bind 'click', ->
+							scope.selectLink()
+							NodeSelector.unSelectNode()
+							scope.$apply()
+
+			return
+		), true
 	}
 ])
