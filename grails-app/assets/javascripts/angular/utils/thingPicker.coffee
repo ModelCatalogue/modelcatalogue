@@ -2,26 +2,32 @@ module = angular.module('utils.thingPicker', ["ngTable"])
 
 module.controller('ThingPickerCtrl',['$scope', 'ngTableParams', ($scope, ngTableParams) ->
 
-	$scope.allThings = new Array()
-	$scope.selectedThings = new Array()
+#	$scope.allThings = new Array()
+#	$scope.selectedThings = new Array()
 
 	$scope.addMode  = false
 	$scope.compress = false
 	$scope.tempSelectedThings = new Array()
 
+	$scope.isSelected = (thing) ->
+		return true for tempThing in $scope.tempSelectedThings when thing.id == tempThing.id
+		return false
 
 	$scope.toggleSelection = (thing) ->
-		index = $scope.tempSelectedThings.indexOf(thing)
-		if index > -1
-			$scope.tempSelectedThings.splice(index, 1)
+		if($scope.isSelected(thing))
+			notFound = true
+			for tempThing, i in $scope.tempSelectedThings when notFound && thing.id == tempThing.id
+				$scope.tempSelectedThings.splice(i, 1)
+				notFound = false
 		else
 			$scope.tempSelectedThings.push(thing)
 
 
 	$scope.removeThing = (thing) ->
-		index = $scope.selectedThings.indexOf(thing)
-		if index > -1
-			$scope.selectedThings.splice(index, 1)
+		notFound = true
+		for tempThing, i in $scope.selectedThings when notFound && thing.id == tempThing.id
+			$scope.selectedThings.splice(i, 1)
+			notFound = false
 
 
 	$scope.confirm = ->
@@ -34,6 +40,10 @@ module.controller('ThingPickerCtrl',['$scope', 'ngTableParams', ($scope, ngTable
 		clearTempThings()
 
 	$scope.setAddMode = ->
+		# Replace the tempSelectedThings without changing the reference
+		$scope.tempSelectedThings.length = 0
+		Array.prototype.push.apply($scope.tempSelectedThings,$scope.selectedThings);
+
 		$scope.addMode = true
 		$scope.compress = false
 
@@ -43,7 +53,6 @@ module.controller('ThingPickerCtrl',['$scope', 'ngTableParams', ($scope, ngTable
 	}, {
 		total: $scope.allThings.length,
 		getData: ($defer, params) ->
-			console.log $scope.allThings.length
 			$defer.resolve($scope.allThings.slice((params.page() - 1) * params.count(), params.page() * params.count()))
 	}
 
