@@ -48,12 +48,19 @@ module.controller('ThingPickerCtrl',['$scope', 'ngTableParams', ($scope, ngTable
 		$scope.compress = false
 
 	$scope.tableParams = new ngTableParams {
-		page: 2,  # show first page
+		page: 1,  # show first page
 		count: 10 # count per page
 	}, {
-		total: $scope.allThings.length,
+		total: 0,
 		getData: ($defer, params) ->
-			$defer.resolve($scope.allThings.slice((params.page() - 1) * params.count(), params.page() * params.count()))
+			offset = params.count() * (params.page() - 1)
+			offset = 0 unless offset
+			$scope.allThingsResource.get({max: params.count(), offset: offset}, (data) ->
+				# update table params
+				params.total(data.total)
+				# set new data
+				$defer.resolve(data.objects)
+			)
 	}
 
 	clearTempThings = ->
@@ -74,7 +81,7 @@ module.directive 'mcThingPicker', ->
 		templateUrl: '/'+grailsAppName+'/assets/angular/utils/thingPicker.html',
 		scope: {
 			widgetName: '@'
-			allThings: '='
+			allThingsResource: '='
 			selectedThings: '='
 		},
 		controller: 'ThingPickerCtrl'

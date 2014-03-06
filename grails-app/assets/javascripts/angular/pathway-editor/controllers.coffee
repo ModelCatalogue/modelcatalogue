@@ -24,14 +24,8 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 		])
 .controller('NodePropertiesCtrl', ['$scope', 'NodeSelector','Grails',($scope, NodeSelector,Grails) ->
 
-		#$scope.allDataElements = Grails.getResource($scope).get {controller :'DataElement',action: 'dataTables'}
-		$scope.allForms = Grails.getRestAPIResource('forms', 'index').get {}
-		$scope.allForms.$promise.then (result) ->
-			$scope.allForms = result;
-
-		$scope.allDataElements = Grails.getRestAPIResource('dataelements', 'index').get {max:100}
-		$scope.allDataElements.$promise.then (result) ->
-			$scope.allDataElements = result;
+		$scope.allFormsResource = Grails.getRestAPIResource('forms')
+		$scope.allDataElementsResource = Grails.getRestAPIResource('dataelements')
 
 		$scope.selectedNode = null
 		$scope.switchToSubPathway = ->

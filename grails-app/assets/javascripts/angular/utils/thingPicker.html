@@ -8,18 +8,14 @@
     </h5>
 
     <div ng-show="addMode && !compress" class="clearfix thing-picker-addMode">
-        <div>
-            <p ng-hide="allThings && !!allThings.length">No items to choose from!</p>
-            <table ng-table="tableParams" ng-show="allThings && !!allThings.length">
-                <p><strong>Page:</strong> {{tableParams.page()}}</p>
-                <p><strong>Count per page:</strong> {{tableParams.count()}}</p>
-                <tr ng-repeat="thing in allThings">
-                    <td>
-                        <input type="checkbox" ng-checked="isSelected(thing)" ng-click="toggleSelection(thing)"/> {{thing.name}}
-                    </td>
-                </tr>
-            </table>
-        </div>
+
+        <table ng-table="tableParams" class="fullwidth-table">
+            <tr ng-repeat="thing in $data">
+                <td ng-click="toggleSelection(thing)">
+                    <input type="checkbox" ng-checked="isSelected(thing)"/> {{thing.name}}
+                </td>
+            </tr>
+        </table>
         <button type="button" ng-click="confirm()" class="btn btn-default btn-xs btn-primary pull-left"><span
                 class="fa fa-check"></span> Confirm
         </button>
@@ -29,13 +25,17 @@
     </div>
 
     <div ng-hide="addMode || compress">
-        <p ng-hide="selectedThings && !!selectedThings.length" ng-click="addMode=true"><a>No items yet! Click to add
-            some...</a></p>
-        <table ng-table ng-show="selectedThings && !!selectedThings.length">
-            <tr ng-repeat="thing in selectedThings">
-                <td>{{thing.name}}</td>
-                <td><i class="fa fa-trash-o" ng-click="removeThing(thing)"></i></td>
-            </tr>
-        </table>
+
+        <div ng-hide="selectedThings && !!selectedThings.length">
+            <p  ng-click="addMode=true"><a>No items yet! Click to add some...</a></p>
+        </div>
+        <div ng-show="selectedThings && !!selectedThings.length">
+            <table ng-table class="fullwidth-table">
+                <tr ng-repeat="thing in selectedThings">
+                    <td>{{thing.name}}</td>
+                    <td><i class="fa fa-trash-o" ng-click="removeThing(thing)"></i></td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>

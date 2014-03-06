@@ -82,7 +82,7 @@ class PathwayDeletionSpec extends GebReportingSpec {
         }
 
         def pathwayShowURL = driver.currentUrl
-        def matcher = pathwayShowURL =~ /pathways\/(\d+)$/
+        def matcher = pathwayShowURL =~ /pathways\/(\d+)(?:#\/)?$/
         matcher.size() == 1
         def createdPathwayID = matcher[0][1]
 

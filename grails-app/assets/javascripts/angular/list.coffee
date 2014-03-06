@@ -12,7 +12,7 @@ angular.module('list', ["xeditable", "utils"])
         $scope.list = Grails.getRestResource($scope).get()
 
         $scope.delete = (item) ->
-            Grails.getResource($scope).delete {action: 'delete', id: item.id}
+            Grails.getRestResource($scope).delete {id: item.id}
             index = $scope.list.indexOf(item)
             $scope.list.splice(index, 1)
             #Grails.getResource($scope).get {action: 'show'}

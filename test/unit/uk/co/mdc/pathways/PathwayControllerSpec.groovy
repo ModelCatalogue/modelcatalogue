@@ -45,7 +45,7 @@ class PathwayControllerSpec extends Specification {
 
 		and: "The service contents are passed back"
 		(model == [pathway: pathway, pathwayInstance: pathway] && status == 200) ||
-				(pathway == null && model == [ booleanInstanceMap:[ success: false, msg: [ code: 404, text: "The item could not be found"]]] && status == 404 )
+				(pathway == null && model == [ booleanInstanceMap:[ success: false, msg: [ code: 404, text: "The item could not be found or you do not have access to it"]]] && status == 404 )
 
 		where:
 		id 		| pathway

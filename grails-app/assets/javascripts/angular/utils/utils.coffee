@@ -7,10 +7,16 @@ utils = angular.module('utils', ['ngResource', 'utils.thingPicker'])
 # The Grails resource, used for all interaction with the Grails environment.
 #
 utils.service 'Grails', ($resource) ->
-	# private REST resource URL resolver
-	getRestAPIResource: (controller, action, id) ->
-		isArray = !id?
-		$resource "/:grailsAppName/api/:controller/:id.json", {grailsAppName: grailsAppName || '', controller: controller || '', id: id || ''}, { 'get': { method: 'GET', isArray: isArray, }, 'update': { method: 'PUT'} }
+
+	# This is the preferred method for retrieving resources
+	#
+	# 	controller: the API endpoint, following "api/", e.g. 'pathways'
+	#	id: (optional) the ID of the resource to retrieve.
+	getRestAPIResource: (controller, id) ->
+		$resource "/:grailsAppName/api/:controller/:id.json", {grailsAppName: grailsAppName || '', controller: controller || '', id: id || ''}, { 'get': { method: 'GET', isArray: false }, 'update': { method: 'PUT'} }
+		# if ID set -> GET, UPDATE, DELETE, all URL api/controller/id
+		# else 		-> GET, POST, all URL api/controller
+
 	getRestResource: (scope) ->
 		isArray = !scope.id?
 		$resource "/:grailsAppName/:controller/:id.json", {grailsAppName: scope.grailsAppName || '', controller: scope.controller || '', id: scope.id || ''}, { 'get': { method: 'GET', isArray: isArray, }, 'update': { method: 'PUT'} }
