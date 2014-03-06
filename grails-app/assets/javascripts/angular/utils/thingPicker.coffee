@@ -1,10 +1,6 @@
 module = angular.module('utils.thingPicker', ["ngTable"])
 
 module.controller('ThingPickerCtrl',['$scope', 'ngTableParams', ($scope, ngTableParams) ->
-
-#	$scope.allThings = new Array()
-#	$scope.selectedThings = new Array()
-
 	$scope.addMode  = false
 	$scope.compress = false
 	$scope.tempSelectedThings = new Array()
@@ -68,7 +64,6 @@ module.controller('ThingPickerCtrl',['$scope', 'ngTableParams', ($scope, ngTable
 		$scope.tempSelectedThings.length = 0
 		# Get out of addMode
 		$scope.addMode = false
-
 	return
 ])
 

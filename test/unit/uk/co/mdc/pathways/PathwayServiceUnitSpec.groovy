@@ -73,7 +73,7 @@ class PathwayServiceUnitSpec extends Specification {
         }
     }
 
-    @Ignore
+	@Ignore
     def "createLocalNodes removes the deleted node and its link from the pathway" ()
     {
         setup:
@@ -122,7 +122,7 @@ class PathwayServiceUnitSpec extends Specification {
 
 
 
-    @Ignore
+	@Ignore
     def "cleanAndCreateLinks removes the deleted link from the pathway" ()
     {
 
@@ -172,10 +172,7 @@ class PathwayServiceUnitSpec extends Specification {
         Link.get(link12.id).target.id == node2.id
     }
 
-
-
-
-    @Ignore
+	@Ignore
     def "createLocalNodes removes the deleted node and its link from the subPathway" ()
     {
         setup:
@@ -218,7 +215,6 @@ class PathwayServiceUnitSpec extends Specification {
         ]
         def idMappings = [:]
         service.createLocalNodes(clientPathway ,idMappings)
-        //service.cleanAndCreateLinks(clientPathway ,idMappings)
 
 
         then:"the node in subPathway should have been removed from subPathway"

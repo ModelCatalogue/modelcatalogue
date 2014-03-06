@@ -50,7 +50,6 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 			console.log("FIXME: this should switch the pathway viewer's scope to node " + $scope.selectedNode.id)
 
 		$scope.deleteNode = ->
-			debugger;
 			# FIXME, change this so it doesn't reference parent
 			$scope.$parent.deleteNode($scope.selectedNode)
 
@@ -61,7 +60,6 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 			NodeSelector.getSelectedNode()
 		, (selectedNode) ->
 			$scope.selectedNode = selectedNode
-
 		, false # Just check for object equality
 		)
 	])

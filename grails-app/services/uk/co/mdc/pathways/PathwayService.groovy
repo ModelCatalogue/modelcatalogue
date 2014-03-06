@@ -69,7 +69,6 @@ class PathwayService {
         };
 
         deletedNodes.each { node ->
-            println "deleting node "+node.name
             savedPathway.removeFromNodes(node);
         }
 
@@ -129,7 +128,6 @@ class PathwayService {
         };
 
         deletedLinks.each { link ->
-            println "deleting node "+link.id
             savedPathway.removeFromLinks(link);
         }
 
