@@ -22,26 +22,20 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 					jsPlumb.repaintEverything();
 
 		])
-.controller('NodePropertiesCtrl', ['$scope', 'NodeSelector', ($scope, NodeSelector) ->
+.controller('NodePropertiesCtrl', ['$scope', 'NodeSelector','Grails',($scope, NodeSelector,Grails) ->
+
+		$scope.allFormsResource = Grails.getRestAPIResource('forms')
+		$scope.allDataElementsResource = Grails.getRestAPIResource('dataelements')
+
 		$scope.selectedNode = null
 		$scope.switchToSubPathway = ->
 			console.log("FIXME: this should switch the pathway viewer's scope to node " + $scope.selectedNode.id)
 
 		$scope.deleteNode = ->
+			debugger;
 			# FIXME, change this so it doesn't reference parent
 			$scope.$parent.deleteNode($scope.selectedNode)
 
-		$scope.removeForm = (form) ->
-			console.log("FIXME: this should remove form " + form.id + " from node " + $scope.selectedNode.id)
-
-		$scope.addForm = ->
-			console.log("FIXME: this should add a form to node " + $scope.selectedNode.id)
-
-		$scope.removeDataElement = (dataElement) ->
-			console.log("FIXME: this should remove the dataElement " + dataElement.id + " from node " + $scope.selectedNode.id)
-
-		$scope.addDataElement = ->
-			console.log("FIXME: this should add a dataElement to node " + $scope.selectedNode.id)
 
 		# Watch the NodeSelector function for changes. The second function actions a change, setting the
 		# selectedNode scope variable to be the new value retrieved from the service
@@ -49,6 +43,7 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 			NodeSelector.getSelectedNode()
 		, (selectedNode) ->
 			$scope.selectedNode = selectedNode
+
 		, false # Just check for object equality
 		)
 	])

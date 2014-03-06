@@ -3,8 +3,8 @@ package uk.co.mdc.pathways
 import grails.rest.RestfulController
 
 import grails.plugins.springsecurity.Secured
-import grails.transaction.Transactional
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.security.access.AccessDeniedException
 
 @Secured(['ROLE_USER'])
 class PathwayController extends RestfulController<Pathway>{
@@ -24,13 +24,20 @@ class PathwayController extends RestfulController<Pathway>{
 
 	@Override
     def show(){
-		Pathway pathway = pathwayService.get(params.id)
-        if(!pathway){
-            def model = [ success: false, msg: [ code: 404, text: "The item could not be found"]]
-            respond model as Object, [status: 404, view: 'error404']
-        }else{
-            respond pathway, [model: [pathway: pathway]]
+		Pathway pathway
+		try{
+			pathway = pathwayService.get(params.id)
+
+
+        }catch(AccessDeniedException ADE){
+			pathway = null
         }
+		if(pathway){
+			respond pathway, [model: [pathway: pathway]]
+		}else{
+			def model = [ success: false, msg: [ code: 404, text: "The item could not be found or you do not have access to it"]]
+			respond model as Object, [status: 404, view: 'error404']
+		}
     }
 
 	/**

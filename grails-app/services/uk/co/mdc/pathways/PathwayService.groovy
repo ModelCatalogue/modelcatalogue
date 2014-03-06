@@ -86,8 +86,6 @@ class PathwayService {
             else{
                 Node nodeInstance = Node.get(node.id)
                 nodeInstance.properties = node.findAll { key, value -> key != 'nodes' && key != 'links'}
-                nodeInstance.dataElements = null// node.dataElements
-                nodeInstance.forms = node.forms
                 nodeInstance.save(failOnError: true)
             }
 

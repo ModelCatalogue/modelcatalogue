@@ -25,7 +25,7 @@ module.exports = function(config) {
 		
 		files: [
             // Required libraries
-            'grails-app/assets/bower_components/jquery/jquery.js',
+            'grails-app/assets/bower_components/jquery/dist/jquery.js',
             'grails-app/assets/bower_components/angular/angular.js',
             'grails-app/assets/bower_components/angular-resource/angular-resource.js',
             'grails-app/assets/bower_components/ng-table/ng-table.js',

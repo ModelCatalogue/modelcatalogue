@@ -379,15 +379,25 @@ class BootStrap {
 									conceptualDomain: COSD,
 									format:"max 35 characters").save(failOnError: true))
 
-									DataElementValueDomain.link(new DataElement(name:"GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION)",
-									description:"The GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION) is an ORGANISATION CODE. This is the code of the GP Practice that the PATIENT is registered with.",
-									dataElementConcept: DEM).save(failOnError: true),
-									new ValueDomain(name:"NHS GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION)",
-									description:"",
-									dataType: string,
-									conceptualDomain: COSD,
-									format:"an6").save(failOnError: true))
+                                DataElementValueDomain.link(new DataElement(name:"GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION)",
+                                        description:"The GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION) is an ORGANISATION CODE. This is the code of the GP Practice that the PATIENT is registered with.",
+                                        dataElementConcept: DEM).save(failOnError: true),
+                                        new ValueDomain(name:"NHS GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION)",
+                                                description:"",
+                                                dataType: string,
+                                                conceptualDomain: COSD,
+                                                format:"an6").save(failOnError: true))
 
+                                100.times { it ->
+                                    DataElementValueDomain.link(new DataElement(name:"TEST ELEMENT ${it}",
+                                            description:"A test element",
+                                            dataElementConcept: DEM).save(failOnError: true),
+                                            new ValueDomain(name:"Test value domain ${it}",
+                                                    description:"",
+                                                    dataType: string,
+                                                    conceptualDomain: COSD,
+                                                    format:"an6").save(failOnError: true))
+                                }
 
 									
 

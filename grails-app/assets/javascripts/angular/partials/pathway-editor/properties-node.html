@@ -1,0 +1,23 @@
+<div class="panel-heading">
+    Properties
+</div>
+<div class="panel-body">
+    <h4><a href="#" editable-text="selectedNode.name">{{ selectedNode.name || "empty" }}</a>
+        <button type="button" class="btn btn-danger btn-xs pull-right" ng-click="deleteNode()">
+            <i class="fa fa-trash-o"></i> Delete
+        </button>
+    </h4>
+    <p><a href="#" editable-text="selectedNode.description">{{ selectedNode.description || "empty" }}</a></p>
+
+    <div mc-thing-picker
+         widget-name="Data Elements"
+         selected-things="selectedNode.dataElements"
+         all-things-resource="allDataElementsResource"
+            ></div>
+
+    <div mc-thing-picker
+         widget-name="Forms"
+         selected-things="selectedNode.forms"
+         all-things-resource="allFormsResource"
+            ></div>
+</div>

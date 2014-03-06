@@ -78,30 +78,8 @@
         </div>
 
         <!-- If selectedItem is undefined, the right panel will be empty -->
-        <div class="ui-layout-east panel panel-primary" ng-controller="NodePropertiesCtrl">
-            <div class="panel-heading">
-                Properties
-            </div>
-            <div class="panel-body" ng-hide="selectedNode">
-                <p>Select a node to view it's properties</p>
-            </div>
-            <div class="panel-body" ng-show="selectedNode">
-                <h4><a href="#" editable-text="selectedNode.name">{{ selectedNode.name || "empty" }}</a><button type="button" class="btn btn-danger btn-xs pull-right" ng-click="deleteNode()">
-                    <i class="fa fa-trash-o"></i> Delete
-                </button></h4>
-                <p><a href="#" editable-text="selectedNode.description">{{ selectedNode.description || "empty" }}</a></p>
-
-                <div mc-thing-picker
-                     widget-name="Data Elements"
-                     selected-things="selectedNode.dataElements"
-                     all-things="selectedNode.dataElements"
-                ></div>
-
-                <div mc-thing-picker
-                        widget-name="Forms"
-                        selected-things="selectedNode.forms"
-                        ></div>
-            </div>
+        <div class="ui-layout-east" ng-controller="NodePropertiesCtrl" width="100px" >
+            <div ui-view class="panel panel-primary"></div>
         </div>
     </div>
 

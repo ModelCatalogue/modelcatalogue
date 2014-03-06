@@ -115,10 +115,12 @@ task npm(type: Exec) {
 task bower(dependsOn: 'npm', type: Exec) {
     commandLine "${npmBin.binPath}bower", 'install'
 }
-
-
 check.dependsOn bower
 
+task karma(type: Exec) {
+    commandLine "${npmBin.binPath}karma", 'start', '--single-run', '--reporters junit,coverage'
+}
+check.dependsOn karma
 // Hack to give enough memory to Grails even though it's in a forked VM - this should be fixed in Grails soon
 tasks.withType(org.grails.gradle.plugin.tasks.GrailsTask) { Task t ->
     t.jvmOptions {
