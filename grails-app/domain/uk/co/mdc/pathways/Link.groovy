@@ -5,6 +5,15 @@ class Link {
     // the delete to cascade from Pathway to Link (but not vice-versa)
 	static belongsTo = [pathway: Pathway]
 
+    String name
+    String description
+
 	Node source
 	Node target
+
+
+    static constraints = {
+        description nullable:true
+        name nullable:true
+    }
 }

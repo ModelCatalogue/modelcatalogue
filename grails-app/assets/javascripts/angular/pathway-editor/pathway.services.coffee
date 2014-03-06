@@ -5,6 +5,27 @@
 
 angular.module('pathway.services', ['ngResource', 'ui.router'])
 
+.service 'Currentpathway', ->
+		currentPathway=null
+		setPathway: (pathway) ->
+			currentPathway=pathway
+		getPathway: ->
+			return currentPathway
+
+
+.service 'LinkSelector', ->
+		selectedLink = null
+
+		selectLink: (link) ->
+			selectedLink = link
+		isSelected: (link) ->
+			selectedLink == link
+		getSelectedLink: ->
+			selectedLink
+		unSelectLink: ->
+			selectedLink = null
+
+
 .service 'NodeSelector', ($state) ->
 		selectedNode = null
 
@@ -72,6 +93,5 @@ angular.module('pathway.services', ['ngResource', 'ui.router'])
 				if !response.hasErrors
 					fixNodeIds(pathway, response.idMappings)
 					fixLinkIds(pathway, response.idMappings)
-
 			return grailsResponse
 	]
