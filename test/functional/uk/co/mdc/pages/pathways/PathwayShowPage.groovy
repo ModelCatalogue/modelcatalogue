@@ -8,43 +8,56 @@ package uk.co.mdc.pages.pathways;
 import uk.co.mdc.pages.BasePageWithNav;
 
 class PathwayShowPage extends BasePageWithNav{
-	
-	static url = "/pathways/*"
-	
-	static at = {
-		url == "/pathways/*" &&
-		title == "Pathway Editor"
-	}
-	
-	
-	
-	static content = {
-		pathwayName  { 	$("#pathwayName") }
+
+    static url = "/pathways/*"
+
+    static at = {
+        url == "/pathways/*" &&
+                title == "Pathway Editor"
+    }
+
+
+
+    static content = {
+        pathwayName  { 	$("#pathwayName") }
         pathwayUserVersion { $("#userVersion") }
         pathwayDescription { $("#pathwayDescription") }
         pathwayIsDraft { $("#pathwayIsDraft") }
 
-		addNodeButton { pathwayCanvas.find("i", class: "fa-plus-square") }
-		node2(required:false) { $("#node7") }
-		addFormModal { $("#AddFormModal") }
-		addFormButton { $("h5", text: "Forms").find("i") }
-		formDesignTableFirstRow { $("#formDesignTable tbody tr", 0) }
-		formDesignTableRows { $("#formDesignTable tbody tr") }
-		formDesignTableFRLink { formDesignTableFirstRow.find("a") }
-		formDesignCartListFirstItem { $("#formCartList li") }
+        addNodeButton { pathwayCanvas.find("i", class: "fa-plus-square") }
+        node2(required:false) { $("#node7") }
+        node1(required:false) { $("#node6") }
+        node3(required:false) { $("#node2") }
 
-		pathwayCanvas { $(".jsplumb-container") }
+        subNode1(required:false) { $("#node3") }
+        subNode2(required:false) { $("#node4") }
+        subNode3(required:false) { $("#node5") }
+
+        addFormModal { $("#AddFormModal") }
+        addFormButton { $("h5", text: "Forms").find("i") }
+        formDesignTableFirstRow { $("#formDesignTable tbody tr", 0) }
+        formDesignTableRows { $("#formDesignTable tbody tr") }
+        formDesignTableFRLink { formDesignTableFirstRow.find("a") }
+        formDesignCartListFirstItem { $("#formCartList li") }
+
+        pathwayCanvas { $(".jsplumb-container") }
 
         goToParentButton { $("i", class: "fa-reply") }
-		deleteSelectedElementButton {$("div", text: "Properties").parent().find("button", text: contains("Delete"))}
+        deleteSelectedElementButton {$("div", text: "Properties").parent().find("button", text: contains("Delete"))}
 
         propertiesName { $("a", 'editable-text':"selectedNode.name")}
         propertiesEditName { propertiesName.siblings("form").find("input", type: "text")}
         propertiesDescription { $("a", 'editable-text':"selectedNode.description")}
 
+        NodePropertiesPanel {$("#NodePropertiesPanel")}
         saveButton { $("button", text: "Save pathway") }
 
-	}
+        LinkPropertiesPanel(required:false) {$("#LinkPropertiesPanel")}
+        link3(required:false){$("div#link3")}
+        link4(required:false){$("div#link4")}
+        link2(required:false){$("div#link2")}
+
+    }
 
     def getXeditableSubmit(def editableValue){
         return editableValue.siblings("form").find("button", type: "submit")
@@ -107,13 +120,16 @@ class PathwayShowPage extends BasePageWithNav{
         def preCreationNodes = getNodeIds()
         addNodeButton.click()
 
+        waitFor {
+            preCreationNodes.size() ==  getNodeIds().size()-1
+        }
         def postCreationNodes = getNodeIds()
         postCreationNodes.removeAll(preCreationNodes)
 
         assert postCreationNodes.size() == 1
         def node = getNode(postCreationNodes[0])
 
-        return getNode(postCreationNodes[0])
+        return node
 
     }
 
@@ -152,6 +168,80 @@ class PathwayShowPage extends BasePageWithNav{
     }
 
 
+    def getNodeId(node)
+    {
+        node.attr("id")
+    }
 
 
+    def getNodeEndPoint(node,endpointType)
+    {
+        node.find("div.ep."+endpointType)
+    }
+
+    def getLinkIds()
+    {
+        def ids = []
+        $(".link").each { link ->
+            ids.add( link.attr("id") )
+        }
+        return ids
+    }
+
+
+
+    def getLink(linkId)
+    {
+        $(".link[id^='"+linkId+"']")
+    }
+
+
+    def getLocalLinkIds()
+    {
+        def ids = []
+        $(".link[id^='linkLOCAL']").each { link ->
+            ids.add( link.attr("id") )
+        }
+        return ids
+    }
+
+    def createLink(sourceNode,sourceEndPoint,targetNode,targetEndpoint)
+    {
+        def linkIdsPre
+        def linkIdsPost
+
+        linkIdsPre = getLinkIds()
+
+        def nodeAEndpoint = getNodeEndPoint(sourceNode,sourceEndPoint)
+        def nodeBEndpoint = getNodeEndPoint(targetNode,targetEndpoint)
+        def nodeAEndpointX = nodeAEndpoint.x
+        def nodeAEndpointY = nodeAEndpoint.y
+
+        def nodeBEndpointX = nodeBEndpoint.x
+        def nodeBEndpointY = nodeBEndpoint.y
+
+        def xOffset = nodeBEndpointX - nodeAEndpointX
+        def yOffset = nodeBEndpointY  - nodeAEndpointY
+
+        interact {
+            clickAndHold(nodeAEndpoint)
+            moveByOffset(xOffset,yOffset)
+            release()
+        }
+
+        linkIdsPost = getLinkIds()
+        linkIdsPost.removeAll(linkIdsPre)
+
+        //return the created link
+        if(linkIdsPost.size()==1)
+            return getLink(linkIdsPost[0])
+        else
+            return  null
+
+    }
+
+    def doubleClickOnNode(node)
+    {
+        interact { doubleClick(node) }
+    }
 }

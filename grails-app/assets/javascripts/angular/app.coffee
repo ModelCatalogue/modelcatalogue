@@ -31,8 +31,9 @@ angular.module(angularAppName,
 		url: "/node/:nodeId",
 		templateUrl: '/' + grailsAppName + '/assets/angular/partials/pathway-editor/properties-node.html'
 		controller: 'NodePropertiesCtrl'
-		onEnter: ($stateParams, NodeSelector, $state) ->
-			unless NodeSelector.getSelectedNode()
+		onEnter: ($stateParams, ItemSelector, $state) ->
+			item = ItemSelector.getSelectedItem()
+			if !item || item.type!='node'
 				$state.go('empty')
 	}
 	$stateProvider.state 'link', {
