@@ -73,8 +73,73 @@ class PathwayServiceUnitSpec extends Specification {
         }
     }
 
-	@Ignore
-    def "createLocalNodes removes the deleted node and its link from the pathway" ()
+    def "createLocalNodes adds the new local node to the pathway" ()
+    {
+        setup:
+        fixGORMGet()
+
+        when:"Adding a node to the pathway"
+        def pathway = new Pathway(name: "Pathway 1", isDraft: false).save()
+        Node node1 = new Node(name: "Node 1").save()
+        Node node2 = new Node(name: "Node 2").save()
+        pathway.addToNodes(node1)
+        pathway.addToNodes(node2)
+
+        Link link12=new Link(name: "Link12",source: node1,target: node2,pathway: pathway).save();
+        pathway.addToLinks(link12)
+
+        assert pathway.links.size() ==1
+        assert pathway.nodes.size() ==2
+
+        def clientPathway = [
+                id: pathway.id,
+                name:"Pathway 1",
+                nodes:[
+                        [id:"LOCAL1",name:'Local new node1',nodes: [],links: []],
+                        [id:node1.id, name:"Node 1",nodes: [],links: []],
+                        [id:node2.id, name:"Node 2",nodes: [],links: []]
+                ],
+                links:[[id:link12.id, source:node1,target: node2,name: "Link12",pathway: pathway]]
+        ]
+        def idMappings = [:]
+        service.createLocalNodes(clientPathway ,idMappings)
+
+        then:"the new node should have been added to the pathway"
+        Pathway.get(pathway.id).nodes.size() == 3
+        Pathway.get(pathway.id).links.size() == 1
+    }
+
+
+    def "createLocalNodes removes the deleted node from the pathway" ()
+    {
+        setup:
+        fixGORMGet()
+
+        when:"Deleting a node from pathway"
+        def pathway = new Pathway(name: "Pathway 1", isDraft: false).save()
+        Node node1 = new Node(name: "Node 1").save()
+        Node node2 = new Node(name: "Node 2").save()
+        pathway.addToNodes(node1)
+        pathway.addToNodes(node2)
+
+        assert pathway.nodes.size() ==2
+
+        def clientPathway = [
+                id: pathway.id,
+                name:"Pathway 1",
+                nodes:[
+                        [id:node1.id, name:"Node 1",nodes: [],links: []]
+                ]
+        ]
+        def idMappings = [:]
+        service.createLocalNodes(clientPathway ,idMappings)
+
+        then:"the node should have been removed from pathway"
+        Pathway.get(pathway.id).nodes.size() == 1
+    }
+
+
+    def "cleanAndCreateLinks removes the attached links to the deleted node from the pathway" ()
     {
         setup:
         fixGORMGet()
@@ -98,39 +163,29 @@ class PathwayServiceUnitSpec extends Specification {
         assert pathway.links.size() ==2
         assert pathway.nodes.size() ==3
 
-        //user removed node3 from pathway and
-        //added one new node
         def clientPathway = [
                 id: pathway.id,
                 name:"Pathway 1",
                 nodes:[
-                        [id:"nodeLOCAL1",name:'Local new node1',nodes: [],links: []],
                         [id:node1.id, name:"Node 1",nodes: [],links: []],
                         [id:node2.id, name:"Node 2",nodes: [],links: []]
                 ],
                 links:[[id:link12.id, source:node1,target: node2,name: "Link12",pathway: pathway]]
         ]
         def idMappings = [:]
-        service.createLocalNodes(clientPathway ,idMappings)
         service.cleanAndCreateLinks(clientPathway ,idMappings)
 
 
-        then:"the node and its links should have been removed from pathway"
-        Pathway.get(pathway.id).nodes.size() == 3
+        then:"links attached to the deleted node should have been removed from pathway"
         Pathway.get(pathway.id).links.size() == 1
     }
 
-
-
-	@Ignore
     def "cleanAndCreateLinks removes the deleted link from the pathway" ()
     {
-
         setup:
         fixGORMGet()
 
-
-        when:"Deleting a node from pathway"
+        when:"Deleting a link from pathway"
         def pathway = new Pathway(name: "Pathway 1", isDraft: false).save()
         Node node1 = new Node(name: "Node 1").save()
         Node node2 = new Node(name: "Node 2").save()
@@ -146,33 +201,60 @@ class PathwayServiceUnitSpec extends Specification {
         pathway.addToLinks(link13)
 
 
-        //user removed link 1-3 from pathway and
-        //added one new node
+        assert pathway.links.size() ==2
+        assert pathway.nodes.size() ==3
+
         def clientPathway = [
                 id: pathway.id,
                 name:"Pathway 1",
                 nodes:[
-                        [id:"nodeLOCAL1",name:'Local new node1',nodes: [],links: []],
                         [id:node1.id, name:"Node 1",nodes: [],links: []],
                         [id:node2.id, name:"Node 2",nodes: [],links: []],
                         [id:node3.id, name:"Node 3",nodes: [],links: []]
                 ],
-                links:[
-                        [id:link12.id, source:node1,target: node2,name: "Link12"]
-                ]
+                links:[[id:link12.id, source:node1,target: node2,name: "Link12",pathway: pathway]]
         ]
         def idMappings = [:]
-        service.createLocalNodes(clientPathway ,idMappings)
         service.cleanAndCreateLinks(clientPathway ,idMappings)
 
-        then:"the link should have been removed from pathway"
-        Pathway.get(pathway.id).nodes.size() == 4
+
+        then:"deleted link should have been removed from pathway"
         Pathway.get(pathway.id).links.size() == 1
-        Link.get(link12.id).source.id == node1.id
-        Link.get(link12.id).target.id == node2.id
     }
 
-	@Ignore
+
+    def "cleanAndCreateLinks adds the created link to the pathway" ()
+    {
+        setup:
+        fixGORMGet()
+
+        when:"Adding a link to the pathway"
+        def pathway = new Pathway(name: "Pathway 1", isDraft: false).save()
+        Node node1 = new Node(name: "Node 1").save()
+        Node node2 = new Node(name: "Node 2").save()
+        pathway.addToNodes(node1)
+        pathway.addToNodes(node2)
+
+        assert pathway.nodes.size() ==2
+
+        def clientPathway = [
+                id: pathway.id,
+                name:"Pathway 1",
+                nodes:[
+                        [id:node1.id, name:"Node 1",nodes: [],links: []],
+                        [id:node2.id, name:"Node 2",nodes: [],links: []]
+                ],
+                links:[[id:"LOCAL1", source:node1,target: node2,name: "Link12",pathway: pathway]]
+        ]
+        def idMappings = [:]
+        service.cleanAndCreateLinks(clientPathway ,idMappings)
+
+
+        then:"link between the two nodes is added to the pathway"
+        Pathway.get(pathway.id).links.size() == 1
+    }
+
+	@Ignore //can not run this test due to inheritance problem in GORM in mock objects
     def "createLocalNodes removes the deleted node and its link from the subPathway" ()
     {
         setup:

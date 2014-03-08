@@ -86,10 +86,6 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 
     }
 
-    /**
-     * added by Soheil to solve MC-125
-     (Problem:Creating a second node places it over the first one)
-     */
     def "When a new node is added, make it as selected"()
     {
         at PathwayShowPage
@@ -102,10 +98,6 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
         node.attr("id") == selectedNode.attr("id")
     }
 
-    /**
-     * added by Soheil to solve MC-125
-     (Problem:Creating a second node places it over the first one)
-     */
     def "When new nodes are added, the second one should appear properly underneath the first one"()
     {
         at PathwayShowPage

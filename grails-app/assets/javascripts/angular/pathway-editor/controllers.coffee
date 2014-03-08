@@ -1,33 +1,26 @@
 pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 
 .controller('PathwayEditorCtrl',
-		['$scope', 'Grails', 'NodeSelector','LinkSelector', 'PathwayPersistence','Currentpathway', ($scope, Grails, NodeSelector,LinkSelector, PathwayPersistence,Currentpathway) ->
+		['$scope', 'Grails', 'NodeService', 'PathwayPersistence','Currentpathway','ItemSelector','LinkService', ($scope, Grails, NodeService, PathwayPersistence,Currentpathway,ItemSelector,LinkService) ->
 			$scope.controller = "pathways" # override because we want to use the RestController endpoints
 			$scope.pathway = Grails.getRestResource($scope).get {action: 'show'}
 			Currentpathway.setPathway($scope.pathway)
 
-			$scope.selectNode = NodeSelector.selectNode
-			$scope.isSelected = NodeSelector.isSelected
-			$scope.selectedNode = NodeSelector.getSelectedNode
+
+			#	Treeview uses this as this controller is its parent controller
+			$scope.selectItem = ItemSelector.selectItem
+
+			$scope.isItemSelected = ItemSelector.isItemSelected
+
 
 			$scope.deleteNode = (node) ->
 				currentPathway = Currentpathway.getPathway()
-				NodeSelector.deleteNode(currentPathway, node)
+				NodeService.deleteNode(currentPathway, node)
 
 
 			$scope.deleteLink = (link) ->
 				currentPathway = Currentpathway.getPathway()
-				index = currentPathway.links.indexOf(link)
-				if(index>-1)
-					currentPathway.links.splice(index, 1);
-					#select the connection based on it'd conenctionId
-					connections = jsPlumb.getConnections()
-					for con in connections
-						if(con._jsPlumb.parameters.connectionId == link.id )
-							jsPlumb.detach(con)
-							LinkSelector.selectLink(null)
-							return
-
+				LinkService.deleteLink(currentPathway,link)
 
 
 			$scope.save = () ->
@@ -40,67 +33,68 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 					jsPlumb.repaintEverything();
 
 		])
-.controller('NodePropertiesCtrl', ['$scope', 'NodeSelector','Grails',($scope, NodeSelector,Grails) ->
+
+.controller('NodePropertiesCtrl', ['$scope', 'ItemSelector','NodeService','Currentpathway','Grails',($scope, ItemSelector,NodeService,Currentpathway,Grails) ->
 
 		$scope.allFormsResource = Grails.getRestAPIResource('forms')
 		$scope.allDataElementsResource = Grails.getRestAPIResource('dataelements')
 
 		$scope.selectedNode = null
+
 		$scope.switchToSubPathway = ->
 			console.log("FIXME: this should switch the pathway viewer's scope to node " + $scope.selectedNode.id)
 
 		$scope.deleteNode = ->
-			# FIXME, change this so it doesn't reference parent
-			$scope.$parent.deleteNode($scope.selectedNode)
+			currentPathway = Currentpathway.getPathway()
+			NodeService.deleteNode(currentPathway, $scope.selectedNode)
 
 
-		# Watch the NodeSelector function for changes. The second function actions a change, setting the
+		# Watch the ItemSelector function for changes. The second function actions a change, setting the
 		# selectedNode scope variable to be the new value retrieved from the service
 		$scope.$watch(->
-			NodeSelector.getSelectedNode()
-		, (selectedNode) ->
-			$scope.selectedNode = selectedNode
+			ItemSelector.getSelectedItem()
+		, (selectedItem) ->
+			if(selectedItem && selectedItem.type== 'node')
+				$scope.selectedNode = selectedItem.item
 		, false # Just check for object equality
 		)
 	])
 
-
-
-.controller('LinkPropertiesCtrl',['$scope','LinkSelector',($scope,LinkSelector)->
+.controller('LinkPropertiesCtrl',['$scope','ItemSelector','LinkService','Currentpathway',($scope,ItemSelector,LinkService,Currentpathway)->
 		$scope.selectedLink = null
 
 		$scope.deleteLink = ->
-			$scope.$parent.deleteLink($scope.selectedLink)
+			currentPathway = Currentpathway.getPathway()
+			LinkService.deleteLink(currentPathway,$scope.selectedLink)
 
+
+		# Watch the ItemSelector function for changes. The second function actions a change, setting the
+		# selectedLink scope variable to be the new value retrieved from the service
 		$scope.$watch(->
-			LinkSelector.getSelectedLink()
-		, (selectedLink) ->
-			console.log('link clicked in LinkPropertiesCtrl')
-			$scope.selectedLink = selectedLink
+			ItemSelector.getSelectedItem()
+		, (selectedItem) ->
+			if(selectedItem && selectedItem.type== 'link')
+				$scope.selectedLink = selectedItem.item
 		, false
 		)
 
 	])
 
-.controller('GraphCanvasCtrl', ['$scope', 'NodeSelector','LinkSelector','Currentpathway', ($scope, NodeSelector,LinkSelector,Currentpathway) ->
+.controller('GraphCanvasCtrl', ['$scope', 'NodeService','Currentpathway','ItemSelector','LinkService', ($scope, NodeService,Currentpathway,ItemSelector,LinkService) ->
 		$scope.pathway = $scope.$parent.pathway
 
-
-		$scope.selectNode = NodeSelector.selectNode
-		$scope.isSelected = NodeSelector.isSelected
-		$scope.unSelectNode = NodeSelector.unSelectNode
-
-
-		$scope.selectLink = LinkSelector.selectLink
-		$scope.unSelectLink = LinkSelector.unSelectLink
-		$scope.isLinkSelected = LinkSelector.isSelected
+		$scope.selectItem = ItemSelector.selectItem
+		$scope.unSelectItem = ItemSelector.unSelectItem
+		$scope.isItemSelected = ItemSelector.isItemSelected
 
 
-
-
-		$scope.deleteKeyPressed = (event, node) ->
+		$scope.deleteKeyPressed = (event, item) ->
 			if event && event.keyCode == 46
-				NodeSelector.deleteNode($scope.pathway, node)
+				selectedItem = ItemSelector.getSelectedItem()
+				if(selectedItem && selectedItem.type=='node')
+					NodeService.deleteNode($scope.pathway, item)
+				else if (selectedItem && selectedItem.type=='link')
+					LinkService.deleteLink($scope.pathway, item)
 
 
 		$scope.viewSubpathway = (node) ->
@@ -111,15 +105,13 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 
 
 		$scope.$watch(->
-			NodeSelector.getSelectedNode()
-		, (selectedNode) ->
-			if(selectedNode)
-				LinkSelector.unSelectLink() #unselect links, if any selected
-			return if selectedNode is null
-			newParent = getParentOfSelectedNode($scope.$parent.pathway, selectedNode)
-			if (newParent isnt $scope.pathway)
-				jsPlumb.deleteEveryEndpoint() # FIXME this should be handled in the directive. Controllers are for data model, directives are for DOM manipulation
-				$scope.pathway = newParent
+			ItemSelector.getSelectedItem()
+		, (selectedItem) ->
+				if(selectedItem && selectedItem.type== 'node')
+					newParent = getParentOfSelectedNode($scope.$parent.pathway, selectedItem.item)
+					if (newParent isnt $scope.pathway)
+						jsPlumb.deleteEveryEndpoint() # FIXME this should be handled in the directive. Controllers are for data model, directives are for DOM manipulation
+						$scope.pathway = newParent
 		, false) # Just check for object equality
 
 
@@ -150,10 +142,11 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 		$scope.addNode = ->
 			nodeX = 0
 			nodeY = 0
-			selectedNode = NodeSelector.getSelectedNode()
-			if selectedNode
-				nodeX = selectedNode.x
-				nodeY = selectedNode.y + $('#node' + selectedNode.id).outerHeight() + 50
+			selectedItem = ItemSelector.getSelectedItem()
+
+			if selectedItem && selectedItem.type=='node'
+				nodeX = selectedItem.item.x
+				nodeY = selectedItem.item.y + $('#node' + selectedItem.item.id).outerHeight() + 50
 			else
 				# FIXME get rid of the JQuery selector here - DOM should occur in the directive...
 				nodeX = $('.ui-layout-center').scrollLeft() + 50 + (Math.random() * 150)
@@ -169,7 +162,7 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 				y: nodeY
 			}
 			$scope.pathway.nodes.push newNode
-			NodeSelector.selectNode(newNode)
+			ItemSelector.selectItem(newNode,'node')
 
 		lastLocalId = 0
 		nextLocalId = ->
@@ -177,26 +170,22 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 			return lastLocalId
 	])
 
-.controller('TreeViewCtrl', ['$scope', 'NodeSelector','Currentpathway', ($scope, NodeSelector,Currentpathway) ->
+.controller('TreeViewCtrl', ['$scope', 'ItemSelector','Currentpathway','NodeService', ($scope, ItemSelector,Currentpathway,NodeService) ->
 		$scope.rootPathway = $scope.pathway = $scope.$parent.pathway
-
-		# These are already in $parent scope
-#		$scope.selectNode = NodeSelector.selectNode
-#		$scope.isSelected = NodeSelector.isSelected
-#		$scope.unSelectNode = NodeSelector.unSelectNode
 
 		$scope.deleteKeyPressed = (event, node) ->
 			if event && event.keyCode == 46
-				NodeSelector.deleteNode($scope.pathway, node)
+				currentPathway = Currentpathway.getPathway()
+				NodeService.deleteNode(currentPathway, node)
 
 		$scope.$watch(->
-			NodeSelector.getSelectedNode()
-		, (selectedNode) ->
-			return if selectedNode is null
-			newParent = getParentOfSelectedNode($scope.$parent.pathway, selectedNode)
-			if (newParent isnt $scope.pathway)
-				$scope.pathway = newParent
-				Currentpathway.setPathway(newParent)
+			ItemSelector.getSelectedItem()
+		, (selectedItem) ->
+			if(selectedItem && selectedItem.type== 'node')
+				newParent = getParentOfSelectedNode($scope.$parent.pathway, selectedItem.item)
+				if (newParent isnt $scope.pathway)
+					$scope.pathway = newParent
+					Currentpathway.setPathway(newParent)
 		, false) # Just check for object equality
 
 		getParentOfSelectedNode = (pathway, node)->

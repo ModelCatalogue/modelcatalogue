@@ -75,7 +75,6 @@ class PathwayService {
         clientPathway.nodes.each{ node ->
             // if new, create
             if(node.id =~ /^LOCAL/){
-                println "adding node "+node.name
                 def oldId = node.id
                 node.id = null
 
@@ -149,7 +148,7 @@ class PathwayService {
 
             Pathway parent = get(unsavedPathway.id)
             Link savedLink;
-            if(link.id =~ /^LOCALLINK/){
+            if(link.id =~ /^LOCAL/){
                 def oldId = link.id
                 link.id = null
                 link.pathway = parent

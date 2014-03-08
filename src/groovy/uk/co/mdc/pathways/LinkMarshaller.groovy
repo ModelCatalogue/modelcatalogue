@@ -13,6 +13,8 @@ class LinkMarshaller {
                 'source': link?.source?.id,
                 'target': link?.target?.id,
                 'version' : link?.version,
+                'name': link?.name,
+                'description': link?.description
 			]
 		}
 

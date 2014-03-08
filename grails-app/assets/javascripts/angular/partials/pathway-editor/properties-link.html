@@ -1,0 +1,11 @@
+<div class="panel-heading" id="LinkPropertiesPanel">
+    Properties
+</div>
+<div class="panel-body">
+    <h4><a href="#" editable-text="selectedLink.name">{{ selectedLink.name || "empty" }}</a>
+        <button type="button" class="btn btn-danger btn-xs pull-right" ng-click="deleteLink()">
+            <i class="fa fa-trash-o"></i> Delete
+        </button>
+    </h4>
+    <p><a href="#" editable-text="selectedLink.description">{{ selectedLink.description || "empty" }}</a></p>
+</div>
