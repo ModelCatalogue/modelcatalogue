@@ -92,13 +92,10 @@
         </div>
 
         <!-- If selectedItem is undefined, the right panel will be empty -->
-        <div class="ui-layout-east" ng-controller="NodePropertiesCtrl" width="100px" >
+        <div class="ui-layout-east" width="100px" >
             <div ui-view class="panel panel-primary"></div>
         </div>
-        <div  class="ui-layout-east" ng-controller="LinkPropertiesCtrl" width="100px" >
 
-            <div  ui-view class="panel panel-primary" ></div>
-        </div>
 
     </div>
 
