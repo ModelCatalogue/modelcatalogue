@@ -1,9 +1,6 @@
 package uk.co.mdc.spec.pathways
-
 import geb.spock.GebReportingSpec
-import org.junit.internal.builders.IgnoredBuilder
 import org.openqa.selenium.Dimension
-import spock.lang.Ignore
 import uk.co.mdc.pages.DashboardPage
 import uk.co.mdc.pages.authentication.LoginPage
 import uk.co.mdc.pages.pathways.PathwayListPage
@@ -28,72 +25,42 @@ class PathwayAddRemoveLinkSpec extends GebReportingSpec{
     }
 
 
-    def "Check if endpoints exists for a new created local node"()
-    {
-        def nodeA
-        def upEndpoint
-        def downEndpoint
-        def leftEndpoint
-        def rightEndpoint
-
-        when: "Creating a node"
-        nodeA= createNode()
-        upEndpoint = getNodeEndPoint(nodeA,'up')
-        downEndpoint = getNodeEndPoint(nodeA,'down')
-        leftEndpoint = getNodeEndPoint(nodeA,'left')
-        rightEndpoint = getNodeEndPoint(nodeA,'right')
-
-        then: "It should have 4 endpoints"
-        assert nodeA
-        assert upEndpoint
-        assert upEndpoint.attr('id').startsWith('jsPlumb_1')
-        assert downEndpoint
-        assert downEndpoint.attr('id').startsWith('jsPlumb_1')
-        assert leftEndpoint
-        assert leftEndpoint.attr('id').startsWith('jsPlumb_1')
-        assert rightEndpoint
-        assert rightEndpoint.attr('id').startsWith('jsPlumb_1')
-    }
 
 
     def "Check if a link is created by dragging and dropping from one new local node to another new local node"()
     {
-        def nodeA
-        def nodeB
-        def link
+        setup: "Creating two nodes and drag&drop a link between them"
+        def nodeA= createNode()
+        def nodeB= createNode()
 
-        when: "Creating two nodes and drag&drop a link between them"
-        nodeA= createNode()
-        nodeB= createNode()
-        link = createLink(nodeA,'down',nodeB,'up')
+        expect:"no local link exits"
+        getLocalLinkIds().size()==0
 
-        then: "A link should be created between them"
-        assert link
-        assert link.attr('id') == "linkLOCAL1"
+        when:"creating a new link between them"
+        def link = createLink(nodeA,'down',nodeB,'up')
 
+        then: "A local link should be created between them"
+        link
+        getLocalLinkIds().size() == 1
     }
 
 
     def "Check if Id of local link are updated after saving the pathway"()
     {
-        def nodeA
-        def nodeB
-        def link
+        setup: "Create a pathway and add a couple of nodes and a link to it"
+        to PathwayListPage
+        createPathway("test") //do this test in a new pathway as it's going to save it
+        at  PathwayShowPage
+        createLink(createNode(),'down',createNode(),'up')
 
-        when: "Creating two nodes and drag&drop a link between them"
-        nodeA= createNode()
-        nodeB= createNode()
-        link = createLink(nodeA,'down',nodeB,'up')
+        expect: "some local IDs to be present before the save"
+        getLocalLinkIds().size() == 1
 
-        then: "A link should be created between them"
-        assert link
-        assert link.attr('id') == "linkLOCAL1"
-
-        when:"saving the pathway"
+        when: "I click save"
         saveButton.click()
 
         then:"all ids of local links are updated"
-        waitFor(10) {
+        waitFor {
             getLocalLinkIds().size() == 0
         }
     }
@@ -101,49 +68,39 @@ class PathwayAddRemoveLinkSpec extends GebReportingSpec{
 
     def "Check if it stops creating duplicate links between two new local nodes"()
     {
-        def nodeA
-        def nodeB
-        def link1
-        def link2
-        def link3
-        def link4
+        setup: "Create a pathway and add a couple of nodes and a link to it"
+        to PathwayListPage
+        createPathway("test") //do this test in a new pathway as it's going to save it
+        at  PathwayShowPage
+        def nodeA = createNode()
+        def nodeB = createNode()
+        createLink(nodeA,'down',nodeB,'up')
 
-        when: "Creating two nodes "
-        nodeA= createNode()
-        nodeB= createNode()
+        expect: "a local links should be created"
+        getLocalLinkIds().size() == 1
 
-        then: "there should be no link"
-        waitFor (10){
-            getLocalLinkIds().size() == 0
-        }
 
-        when:"drag&drop a link between them AND again add more links between them"
-        link1=createLink(nodeA,'down',nodeB,'up')
-        link2=createLink(nodeA,'right',nodeB,'up')
-        link3=createLink(nodeA,'left',nodeB,'left')
-        link4=createLink(nodeA,'right',nodeB,'bottom')
+        when:"creating several links between the two nodes"
+        createLink(nodeA,'down',nodeB,'up')
+        createLink(nodeA,'right',nodeB,'up')
+        createLink(nodeA,'left',nodeB,'left')
+        createLink(nodeA,'right',nodeB,'bottom')
 
         then: "Just one node should be created between them"
-//        waitFor (10){
-//            getLocalLinkIds().size()== 1
-//        }
-        assert link1
-        assert !link2
-        assert !link3
-        assert !link4
+        getLocalLinkIds().size()== 1
     }
 
 
     def "Check if clicking on a link, shows its properties panel"()
     {
-        when:"At pathway"
+        setup:"At pathway"
         at PathwayShowPage
 
-        then:"Link properties panel is not displayed"
-        assert !LinkPropertiesPanel
+        expect:"Link properties panel is not displayed and a link exists"
+        !LinkPropertiesPanel
+        link3
 
         when: "Clicking on a link"
-        assert link3
         link3.click()
 
 
@@ -152,43 +109,48 @@ class PathwayAddRemoveLinkSpec extends GebReportingSpec{
             LinkPropertiesPanel
             LinkPropertiesPanel.displayed
         }
-
-        when:"and then clicking on another node"
-        node1.click()
-
-        then: "properties panel should disappear"
-        assert !LinkPropertiesPanel.displayed
     }
-
 
     def "Check when deleting a link, it will be removed from pathway"()
     {
-        when: "In a subPathway and Clicking on a link and deleting it"
+        setup: "In a pathway and clicking on a link and deleting it"
         at PathwayShowPage
-        assert link4
+
+        expect:"a link to be available"
+        link4
+
+        when:"deleting a link"
         link4.click()
         deleteSelectedElementButton.click()
 
         then: "the link should be removed"
         !link4
+        waitFor {
+            getLocalLinkIds().size() == 0
+        }
+
     }
 
     def "Check when we are in a subPathway and deleting a link, it will be removed from pathway"()
     {
-        def link2Id
-
-        when: "In a subPathway and Clicking on a link and deleting it"
+        setup: "In a subPathway"
         at PathwayShowPage
-        assert node3
+        node3
         doubleClickOnNode(node3)
-        assert getAllNodes().size()==3
-        assert getLinkIds().size()==2
-        link2Id= link2.attr('id')
+
+
+        expect:"a link to be available"
+        link2
+
+        when:"deleting the link"
         link2.click()
         deleteSelectedElementButton.click()
 
         then: "the link should be removed"
-        !getLink(link2Id)
-        getLinkIds().size()==1
+        !link2
+        waitFor {
+            getLocalLinkIds().size() == 0
+        }
     }
+
 }
