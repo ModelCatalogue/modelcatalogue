@@ -71,7 +71,6 @@ class PathwayListPage extends BasePageWithNav{
      */
     def createPathway(String name) {
 
-
         nav.expandPathwayMenuLink.click()
         waitFor{
             nav.createPathwayLink.displayed

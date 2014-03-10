@@ -102,13 +102,9 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
     {
         at PathwayShowPage
 
-        def node1
-        def node2
-        def selectedNode
-
         when: "I create a node"
-        node1 = createNode();
-        selectedNode = getSelectedNode()
+        def node1 = createNode();
+        def selectedNode = getSelectedNode()
 
 
         then:"It should be added and selected"
@@ -116,7 +112,7 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 
 
         when: "I create another node"
-        node2  = createNode();
+        def node2  = createNode();
         selectedNode = getSelectedNode()
 
 
@@ -132,46 +128,42 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 
     def "When on pathway and double click on a blank space, a new node should be added"()
     {
+        setup:"on pathway"
         at PathwayShowPage
+        def preCreationNodeIds = getNodeIds()
 
-        def preCreationNodeIds
-        def postCreationNodeIds
 
-        when:"On the pathway and double click an blank space"
-        preCreationNodeIds = getNodeIds()
+        when:"double-clicking in blank space area"
         interact { doubleClick(pathwayCanvas) }
-        postCreationNodeIds      = getNodeIds()
+        def postCreationNodeIds      = getNodeIds()
         postCreationNodeIds.removeAll(preCreationNodeIds)
 
         then:"a new node is added"
-        assert postCreationNodeIds.size() == 1
+        postCreationNodeIds.size() == 1
 
-        then: "the new node is selected"
-        assert postCreationNodeIds[0]
-        assert getSelectedNode()
-        assert postCreationNodeIds[0] == getSelectedNode().attr("id")
+        and: "the new node is selected"
+        postCreationNodeIds[0]
+        getSelectedNode()
+        postCreationNodeIds[0] == getSelectedNode().attr("id")
 
     }
 
     def "When on Pathway and click on a blank space, the selected node should be unSelected" ()
     {
+        setup:"on the pathway"
         at PathwayShowPage
-        def allNodes
-        def seletedNode
+        def allNodes = getAllNodes()
 
-        when:"On the pathway"
-        allNodes = getAllNodes()
-
-        then:"Some nodes should be there"
-        assert allNodes[0]
+        expect:"Some nodes should be there"
+        allNodes[0]
 
         when: "click on a node"
-        seletedNode=allNodes[0]
-        seletedNode.click()
+        def selectedNode=allNodes[0]
+        selectedNode.click()
 
 
         then:"the node should be selected"
-        assert seletedNode.attr("id") == getSelectedNode().attr("id")
+        selectedNode.attr("id") == getSelectedNode().attr("id")
 
 
         when:"click on a blank space on Container"
@@ -179,9 +171,24 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 
 
         then: "the selected node should be unSelected and no node is selected"
-        waitFor(1){
+        waitFor{
             getSelectedNode().size()==0
         }
-        assert !seletedNode.classes().contains('selectedItem')
+        !selectedNode.classes().contains('selectedItem')
     }
+
+
+    def "Check if endpoints exists for a new created local node"()
+    {
+        when: "Creating a node"
+        def nodeA= createNode()
+
+        then:"node and its four endpoints to be created"
+        nodeA
+        getNodeEndPoint(nodeA,'up')
+        getNodeEndPoint(nodeA,'down')
+        getNodeEndPoint(nodeA,'left')
+        getNodeEndPoint(nodeA,'right')
+    }
+
 }
