@@ -1,22 +1,32 @@
+import org.modelcatalogue.core.Model
+import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder as SCH
 import org.springframework.web.context.support.WebApplicationContextUtils
+
 import uk.co.mdc.SecAuth
 import uk.co.mdc.SecUser
 import uk.co.mdc.SecUserSecAuth
-import uk.co.mdc.forms.*
-import uk.co.mdc.model.*
+
+import uk.ac.ox.brc.modelcatalogue.forms.FormDesign
+import uk.ac.ox.brc.modelcatalogue.forms.InputField
+import uk.ac.ox.brc.modelcatalogue.forms.QuestionElement
+import uk.ac.ox.brc.modelcatalogue.forms.Rule
+import uk.ac.ox.brc.modelcatalogue.forms.SectionElement
+
+import org.modelcatalogue.core.ConceptualDomain
+import org.modelcatalogue.core.DataElement
+import org.modelcatalogue.core.DataType
+import org.modelcatalogue.core.ValueDomain
+
 import uk.co.mdc.pathways.Link
 import uk.co.mdc.pathways.Node
 import uk.co.mdc.pathways.Pathway
-import org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import org.springframework.security.acls.domain.BasePermission
+
 
 
 class BootStrap {
-	def aclService
 	def aclUtilService
 	def sessionFactory
 	def springSecurityService
@@ -182,11 +192,8 @@ class BootStrap {
 		grantAdminPermissions(DataElement.list())
 		grantAdminPermissions(ValueDomain.list())
 		grantAdminPermissions(ConceptualDomain.list())
-		grantAdminPermissions(DataElementConcept.list())
+		grantAdminPermissions(Model.list())
 		grantAdminPermissions(DataType.list())
-		grantAdminPermissions(Document.list())
-		grantAdminPermissions(ExternalReference.list())
-		grantAdminPermissions(Collection.list())
 		grantAdminPermissions(FormDesign.list())
 		grantAdminPermissions(QuestionElement.list())
 		grantAdminPermissions(InputField.list())
@@ -201,11 +208,8 @@ class BootStrap {
 		grantUserPermissions(DataElement.list())
 		grantUserPermissions(ValueDomain.list())
 		grantUserPermissions(ConceptualDomain.list())
-		grantUserPermissions(DataElementConcept.list())
+		grantUserPermissions(Model.list())
 		grantUserPermissions(DataType.list())
-		grantUserPermissions(Document.list())
-		grantUserPermissions(ExternalReference.list())
-		grantUserPermissions(Collection.list())
 		grantUserPermissions(FormDesign.list())
 		grantUserPermissions(QuestionElement.list())
 		grantUserPermissions(InputField.list())
@@ -259,167 +263,152 @@ class BootStrap {
 		if (!ConceptualDomain.count()) {
 			ConceptualDomain COSD = new ConceptualDomain(name:"TESTDOMAIN", description:"Cancer Outcomes and Services Dataset").save(failOnError: true)
 
-			if (!DataElementConcept.count()) {
-					DataElementConcept CORE = new DataElementConcept(name:"CORE", description:"CORE data set").save(failOnError: true)
-					DataElementConcept HAEMA = new DataElementConcept(name:"HAEMATOLOGY", description:"HAEMATOLOGY data set").save(failOnError: true)
-					new DataElementConcept(name:"CORE - DIAGNOSTIC DETAILS", parent: CORE).save(failOnError: true)
-					new DataElementConcept(name:"CORE - PATIENT IDENTITY DETAILS", parent: CORE).save(failOnError: true)
-					DEM = new DataElementConcept(name:"CORE - DEMOGRAPHICS",  parent: CORE).save(failOnError: true)
-					DataElementConcept REF = new DataElementConcept(name:"CORE - REFERRALS", parent: CORE).save(failOnError: true)
-					new DataElementConcept(name:"CORE - IMAGING", parent: CORE).save(failOnError: true)
-					new DataElementConcept(name:"CORE - DIAGNOSIS", parent: CORE).save(failOnError: true)
-					new DataElementConcept(name:"CORE - CANCER CARE PLAN", parent: CORE).save(failOnError: true)
-					new DataElementConcept(name:"CORE - CLINICAL TRIALS", parent: CORE).save(failOnError: true)
-					new DataElementConcept(name:"CORE - STAGING", parent: CORE).save(failOnError: true)
+			if (!Model.count()) {
+				Model CORE = new Model(name:"CORE", description:"CORE data set").save(failOnError: true)
+				Model HAEMA = new Model(name:"HAEMATOLOGY", description:"HAEMATOLOGY data set").save(failOnError: true)
+				new Model(name:"CORE - DIAGNOSTIC DETAILS", parent: CORE).save(failOnError: true)
+				new Model(name:"CORE - PATIENT IDENTITY DETAILS", parent: CORE).save(failOnError: true)
+				DEM = new Model(name:"CORE - DEMOGRAPHICS",  parent: CORE).save(failOnError: true)
+				Model REF = new Model(name:"CORE - REFERRALS", parent: CORE).save(failOnError: true)
+				new Model(name:"CORE - IMAGING", parent: CORE).save(failOnError: true)
+				new Model(name:"CORE - DIAGNOSIS", parent: CORE).save(failOnError: true)
+				new Model(name:"CORE - CANCER CARE PLAN", parent: CORE).save(failOnError: true)
+				new Model(name:"CORE - CLINICAL TRIALS", parent: CORE).save(failOnError: true)
+				new Model(name:"CORE - STAGING", parent: CORE).save(failOnError: true)
 
 
 
-					if (!DataType.count()) {
+				if (!DataType.count()) {
 
 
-							//declare cancer enumerated data types....to get things going
-							Map nhsStatusEnumeration = ["01": "Number present and verified",
-									"02": "Number present but not traced",
-									"03": "Trace required", "04": "Trace attempted - No match or multiple match found",
-									"05": "Trace needs to be resolved - (NHS Number or patient detail conflict)",
-									"06": "Trace in progress" ,
-									"07": "Number not present and trace not required",
-									"08": "Trace postponed (baby under six weeks old)"]
+					//declare cancer enumerated data types....to get things going
+					Map nhsStatusEnumeration = ["01": "Number present and verified",
+							"02": "Number present but not traced",
+							"03": "Trace required", "04": "Trace attempted - No match or multiple match found",
+							"05": "Trace needs to be resolved - (NHS Number or patient detail conflict)",
+							"06": "Trace in progress" ,
+							"07": "Number not present and trace not required",
+							"08": "Trace postponed (baby under six weeks old)"]
 
-							new DataType(name:"NHS NUMBER STATUS INDICATOR", enumerated: true, enumerations: nhsStatusEnumeration).save(failOnError: true)
+					new DataType(name:"NHS NUMBER STATUS INDICATOR", enumerated: true, enumerations: nhsStatusEnumeration).save(failOnError: true)
 
-							Map genderCode = ["0": "Not Known", "1": "Male", "2": "Female", "9": "Not Specified"]
+					Map genderCode = ["0": "Not Known", "1": "Male", "2": "Female", "9": "Not Specified"]
 
-							new DataType(name:"NHS PERSON GENDER", enumerated: true, enumerations: genderCode).save(failOnError: true)
+					new DataType(name:"NHS PERSON GENDER", enumerated: true, enumerations: genderCode).save(failOnError: true)
 
-							Map enthicCat = [ "A":"(White) British",
-									"B":"(White) Irish",
-									"C":"Any other White background",
-									"D":"White and Black Caribbean",
-									"E":"White and Black African",
-									"F":"White and Asian",
-									"G":"Any other mixed background",
-									"H":"Indian",
-									"J":"Pakistani",
-									"K":"Bangladeshi",
-									"L":"Any other Asian background",
-									"M":"Caribbean",
-									"N":"African",
-									"P":"Any other Black background",
-									"R":"Chinese",
-									"S":"Any other ethnic group",
-									"Z":"Not stated",
-									"99":"Not Known"]
-
-
-							DataType ETH_CAT = new DataType(name:"NHS ETHIC CATEGORY", enumerated: true, enumerations: enthicCat).save(failOnError: true)
-
-							Map referralSource = [
-									"01":"following an emergency admission",
-									"02":"following a Domiciliary Consultation",
-									"10":"following an Accident And Emergency Attendance (including Minor Injuries Units and Walk In Centres)",
-									"11":"other - initiated by the CONSULTANT responsible for the Consultant Out-Patient Episode",
-									"03":"referral from a GENERAL MEDICAL PRACTITIONER",
-									"92":"referral from a GENERAL DENTAL PRACTITIONER",
-									"12":"referral from a GENERAL PRACTITIONER with a Special Interest (GPwSI) or dentist with a Special Interest (DwSI)",
-									"04":"referral from an Accident And Emergency Department (including Minor Injuries Units and Walk In Centres)",
-									"05":"referral from a CONSULTANT other than in an Accident And Emergency Department",
-									"06":"self-referral",
-									"07":"referral from a Prosthetist",
-									"13":"referral from a Specialist NURSE (Secondary Care)",
-									"14":"referral from an Allied Health Professional",
-									"15":"referral from an OPTOMETRIST",
-									"16":"referral from an Orthoptist",
-									"17":"referral from a National Screening Programme",
-									"93":"referral from a Community Dental Service",
-									"97":"other - not initiated by the CONSULTANT responsible for the Consultant Out-Patient Episode"]
-
-							DataType OP_REF = new DataType(name:"NHS SOURCE OUT-PATIENT REFERRAL ", enumerated: true, enumerations: referralSource).save(failOnError: true)
+					Map enthicCat = [ "A":"(White) British",
+							"B":"(White) Irish",
+							"C":"Any other White background",
+							"D":"White and Black Caribbean",
+							"E":"White and Black African",
+							"F":"White and Asian",
+							"G":"Any other mixed background",
+							"H":"Indian",
+							"J":"Pakistani",
+							"K":"Bangladeshi",
+							"L":"Any other Asian background",
+							"M":"Caribbean",
+							"N":"African",
+							"P":"Any other Black background",
+							"R":"Chinese",
+							"S":"Any other ethnic group",
+							"Z":"Not stated",
+							"99":"Not Known"]
 
 
-							//declare normal data types
+					DataType ETH_CAT = new DataType(name:"NHS ETHIC CATEGORY", enumerated: true, enumerations: enthicCat).save(failOnError: true)
 
-							string = new DataType(name:"String", enumerated: false).save(failOnError: true)
-							new DataType(name:"Text", enumerated: false).save(failOnError: true)
-							new DataType(name:"Integer", enumerated: false).save(failOnError: true)
-							date = new DataType(name:"Date", enumerated: false).save(failOnError: true)
-							new DataType(name:"Datetime", enumerated: false).save(failOnError: true)
-							new DataType(name:"Time", enumerated: false).save(failOnError: true)
-							new DataType(name:"Float", enumerated: false).save(failOnError: true)
-							new DataType(name:"Boolean", enumerated: false).save(failOnError: true)
-							new DataType(name:"Blob", enumerated: false).save(failOnError: true)
+					Map referralSource = [
+							"01":"following an emergency admission",
+							"02":"following a Domiciliary Consultation",
+							"10":"following an Accident And Emergency Attendance (including Minor Injuries Units and Walk In Centres)",
+							"11":"other - initiated by the CONSULTANT responsible for the Consultant Out-Patient Episode",
+							"03":"referral from a GENERAL MEDICAL PRACTITIONER",
+							"92":"referral from a GENERAL DENTAL PRACTITIONER",
+							"12":"referral from a GENERAL PRACTITIONER with a Special Interest (GPwSI) or dentist with a Special Interest (DwSI)",
+							"04":"referral from an Accident And Emergency Department (including Minor Injuries Units and Walk In Centres)",
+							"05":"referral from a CONSULTANT other than in an Accident And Emergency Department",
+							"06":"self-referral",
+							"07":"referral from a Prosthetist",
+							"13":"referral from a Specialist NURSE (Secondary Care)",
+							"14":"referral from an Allied Health Professional",
+							"15":"referral from an OPTOMETRIST",
+							"16":"referral from an Orthoptist",
+							"17":"referral from a National Screening Programme",
+							"93":"referral from a Community Dental Service",
+							"97":"other - not initiated by the CONSULTANT responsible for the Consultant Out-Patient Episode"]
 
-							if (!DataElement.count()&&!ValueDomain.count()) {
-
-									DataElementValueDomain.link(new DataElement(name:"SOURCE OF REFERRAL FOR OUT-PATIENTS",
-									description:"This identifies the source of referral of each Consultant Out-Patient Episode.",
-									dataElementConcept: REF).save(failOnError: true),
-									new ValueDomain(name:"NHS SOURCE OF REFERRAL FOR OUT-PATIENTS",
-									description:"",
-									dataType: OP_REF,
-									conceptualDomain: COSD,
-									format:"an2").save(failOnError: true))
-
-
-									DataElementValueDomain.link(new DataElement(name:"ETHNIC CATEGORY",
-									description:"The ethnicity of a PERSON, as specified by the PERSON.. The 16+1 ethnic data categories defined in the 2001 census is the national mandatory standard for the collection and analysis of ethnicity.(The Office for National Statistics has developed a further breakdown of the group from that given, which may be used locally.)",
-									dataElementConcept: DEM).save(failOnError: true),
-									new ValueDomain(name:"NHS ETHNIC CATEGORY",
-									description:"",
-									dataType: ETH_CAT,
-									conceptualDomain: COSD,
-									format:"an2").save(failOnError: true))
-
-									DataElementValueDomain.link(new DataElement(name:"PERSON FAMILY NAME (AT BIRTH)",
-									description:"The PATIENTs surname at birth.",
-									dataElementConcept: DEM).save(failOnError: true),
-									new ValueDomain(name:"NHS PERSON FAMILY NAME (AT BIRTH)",
-									description:"",
-									dataType: string,
-									conceptualDomain: COSD,
-									format:"max 35 characters").save(failOnError: true))
-
-                                DataElementValueDomain.link(new DataElement(name:"GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION)",
-                                        description:"The GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION) is an ORGANISATION CODE. This is the code of the GP Practice that the PATIENT is registered with.",
-                                        dataElementConcept: DEM).save(failOnError: true),
-                                        new ValueDomain(name:"NHS GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION)",
-                                                description:"",
-                                                dataType: string,
-                                                conceptualDomain: COSD,
-                                                format:"an6").save(failOnError: true))
-
-                                100.times { it ->
-                                    DataElementValueDomain.link(new DataElement(name:"TEST ELEMENT ${it}",
-                                            description:"A test element",
-                                            dataElementConcept: DEM).save(failOnError: true),
-                                            new ValueDomain(name:"Test value domain ${it}",
-                                                    description:"",
-                                                    dataType: string,
-                                                    conceptualDomain: COSD,
-                                                    format:"an6").save(failOnError: true))
-                                }
-
-									
-
-							}
-							
-							def dataElement = DataElement.get(1);
-							
-							DataElementCollection.link(dataElement,
-								new Collection(refId: 'Col1',
-								name: 'TestCol',
-								description: 'blah blah blah').save(failOnError: true), SchemaSpecification.MANDATORY)
+					DataType OP_REF = new DataType(name:"NHS SOURCE OUT-PATIENT REFERRAL ", enumerated: true, enumerations: referralSource).save(failOnError: true)
 
 
+					//declare normal data types
 
-							
-							}
+					string = new DataType(name:"String", enumerated: false).save(failOnError: true)
+					new DataType(name:"Text", enumerated: false).save(failOnError: true)
+					new DataType(name:"Integer", enumerated: false).save(failOnError: true)
+					date = new DataType(name:"Date", enumerated: false).save(failOnError: true)
+					new DataType(name:"Datetime", enumerated: false).save(failOnError: true)
+					new DataType(name:"Time", enumerated: false).save(failOnError: true)
+					new DataType(name:"Float", enumerated: false).save(failOnError: true)
+					new DataType(name:"Boolean", enumerated: false).save(failOnError: true)
+					new DataType(name:"Blob", enumerated: false).save(failOnError: true)
+
+					if (!DataElement.count()&&!ValueDomain.count()) {
+
+						new DataElement(name: "SOURCE OF REFERRAL FOR OUT-PATIENTS",
+								description: "This identifies the source of referral of each Consultant Out-Patient Episode.",
+								dataElementConcept: REF).save(failOnError: true)
+						new ValueDomain(name: "NHS SOURCE OF REFERRAL FOR OUT-PATIENTS",
+								description: "",
+								dataType: OP_REF,
+								conceptualDomain: COSD,
+								format: "an2").save(failOnError: true)
+
+
+						new DataElement(name: "ETHNIC CATEGORY",
+								description: "The ethnicity of a PERSON, as specified by the PERSON.. The 16+1 ethnic data categories defined in the 2001 census is the national mandatory standard for the collection and analysis of ethnicity.(The Office for National Statistics has developed a further breakdown of the group from that given, which may be used locally.)",
+								dataElementConcept: DEM).save(failOnError: true)
+						new ValueDomain(name: "NHS ETHNIC CATEGORY",
+								description: "",
+								dataType: ETH_CAT,
+								conceptualDomain: COSD,
+								format: "an2").save(failOnError: true)
+
+
+						new DataElement(name: "PERSON FAMILY NAME (AT BIRTH)",
+								description: "The PATIENTs surname at birth.",
+								dataElementConcept: DEM).save(failOnError: true)
+						new ValueDomain(name: "NHS PERSON FAMILY NAME (AT BIRTH)",
+								description: "",
+								dataType: string,
+								conceptualDomain: COSD,
+								format: "max 35 characters").save(failOnError: true)
+
+
+						new DataElement(name:"GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION)",
+							description:"The GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION) is an ORGANISATION CODE. This is the code of the GP Practice that the PATIENT is registered with.",
+							dataElementConcept: DEM).save(failOnError: true)
+						new ValueDomain(name:"NHS GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION)",
+								description:"",
+								dataType: string,
+								conceptualDomain: COSD,
+								format:"an6").save(failOnError: true)
+
+
+						100.times { it ->
+							new DataElement(name:"TEST ELEMENT ${it}",
+								description:"A test element",
+								dataElementConcept: DEM).save(failOnError: true)
+							new ValueDomain(name:"Test value domain ${it}",
+								description:"",
+								dataType: string,
+								conceptualDomain: COSD,
+								format:"an6").save(failOnError: true)
+						}
 					}
+				}
 			}
-		
-		
-		
-		
+		}
 
 		if(!FormDesign.count()){
 			
@@ -485,6 +474,7 @@ class BootStrap {
 					).save(failOnError: true)
 
 			def question1 = new QuestionElement(
+					name: "q1",
 					designOrder: 1,
 					prompt: 'how old are you',
 					style: 'this style1',
@@ -494,6 +484,7 @@ class BootStrap {
 					).save(failOnError: true)
 
 			def question2 = new QuestionElement(
+					name: "q2",
 					designOrder: 2,
 					prompt: 'operation reference',
 					style: 'this style3',
@@ -503,6 +494,7 @@ class BootStrap {
 					).save(failOnError: true)
 
 			def question3 = new QuestionElement(
+					name: "q3",
 					designOrder: '3',
 					prompt: 'this is the thirs question',
 					style: 'this style5',
@@ -512,6 +504,7 @@ class BootStrap {
 					).save(failOnError: true)
 
 			def question4 = new QuestionElement(
+					name: "q4",
 					designOrder: 4,
 					prompt: 'this is the 4th question',
 					style: 'this style5',
@@ -521,6 +514,7 @@ class BootStrap {
 					).save(failOnError: true)
 
 			def question5 = new QuestionElement(
+					name: "q5",
 					designOrder: 5,
 					prompt: 'this is the 5th question',
 					style: 'this style5',
@@ -539,11 +533,13 @@ class BootStrap {
 
 
 			def section1 = new SectionElement(
+					name: "s1",
 					title: 'section1',
 					designOrder: 1
 					).save(failOnError:true)
 
 			def section2 = new SectionElement(
+					name: "s2",
 					title: 'section2',
 					designOrder: 2
 					).save(failOnError:true)
@@ -580,8 +576,8 @@ class BootStrap {
                     y: '330px',
                     parent: pathway1,
             ).save(failOnError:true)
-            .addToDataElements(DataElement.get(1))
-            .addToDataElements(DataElement.get(2))
+            //.addToDataElements(DataElement.get(1))
+            //.addToDataElements(DataElement.get(2))
             //.addToForms(FormDesign.get(1))
 
             Node node1 = new Node(
@@ -664,9 +660,5 @@ class BootStrap {
                     .addToLinks(link22)
 		}		
 	}
-	
-
-
-	
 }
 	

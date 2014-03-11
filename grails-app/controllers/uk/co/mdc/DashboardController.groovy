@@ -3,7 +3,7 @@ package uk.co.mdc
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 import grails.plugins.springsecurity.Secured
-import uk.co.mdc.forms.FormDesign
+import uk.ac.ox.brc.modelcatalogue.forms.FormDesign
 
 
 @Secured(['ROLE_USER'])

@@ -1,6 +1,6 @@
 package uk.co.mdc.api.v1
 
-import uk.co.mdc.model.DataElement
+import org.modelcatalogue.core.DataElement
 
 class DataElementController extends BetterRestfulController{
 

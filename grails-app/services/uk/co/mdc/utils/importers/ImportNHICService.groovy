@@ -2,11 +2,10 @@ package uk.co.mdc.utils.importers
 
 import org.json.simple.JSONObject
 import org.springframework.security.acls.domain.BasePermission
-import uk.co.mdc.model.ValueDomain
-import uk.co.mdc.model.DataElement
-import uk.co.mdc.model.DataType
-import uk.co.mdc.model.DataElementConcept
-import uk.co.mdc.model.ConceptualDomain
+import org.modelcatalogue.core.ValueDomain
+import org.modelcatalogue.core.DataElement
+import org.modelcatalogue.core.DataType
+import org.modelcatalogue.core.ConceptualDomain
 
 class ImportNHICService {
 
@@ -51,6 +50,10 @@ class ImportNHICService {
             fileFunctions[filename](tokens);
         }
     }
+
+	private fileFunctions = []
+
+	/**
 
     private fileFunctions = [
             '/Initial/CAN.csv':
@@ -758,4 +761,5 @@ class ImportNHICService {
         }
         return cd
     }
+	**/
 }

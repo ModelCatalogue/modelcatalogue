@@ -16,6 +16,8 @@ grails.project.fork = [
 // Grails 2.3 uses Aether by default
 grails.project.dependency.resolver = "maven"
 
+grails.plugin.location."modelcatalogue-forms" = "/Users/rb/src/modelcatalogue-forms"
+
 grails.project.dependency.resolution = {
 			
     // inherit Grails' default dependencies
@@ -50,6 +52,10 @@ grails.project.dependency.resolution = {
 
 		// Used for Vlad's fixtures plugin
 		mavenRepo 'http://dl.bintray.com/metadata/model-catalogue'
+
+		repositories {
+			mavenRepo("http://dl.bintray.com/adam-milward/ModelCatalogueCore")
+		}
     }
 
     dependencies {
@@ -82,6 +88,9 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
+
+		compile "org.modelcatalogue.plugins:model-catalogue-core-plugin:0.0.2"
+
         //compile ":searchable:0.6.5" // removed search for 0.1
         compile ":spring-security-ui:0.2"
         compile ':spring-security-core:1.2.7.3'

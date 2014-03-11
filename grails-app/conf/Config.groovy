@@ -39,6 +39,9 @@ grails.mime.types = [
 		'application/xml']
 ]
 
+elasticSearch.client.mode = 'local'
+elasticSearch.datastoreImpl = 'hibernateDatastore'
+
 // URL Mapping Cache Max Size, defaults to 5000
 //grails.urlmapping.cache.maxsize = 1000
 
