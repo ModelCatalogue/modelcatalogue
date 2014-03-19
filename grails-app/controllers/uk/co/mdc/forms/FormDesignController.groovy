@@ -179,7 +179,6 @@ class FormDesignController {
 			
 			//define temporary variables that need to be stored in the questions array
 			//whilst looping through data elements (below)
-			ValueDomain valueDomain
 			def valueDomains
 			def label
 			def unitOfMeasure

@@ -16,6 +16,9 @@ grails.project.fork = [
 // Grails 2.3 uses Aether by default
 grails.project.dependency.resolver = "maven"
 
+grails.plugin.location.'ModelCatalogueCorePlugin' = "../ModelCataloguePlugin/ModelCatalogueCorePlugin"
+grails.plugin.location.'ModelCatalogueElasticSearchPlugin' = "../ModelCataloguePlugin/ModelCatalogueElasticSearchPlugin"
+
 grails.project.dependency.resolution = {
 			
     // inherit Grails' default dependencies

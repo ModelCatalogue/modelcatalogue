@@ -32,4 +32,9 @@ class DashboardController {
         ]
 
 	}
+
+    def metadataCurator() {
+        []
+    }
+
 }
