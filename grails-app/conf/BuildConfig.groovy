@@ -62,6 +62,9 @@ grails.project.dependency.resolution = {
         compile 'com.googlecode.json-simple:json-simple:1.1.1'
         //compile "org.compass-project:compass:2.2.1" // Removed search for 0.1
 
+        compile "org.apache.poi:poi:3.8"
+        compile "org.apache.poi:poi-ooxml:3.8"
+
         // Testing modules
         test "org.gebish:geb-spock:0.9.2"
         test "org.seleniumhq.selenium:selenium-support:${webDriverVersion}"

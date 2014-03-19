@@ -102,6 +102,7 @@
                                 <li class="divider"></li>
                                 <li class="dropdown-header">Import/Export</li>
                                 <li><g:link mapping="importData">Import data</g:link></li>
+                                <li><g:link mapping="importICU">Import ICU Excel</g:link></li>
                             </ul>
                         </li>
                     </ul>

@@ -71,7 +71,9 @@ class PathwayAddRemoveLinkSpec extends GebReportingSpec{
         setup: "Create a pathway and add a couple of nodes and a link to it"
         to PathwayListPage
         createPathway("test") //do this test in a new pathway as it's going to save it
-        at  PathwayShowPage
+        waitFor {
+            at  PathwayShowPage
+        }
         def nodeA = createNode()
         def nodeB = createNode()
         createLink(nodeA,'down',nodeB,'up')

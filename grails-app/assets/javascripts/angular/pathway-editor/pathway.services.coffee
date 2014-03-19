@@ -118,9 +118,8 @@ angular.module('pathway.services', ['ngResource', 'ui.router'])
 		#   errors: a list of errors returned from the server (if any)
 		save: (scope, pathway) ->
 			grailsResponse = Grails.getRestResource(scope).update pathway, (response) ->
-				# If there aren't any errors lets update the local references
+			# If there aren't any errors lets update the local references
 				if !response.hasErrors
-					debugger;
 					fixLinkIds(pathway, response.idMappings)
 					fixNodeIds(pathway, response.idMappings)
 			return grailsResponse
