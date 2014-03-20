@@ -43,6 +43,12 @@ class ExcelImporterController {
                     flash.message =ex.message;
                 }
              }
+            else
+            {
+                    flash.message ="Input file should be an Excel file!"
+                    render view: 'index'
+                    return;
+            }
         }
 
         render view: 'index'
