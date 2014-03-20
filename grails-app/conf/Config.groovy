@@ -1,5 +1,3 @@
-import grails.plugins.springsecurity.SecurityConfigType
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 // Additional configuration file locations. This is the default, but we need to load the contents of ~/.grails/model_catalogue-config.groovy
 // for the production DB connection/username/passord.
@@ -132,7 +130,7 @@ grails{
         includes = ["/application.less"]
         less.compiler='less4j' // faster than the default
     }
-	plugins{
+	plugin{
 		springsecurity{
 
 			// page to redirect to if a login attempt fails
@@ -145,7 +143,10 @@ grails{
 			userLookup.userDomainClassName = 'uk.co.mdc.SecUser'
 			userLookup.authorityJoinClassName = 'uk.co.mdc.SecUserSecAuth'
 			authority.className = 'uk.co.mdc.SecAuth'
-
+            requestMap.className = 'uk.co.mdc.Requestmap'
+            securityConfigType = 'Requestmap'
+            logout.postOnly = false
+ß
 			//disable to prevent double encryption of passwords
 			ui.encodePassword = false
 
@@ -158,7 +159,6 @@ grails{
 			ui.password.minLength=8
 			ui.password.maxLength=64
 
-			securityConfigType = SecurityConfigType.InterceptUrlMap
 			useSecurityEventListener = true
 
 			onInteractiveAuthenticationSuccessEvent = { e, appCtx ->
@@ -169,50 +169,51 @@ grails{
 				}
 			}
 
-			securityConfigType = "Annotation"
-			controllerAnnotations.staticRules = [
-                '/':                            ['IS_AUTHENTICATED_ANONYMOUSLY'],
+//			securityConfigType = "Annotation"
+//			controllerAnnotations.staticRules = [
+//                '/':                            ['IS_AUTHENTICATED_ANONYMOUSLY'],
+//                // Asset pipeline
+//                '/assets/**':                   ['IS_AUTHENTICATED_ANONYMOUSLY'],
+//
+//				// Javascript
+//				'/js/**':      			        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+//				'/js/vendor/**':  		        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+//				'/plugins/**/js/**':	        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+//				// CSS
+//				'/**/css/**':      		        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+//				'/css/**': 				        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+//                '/**/*.less':                   ['IS_AUTHENTICATED_ANONYMOUSLY'],
+//				// Images
+//				'/images/**': 			        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+//				'/img/**': 				        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+//
+//				// Anonymously acessible pages, e.g. registration & login
+//				'/login/*':    			        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+//				'/logout/*':    		        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+//				'/register/*':    		        ['IS_AUTHENTICATED_ANONYMOUSLY'],
+//
+//				'/securityInfo/**': 	        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
+//				'/role':  				        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
+//				'/role/**':  			        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
+//				'/user':  				        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
+//				'/user/**':  			        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
+//				'/aclClass':  			        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
+//				'/aclClass/**': 	 	        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
+//				'/aclSid':  			        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
+//				'/aclSid/**':  			        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
+//				'/aclEntry':  			        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
+//				'/aclEntry/**': 		        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
+//				'/aclObjectIdentity':	        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
+//				'/aclObjectIdentity/*':         ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
+//                '/dataElement':  ['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'],
+//                '/**':         			        ["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY']
+//			]
 
-                // Asset pipeline
-                '/assets/**':       ['IS_AUTHENTICATED_ANONYMOUSLY'],
 
-				// Javascript
-				'/js/**':      			        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/js/vendor/**':  		        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/plugins/**/js/**':	        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-				// CSS
-				'/**/css/**':      		        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/css/**': 				        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-                '/**/*.less':                   ['IS_AUTHENTICATED_ANONYMOUSLY'],
-				// Images
-				'/images/**': 			        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/img/**': 				        ['IS_AUTHENTICATED_ANONYMOUSLY'],
 
-				// Anonymously acessible pages, e.g. registration & login
-				'/login/*':    			['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/logout/*':    		['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/register/*':    		['IS_AUTHENTICATED_ANONYMOUSLY'],
-				
-				'/securityInfo/**': 	["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/role':  				["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/role/**':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/user':  				["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/user/**':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclClass':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclClass/**': 	 	["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclSid':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclSid/**':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclEntry':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclEntry/**': 		["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclObjectIdentity':	["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclObjectIdentity/*': ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/conceptualDomain/*':  ["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/valueDomain/*':       ["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/dataElement/*':       ["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/umlModel/*':         	["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/document/*':         	["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/**':         			["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY']
-			]
+
+
+
 		}
 	}
 	

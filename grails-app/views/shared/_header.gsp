@@ -1,7 +1,3 @@
-<%@ page import="org.codehaus.groovy.grails.plugins.PluginManagerHolder"%>
-<%@ page import="org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils"%>
-<%@ page import="grails.plugins.springsecurity.SecurityConfigType"%>
-
 <!DOCTYPE html>
 <!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
 <!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
@@ -105,12 +101,11 @@
                             </ul>
                         </li>
                     </ul>
+    </sec:ifAnyGranted>
                     <ul class="nav navbar-nav navbar-right">
                         <li><g:link data-placement="bottom" class="btn btn-inverse" data-original-title="Logout" rel="tooltip" controller="logout"> Logout </g:link></li>
-    </sec:ifAnyGranted>
-</sec:ifLoggedIn>
                     </ul>
-
+</sec:ifLoggedIn>
                 </div>
             </div>
         </nav>

@@ -1,12 +1,6 @@
 package uk.co.mdc
-
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-
-import grails.plugins.springsecurity.Secured
 import uk.co.mdc.forms.FormDesign
 
-
-@Secured(['ROLE_USER'])
 class DashboardController {
 
     def pathwayService

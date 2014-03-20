@@ -3,8 +3,10 @@ package uk.co.mdc.utils.importers
 import org.json.simple.JSONObject
 import org.modelcatalogue.core.ConceptualDomain
 import org.modelcatalogue.core.DataElement
+import org.modelcatalogue.core.DataType
 import org.modelcatalogue.core.EnumeratedType
 import org.modelcatalogue.core.Model
+import org.modelcatalogue.core.RelationshipType
 import org.modelcatalogue.core.ValueDomain
 import org.springframework.security.acls.domain.BasePermission
 //import uk.co.mdc.model.ValueDomain
@@ -29,6 +31,8 @@ class ImportNHICService {
 
 
     def importData() {
+        DataType.initDefaultDataTypes()
+        RelationshipType.initDefaultRelationshipTypes()
         getNhicFiles().each { filename -> singleImport(filename) }
     }
 //
@@ -56,6 +60,9 @@ class ImportNHICService {
 //     * @param filename The filename. Must exist in the collection returned by <code>getNhicFiles</code>
 //     */
     def singleImport(String filename) {
+
+        DataType.initDefaultDataTypes()
+        RelationshipType.initDefaultRelationshipTypes()
         def applicationContext = grailsApplication.mainContext
         String basePath = applicationContext.getResource("/").getFile().toString()
 

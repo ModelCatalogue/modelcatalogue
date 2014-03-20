@@ -46,6 +46,7 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
 
+        mavenRepo "http://repo.spring.io/milestone/"
         mavenRepo "http://download.java.net/maven/2/"
         mavenRepo 'http://maven.restlet.org'
         mavenRepo "http://repo.grails.org/grails/core"
@@ -86,9 +87,9 @@ grails.project.dependency.resolution = {
 
     plugins {
         //compile ":searchable:0.6.5" // removed search for 0.1
-        compile ":spring-security-ui:0.2"
-        compile ':spring-security-core:1.2.7.3'
-        compile ":spring-security-acl:1.1.1"
+        compile ":spring-security-ui:1.0-RC1"
+        compile ':spring-security-core:2.0-RC2'
+        compile ":spring-security-acl:2.0-RC1"
 
         compile ":audit-logging:0.5.5.3"
         compile ":jquery-ui:1.10.3"

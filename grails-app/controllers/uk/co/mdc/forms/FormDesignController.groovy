@@ -1,14 +1,10 @@
 package uk.co.mdc.forms
 
 import org.springframework.dao.DataIntegrityViolationException
-import uk.co.mdc.model.*
 import grails.converters.*
 import org.springframework.security.acls.model.Permission
-import grails.plugins.springsecurity.Secured
 import org.codehaus.groovy.grails.web.json.*
 import groovy.json.StringEscapeUtils
-
-@Secured(['ROLE_USER'])
 
 class FormDesignController {
 
