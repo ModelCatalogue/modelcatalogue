@@ -61,7 +61,7 @@
 <sec:ifLoggedIn>
                         <li><a href="${createLink(uri: '/dashboard/')}">Dashboard</a></li>
                         <!-- Metadata curation menu -->
-                        <li><g:link action="list" controller="ValueDomain"> Data model </g:link></li>
+                        <li><a href="${createLink(uri: '/dashboard/metadataCurator')}">Data model</a></li>
 
                         <!-- Pathways menu -->
                         <li class="dropdown">

@@ -28,7 +28,6 @@
 <div ng-app="demo">
 <div ng-controller="demo.DemoCtrl" class="container">
     <h1>Model Catalogue Core Demo Page</h1>
-
     <div>
         <form class="form" role="form" ng-submit="show()">
             <div class="form-group">
@@ -36,6 +35,7 @@
                 <input type="text" class="form-control" id="expression" ng-model="expression"
                        placeholder="Expression returning list promise">
                 <span class="help-block">
+                    <a ng-click="expression = indicator         ; show() ; columns = relationshipsColumns()">Show Indicator</a> ~
                     <a ng-click="expression = listResource      ; show() ; columns = valueDomainColumns()">Get Resource List</a> ~
                     <a ng-click="expression = listRelTypes      ; show() ; columns = relationshipTypeColumns()">Get Relationship Types List</a> ~
                     <a ng-click="expression = searchSomething   ; show() ; columns = idAndNameColumns()">Global Search</a> ~
@@ -47,12 +47,16 @@
         </form>
     </div>
 
-    <div>
-        <h2>Decorated List Widget</h2>
-        <decorated-list list="list" columns="columns"></decorated-list>
+    <div ng-show="element">
+        <catalogue-element-view element="element"></catalogue-element-view>
     </div>
 
-    <div>
+    <div ng-show="!list.empty">
+        <h2>Decorated List Widget</h2>
+        <decorated-list list="list" columns="columns" selection="selection"></decorated-list>
+    </div>
+
+    <div ng-show="!list.empty">
         <h2>Configure Columns</h2>
         <p>
             <a ng-click="expression = listResource      ; show() ; columns = valueDomainColumns()">Value Domain</a> ~
@@ -72,6 +76,9 @@
                     Class
                 </th>
                 <th>
+                    Show
+                </th>
+                <th>
                     &nbsp;
                 </th>
             </tr>
@@ -79,6 +86,7 @@
                 <td><input class="form-control" ng-model="column.header"/></td>
                 <td><input class="form-control" ng-model="column.value"/></td>
                 <td><input class="form-control" ng-model="column.classes"/></td>
+                <td><input class="form-control" ng-model="column.show"/></td>
                 <td>
                     <button class="btn btn-success btn-sm" ng-click="addColumn($index, column)"><span
                             class="glyphicon glyphicon-plus"></span> Add</button>
@@ -90,7 +98,7 @@
         </table>
 
     </div>
-</div>
+    </div>
 </div>
 </body>
 </html>

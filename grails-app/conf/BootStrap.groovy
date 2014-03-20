@@ -52,7 +52,10 @@ class BootStrap {
         for (String url in [
                 '/',
                 '/**/favicon.ico',
+                '/fonts/**',
                 '/assets/**',
+                '/plugins/**/js/**',
+                '/js/vendor/**',
                 '/**/*.less',
                 '/**/js/**',
                 '/**/css/**',
@@ -70,8 +73,16 @@ class BootStrap {
         new Requestmap(url: '/dashboard/**', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/pathways', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/pathways/**', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/pathway', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/pathway/**', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+
+        new Requestmap(url: '/pathways.json', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
 
         //only permit admin user registrationCode
+        new Requestmap(url: '/bootstrap-data/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/dataImport/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/admin', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/admin/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/securityInfo/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/role', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/role/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
@@ -89,7 +100,9 @@ class BootStrap {
 
         //only permit metadatacurator users access to the api
 
-        new Requestmap(url: '/api/modelCatalogue/core/*', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/search', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/search/**', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
         new Requestmap(url: '/api/modelCatalogue/core/*/create', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
         new Requestmap(url: '/api/modelCatalogue/core/*/edit', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
         new Requestmap(url: '/api/modelCatalogue/core/*/save', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()

@@ -133,9 +133,6 @@ grails{
 	plugin{
 		springsecurity{
 
-			// page to redirect to if a login attempt fails
-			failureHandler.defaultFailureUrl = '/login/authfail/?login_error=1'
-
             // redirection page for success (including successful registration
             successHandler.defaultTargetUrl = '/dashboard/'
 			
@@ -146,7 +143,7 @@ grails{
             requestMap.className = 'uk.co.mdc.Requestmap'
             securityConfigType = 'Requestmap'
             logout.postOnly = false
-ß
+
 			//disable to prevent double encryption of passwords
 			ui.encodePassword = false
 
@@ -168,51 +165,6 @@ grails{
 					user.save()
 				}
 			}
-
-//			securityConfigType = "Annotation"
-//			controllerAnnotations.staticRules = [
-//                '/':                            ['IS_AUTHENTICATED_ANONYMOUSLY'],
-//                // Asset pipeline
-//                '/assets/**':                   ['IS_AUTHENTICATED_ANONYMOUSLY'],
-//
-//				// Javascript
-//				'/js/**':      			        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-//				'/js/vendor/**':  		        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-//				'/plugins/**/js/**':	        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-//				// CSS
-//				'/**/css/**':      		        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-//				'/css/**': 				        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-//                '/**/*.less':                   ['IS_AUTHENTICATED_ANONYMOUSLY'],
-//				// Images
-//				'/images/**': 			        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-//				'/img/**': 				        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-//
-//				// Anonymously acessible pages, e.g. registration & login
-//				'/login/*':    			        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-//				'/logout/*':    		        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-//				'/register/*':    		        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-//
-//				'/securityInfo/**': 	        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-//				'/role':  				        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-//				'/role/**':  			        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-//				'/user':  				        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-//				'/user/**':  			        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-//				'/aclClass':  			        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-//				'/aclClass/**': 	 	        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-//				'/aclSid':  			        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-//				'/aclSid/**':  			        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-//				'/aclEntry':  			        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-//				'/aclEntry/**': 		        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-//				'/aclObjectIdentity':	        ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-//				'/aclObjectIdentity/*':         ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-//                '/dataElement':  ['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'],
-//                '/**':         			        ["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY']
-//			]
-
-
-
-
-
 
 		}
 	}
