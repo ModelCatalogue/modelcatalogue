@@ -21,34 +21,38 @@ class ExcelImporterController {
         if(!(request instanceof MultipartHttpServletRequest))
         {
             flash.error="No File to process!"
-            render view:""
+            render view:"index"
             return
         }
 
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)request;
-        List<MultipartFile> files = multiRequest.getFiles("excelFile");
+        MultipartFile  file = multiRequest.getFile("excelFile");
 
-        files.each{ MultipartFile file ->
-            def okContentTypes = ['application/vnd.ms-excel'];
-            def confType=file.getContentType();
-            if (okContentTypes.contains(confType) && file.size > 0){
-                def dataElements
-                try {
-                     dataElements= ICUExcelImporterService.GetICUDataElementNames(file.inputStream);
-                     def result=ICUExcelImporterService.SaveICUDataElement(dataElements);
-                     flash.message = "Pathway and DataElements are created."
-                }
-                catch(Exception ex)
-                {
-                    flash.message =ex.message;
-                }
-             }
-            else
-            {
-                    flash.message ="Input file should be an Excel file!"
-                    render view: 'index'
-                    return;
+        //Microsoft Excel files
+        //Microsoft Excel 2007 files
+        def okContentTypes = ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+        def confType=file.getContentType();
+        if (okContentTypes.contains(confType) && file.size > 0){
+            try {
+                 def dataElements= ICUExcelImporterService.GetICUDataElementNames(file.inputStream);
+                 def result=ICUExcelImporterService.SaveICUDataElement(dataElements);
+                 if(result)
+                    flash.message = "Pathway and DataElements are created.\n"+
+                                     dataElements.size()+" records in input file processed."
             }
+            catch(Exception ex)
+            {
+                log.error("Exception in handling excel file :"+ex.message)
+                flash.message ="Error in importing the excel file.";
+            }
+         }
+        else
+        {
+            if(!okContentTypes.contains(confType))
+               flash.message ="Input should be an Excel file!\n"+
+                          "but uploaded content is "+confType
+            else if (file.size<=0)
+                flash.message ="The uploaded file is empty!"
         }
 
         render view: 'index'
