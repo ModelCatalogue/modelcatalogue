@@ -43,13 +43,17 @@ class DashboardSpec extends GebReportingSpec {
         given: "I'm at the dashboard"
         to LoginPage
         loginRegularUser()
-        at DashboardPage
+        waitFor {
+            at DashboardPage
+        }
 
         when: "I go to the pathways list and click on a link"
         goToFormsScreen()
         getFormsLinks()[0].click()
 
         then:
-        at FormShowPage
+        waitFor {
+            at FormShowPage
+        }
     }
 }
