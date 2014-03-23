@@ -28,12 +28,49 @@ metadataCurator.controller('metadataCurator.elementTypeList', ['catalogueElement
 
   $scope.list = list
 
-  $scope.type = $stateParams.elementType
+  $scope.type = $stateParams.elementType.split(".").pop()
 
   $scope.valueDomainColumns = () -> [
+    {header: 'Name', value: 'name', classes: 'col-md-3', show: true}
+    {header: 'Description', value: 'description', classes: 'col-md-6'}
+    {header: 'Unit', value: 'unitOfMeasure', classes: 'col-md-3'}
+    {header: 'Data Type', value: 'dataType.name', classes: 'col-md-3'}
+  ]
+
+  $scope.dataElementColumns = () -> [
     {header: 'Code', value: 'code', classes: 'col-md-2', show: true}
     {header: 'Name', value: 'name', classes: 'col-md-4', show: true}
     {header: 'Description', value: 'description', classes: 'col-md-6'}
+  ]
+
+  $scope.measurementUnitColumns = () -> [
+    {header: 'Name', value: 'name', classes: 'col-md-4', show: true}
+    {header: 'Description', value: 'description', classes: 'col-md-6'}
+    {header: 'Symbol', value: 'symbol', classes: 'col-md-2', show: true}
+  ]
+
+  $scope.enumeratedTypeColumns = () -> [
+    {header: 'Name', value: 'name', classes: 'col-md-2', show: true}
+    {header: 'Description', value: 'description', classes: 'col-md-5'}
+    {header: 'Enumerations', value: 'enumerations', classes: 'col-md-4', show: true}
+  ]
+
+  $scope.dataTypeColumns = () -> [
+    {header: 'Name', value: 'name', classes: 'col-md-4', show: true}
+    {header: 'Description', value: 'description', classes: 'col-md-8'}
+  ]
+
+  $scope.conceptualDomainColumns = () -> [
+    {header: 'Name', value: 'name', classes: 'col-md-4', show: true}
+    {header: 'Description', value: 'description', classes: 'col-md-8'}
+  ]
+
+  $scope.relationshipTypeColumns = () -> [
+    {header: 'Name', value: 'name', classes: 'col-md-2', show: true}
+    {header: 'Source to Destination', value: 'sourceToDestination', classes: 'col-md-3'}
+    {header: 'Destination to Source', value: 'destinationToSource', classes: 'col-md-3'}
+    {header: 'Source Class', value: 'sourceClass', classes: 'col-md-3'}
+    {header: 'Destination Class', value: 'destinationClass', classes: 'col-md-3'}
   ]
 
   $scope.idAndNameColumns = () -> [
@@ -46,7 +83,26 @@ metadataCurator.controller('metadataCurator.elementTypeList', ['catalogueElement
 
   $scope.selection = []
 
-  $scope.columns = $scope.idAndNameColumns()
+
+  switch($scope.type)
+    when "dataElement"
+      $scope.columns = $scope.dataElementColumns()
+    when "valueDomain"
+      $scope.columns = $scope.valueDomainColumns()
+    when "conceptualDomain"
+      $scope.columns = $scope.conceptualDomainColumns()
+    when "dataType"
+      $scope.columns = $scope.dataTypeColumns()
+    when "model"
+      $scope.columns = $scope.idAndNameColumns()
+    when "enumeratedType"
+      $scope.columns = $scope.enumeratedTypeColumns()
+    when "measurementUnit"
+      $scope.columns = $scope.measurementUnitColumns()
+    when "relationshipType"
+      $scope.columns = $scope.relationshipTypeColumns()
+    else
+      $scope.columns = $scope.idAndNameColumns()
 
   $scope.removeColumn = (index) ->
     return if $scope.columns.length <= 1
@@ -71,7 +127,7 @@ metadataCurator.run(['$rootScope', '$state', '$stateParams', ($rootScope,   $sta
 ])
 
 metadataCurator.config(($stateProvider, $urlRouterProvider)->
-# For any unmatched url, send to /route1
+# For any unmatched url, send to /dataelement
   $urlRouterProvider.otherwise("/catalogueElement/dataElement")
 
   $stateProvider.state('catalogueElement', {
