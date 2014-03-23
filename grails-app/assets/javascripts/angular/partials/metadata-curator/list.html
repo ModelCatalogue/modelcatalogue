@@ -1,0 +1,5 @@
+<div ui-view class="span9 slide"></div>
+<div ng-show="!list.empty">
+    <h2 style="text-transform: capitalize">{{type}}s</h2>
+    <decorated-list list="list" columns="columns" selection="selection"></decorated-list>
+</div>

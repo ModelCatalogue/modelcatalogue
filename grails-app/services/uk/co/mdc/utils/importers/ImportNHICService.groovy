@@ -111,6 +111,7 @@ class ImportNHICService {
 
 
                         de.addToInstantiatedBy(vd)
+                        de.addToContainedIn(models)
 
                         //de.addToDataElementValueDomains(vd);
                         //de.save();
@@ -761,6 +762,8 @@ class ImportNHICService {
         //categories look something like ["Animals", "Mammals", "Dogs"]
         //where animal is a parent of mammals which is a parent of dogs......
 
+        def modelToReturn
+
         categories.inject { parentName, childName ->
 
             //if there isn't a name for the child return the parentName
@@ -789,6 +792,8 @@ class ImportNHICService {
                 child = new Model('name': childName).save()
                 child.addToHasContextOf(conceptualDomain)
 
+                modelToReturn = child
+
                 //see if the parent model exists
                 parent = Model.findWhere("name": parentName)
 
@@ -809,9 +814,11 @@ class ImportNHICService {
                 //add the parent child relationship between models
 
             } else {
-                matches.first();
+                modelToReturn = matches.first();
             }
         }
+
+        modelToReturn
     }
 
     private static importDataTypes(name, dataType) {
