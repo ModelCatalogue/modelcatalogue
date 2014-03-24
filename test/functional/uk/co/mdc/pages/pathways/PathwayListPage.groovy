@@ -21,6 +21,7 @@ class PathwayListPage extends BasePageWithNav{
 		dataTableFirstRowLink { pathwayList.find("a") }
 		dataTableSecondRowLink { pathwayList.find("a") }
 		dataTableTMLink { pathwayList.find("a", text: "Transplanting and Monitoring Pathway") }
+        createButton{$('button', text:contains('Create a new pathway'))}
 
         // The following pathway* elements are designed to replace the dataTable* elements above in a more useable fashion
         pathwayListURLs { pathwayList.find("a")*.href() }

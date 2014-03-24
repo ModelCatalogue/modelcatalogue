@@ -128,13 +128,19 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 
     def "When on pathway and double click on a blank space, a new node should be added"()
     {
-        setup:"on pathway"
-        at PathwayShowPage
+        setup: "Create a new pathway and on pathway"
+        to PathwayListPage
+        createPathway("test") //do this test in a new pathway as it's going to save it
+        waitFor {
+            at PathwayShowPage
+        }
         def preCreationNodeIds = getNodeIds()
 
 
         when:"double-clicking in blank space area"
-        interact { doubleClick(pathwayCanvas) }
+        interact {
+            doubleClick(pathwayCanvas)
+        }
         def postCreationNodeIds      = getNodeIds()
         postCreationNodeIds.removeAll(preCreationNodeIds)
 

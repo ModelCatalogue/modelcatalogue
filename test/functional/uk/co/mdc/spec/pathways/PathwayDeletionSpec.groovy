@@ -33,12 +33,12 @@ class PathwayDeletionSpec extends GebReportingSpec {
 
         to PathwayListPage
         waitFor {
-            getPathwayLink(pathwayName)
+            createButton.displayed
         }
         def pathway = getPathwayLink(pathwayName)
 
         then: "The delete button is visible but the confirmation is not"
-
+        pathway
         getDeleteButton(pathway).displayed
         !getDeleteAbortButton(pathway).displayed
         !getDeleteConfirmationButton(pathway).displayed

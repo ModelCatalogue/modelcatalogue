@@ -103,7 +103,10 @@ class PathwayAddRemoveLinkSpec extends GebReportingSpec{
         link3
 
         when: "Clicking on a link"
-        link3.click()
+        //link3.click()
+        interact {
+            click(link3)
+        }
 
 
         then: "Its properties panel is displayed"
@@ -122,7 +125,10 @@ class PathwayAddRemoveLinkSpec extends GebReportingSpec{
         link4
 
         when:"deleting a link"
-        link4.click()
+        //link4.click()
+        interact {
+            click(link4)
+        }
         deleteSelectedElementButton.click()
 
         then: "the link should be removed"

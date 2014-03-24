@@ -99,7 +99,10 @@ grails.project.dependency.resolution = {
             excludes 'spring-test'
         }
 
-        build ":tomcat:7.0.47"
+
+        //as suggested on http://grails.org/2.3.5+Release+Notes to use    build ':tomcat:7.0.50'
+        //build ":tomcat:7.0.47"
+        build ':tomcat:7.0.50'
 
         test ":geb:0.9.2"
 
@@ -107,7 +110,10 @@ grails.project.dependency.resolution = {
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"
         runtime ":database-migration:1.3.7"
-        runtime ":hibernate:3.6.10.6"
+
+        //as suggested on http://grails.org/2.3.5+Release+Notes to use  runtime ':hibernate:3.6.10.7'
+        //runtime ":hibernate:3.6.10.6"
+        runtime ":hibernate:3.6.10.7"
         runtime ":jquery:1.8.3"
         runtime ":resources:1.1.6"
 
