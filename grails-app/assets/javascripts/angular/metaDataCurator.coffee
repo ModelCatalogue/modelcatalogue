@@ -17,7 +17,7 @@ metadataCurator = angular.module('metadataCurator', [
   'ui.bootstrap'
 ])
 
-metadataCurator.controller('metadataCurator.elementTypeList', ['catalogueElementResource', 'modelCatalogueSearch', '$scope', '$log', '$q', '$stateParams','$state', 'list', (catalogueElementResource, modelCatalogueSearch, $scope, $log, $q, $stateParams, $state, list)->
+metadataCurator.controller('metadataCurator.elementTypeList', ['catalogueElementResource', 'modelCatalogueSearch', '$scope', '$log', '$q', '$stateParams','$state', 'list', 'type', (catalogueElementResource, modelCatalogueSearch, $scope, $log, $q, $stateParams, $state, list, type)->
   emptyList =
     list: []
     next: {size: 0}
@@ -28,12 +28,11 @@ metadataCurator.controller('metadataCurator.elementTypeList', ['catalogueElement
 
   $scope.list = list
 
-  $scope.type = $stateParams.elementType.split(".").pop()
+  $scope.type = type
 
   $scope.valueDomainColumns = () -> [
     {header: 'Name', value: 'name', classes: 'col-md-3', show: true}
     {header: 'Description', value: 'description', classes: 'col-md-6'}
-    {header: 'Unit', value: 'unitOfMeasure', classes: 'col-md-3'}
     {header: 'Data Type', value: 'dataType.name', classes: 'col-md-3'}
   ]
 
@@ -66,11 +65,11 @@ metadataCurator.controller('metadataCurator.elementTypeList', ['catalogueElement
   ]
 
   $scope.relationshipTypeColumns = () -> [
-    {header: 'Name', value: 'name', classes: 'col-md-2', show: true}
-    {header: 'Source to Destination', value: 'sourceToDestination', classes: 'col-md-3'}
-    {header: 'Destination to Source', value: 'destinationToSource', classes: 'col-md-3'}
+    {header: 'Name', value: 'name', classes: 'col-md-2'}
     {header: 'Source Class', value: 'sourceClass', classes: 'col-md-3'}
+    {header: 'Source to Destination', value: 'sourceToDestination', classes: 'col-md-3'}
     {header: 'Destination Class', value: 'destinationClass', classes: 'col-md-3'}
+    {header: 'Destination to Source', value: 'destinationToSource', classes: 'col-md-3'}
   ]
 
   $scope.idAndNameColumns = () -> [
@@ -141,6 +140,9 @@ metadataCurator.config(($stateProvider, $urlRouterProvider)->
         list: ['$stateParams','catalogueElementResource', ($stateParams,catalogueElementResource) ->
           return catalogueElementResource($stateParams.elementType).list()
         ]
+        type: [ '$stateParams', ($stateParams) ->
+          return $stateParams.elementType.split(".").pop()
+        ]
       },
       controller: "metadataCurator.elementTypeList"
     }).state('catalogueElement.show', {
@@ -152,7 +154,19 @@ metadataCurator.config(($stateProvider, $urlRouterProvider)->
         ]
       },
       controller: "metadataCurator.elementTypeShow",
-    })
+    }).state('search', {
+      url: "/search/{searchString}",
+      templateUrl: '/' + grailsAppName + "/assets/angular/partials/metadata-curator/list.html",
+      resolve: {
+        list: ['$stateParams','modelCatalogueSearch', ($stateParams, modelCatalogueSearch) ->
+          return modelCatalogueSearch($stateParams.searchString)
+        ]
+        type: [() ->
+          return "Search"
+        ]
+      },
+      controller: "metadataCurator.elementTypeList",
+  })
 )
 
 
@@ -162,5 +176,14 @@ metadataCurator.controller('metadataCurator.elementTypeShow', ['catalogueElement
 
   $scope.$on 'showCatalogueElement', (event, element) ->
     $state.go('catalogueElement.show', {elementType: element.elementType.split(".").pop(), elementId: element.id})
+
+])
+
+metadataCurator.controller('metadataCurator.searchCtrl', ['catalogueElementResource', 'modelCatalogueSearch', '$scope', '$log', '$q', '$state', (catalogueElementResource, modelCatalogueSearch, $scope, $log, $q, $state)->
+
+  $scope.searchTerm
+
+  $scope.search = () ->
+    $state.go('search', {searchString: $scope.searchTerm })
 
 ])
