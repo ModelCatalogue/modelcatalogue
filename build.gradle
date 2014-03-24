@@ -44,6 +44,13 @@ dependencies {
     compile 'org.grails.plugins:spring-security-core:1.2.7.3'
     compile "org.grails.plugins:spring-security-acl:1.1.1"
 
+
+
+
+    /**    For Excel-Importer   **/
+    compile "org.apache.poi:poi:3.8"
+    compile "org.apache.poi:poi-ooxml:3.8"
+
     /**
      * Selenium/Geb testing requirements
      */
