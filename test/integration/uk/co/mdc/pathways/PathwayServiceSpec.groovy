@@ -101,9 +101,9 @@ class PathwayServiceSpec extends IntegrationSpec{
 
     def createPathwayAndUseId(def incomingMap){
         Pathway pathway = new Pathway(name: incomingMap?.name, userVersion: incomingMap?.userVersion, isDraft: incomingMap?.isDraft)
-        if(!pathway.validate()){
-            throw new IllegalArgumentException("Pathway fixture has errors and doesn't validate")
-        }
+        //if(!pathway.validate()){
+        //    throw new IllegalArgumentException("Pathway fixture has errors and doesn't validate")
+        //}
         pathway.save()
 
         incomingMap.id = pathway.id
