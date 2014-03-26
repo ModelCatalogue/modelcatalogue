@@ -69,7 +69,9 @@ class ExcelImporterControllerSpec extends  Specification{
         controller.upload();
 
         then:"the service will throw an exception"
-        serviceMock.SaveICUDataElement(_) >>{ -> throw new Exception("some exceptions")  }
+
+        serviceMock.GetICUDataElementNames(_) >>{ -> return [] }
+        serviceMock.SaveICUDataElement(_) >>{ -> throw new FileNotFoundException()  }
 
 
         and:"the file upload should be rejected"

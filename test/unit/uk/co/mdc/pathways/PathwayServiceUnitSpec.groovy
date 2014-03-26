@@ -2,10 +2,8 @@ package uk.co.mdc.pathways
 
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
-import groovy.mock.interceptor.MockFor
 import spock.lang.Ignore
 import spock.lang.Specification
-import spock.lang.Unroll
 
 
 /**
@@ -304,6 +302,4 @@ class PathwayServiceUnitSpec extends Specification {
         Node.get(subPathwayNode.id).nodes.size() == 2
 
     }
-
-
 }

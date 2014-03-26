@@ -1,4 +1,4 @@
-package uk.co.mdc.pathways
+package uk.co.mdc.utils
 
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
@@ -10,17 +10,20 @@ import uk.co.mdc.model.DataElementConcept
 import uk.co.mdc.model.DataElementValueDomain
 import uk.co.mdc.model.DataType
 import uk.co.mdc.model.ValueDomain
+import uk.co.mdc.pathways.Link
+import uk.co.mdc.pathways.Node
+import uk.co.mdc.pathways.Pathway
 import uk.co.mdc.utils.importers.ICUExcelImporterService
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
  */
 @TestFor(ICUExcelImporterService)
-@Mock([DataElement,DataElementConcept,DataType,ValueDomain,DataElementValueDomain,Node,Link,Pathway])
+@Mock([DataElement,DataElementConcept,DataType,ValueDomain,DataElementValueDomain,Node,Link,Pathway,ConceptualDomain])
 class ICUExcelImporterServiceSpec extends Specification {
 
-    def fileName= "test/integration/resources/ICUData.xls"
-    def fileNameError="test/integration/resources/ICUDataError.xls"
+    def fileName= "test/unit/resources/ICUData.xls"
+    def fileNameError="test/unit/resources/ICUDataError.xls"
 
     def setup()
     {
@@ -256,11 +259,11 @@ class ICUExcelImporterServiceSpec extends Specification {
         when:"calling findOrCreatePathWay"
         def pathway=new Pathway([name:"TopLevel"]).save();
 
-        def preSubPathwayCount= Node.countByPathwayIsNotNull()
+        def preSubPathwayCount= uk.co.mdc.pathways.Node.countByPathwayIsNotNull()
         def node=service.findOrCreatePathWay("SubNode",pathway);
 
         then:"A node is added to the subPathway"
-        Node.countByPathwayIsNotNull() ==  preSubPathwayCount+1
+        uk.co.mdc.pathways.Node.countByPathwayIsNotNull() ==  preSubPathwayCount+1
         node.pathway == pathway
     }
 
@@ -268,13 +271,13 @@ class ICUExcelImporterServiceSpec extends Specification {
     {
         when:"calling findOrCreatePathWay"
         def mainPathway=new Pathway([name:"TopLevel"]).save();
-        def preSubPathwayCount= Node.countByPathwayIsNotNull()
+        def preSubPathwayCount= uk.co.mdc.pathways.Node.countByPathwayIsNotNull()
 
         def subPathway1=service.findOrCreatePathWay("SubPathway1",mainPathway);
         def subPathway2=service.findOrCreatePathWay("SubPathway2",subPathway1);
 
         then:"A node is added to the subPathway"
-        Node.countByPathwayIsNotNull() ==  preSubPathwayCount+2
+        uk.co.mdc.pathways.Node.countByPathwayIsNotNull() ==  preSubPathwayCount+2
         subPathway1.pathway == mainPathway
         subPathway2.pathway == subPathway1
     }
@@ -284,12 +287,12 @@ class ICUExcelImporterServiceSpec extends Specification {
     {
         when:"calling findOrCreatePathWay"
         def pathway=new Pathway([name:"TopLevel"]).save();
-        def preSubPathwayCount= Node.countByPathwayIsNotNull()
+        def preSubPathwayCount= uk.co.mdc.pathways.Node.countByPathwayIsNotNull()
         def node1=service.findOrCreatePathWay("SubNode",pathway);
         def node2=service.findOrCreatePathWay("SubNode",pathway);
 
         then:"Jus one node should be added"
-        Node.countByPathwayIsNotNull() ==  preSubPathwayCount+1
+        uk.co.mdc.pathways.Node.countByPathwayIsNotNull() ==  preSubPathwayCount+1
         node1.pathway == pathway
         node2==node1
     }

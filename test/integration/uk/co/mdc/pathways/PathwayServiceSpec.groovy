@@ -1,7 +1,10 @@
 package uk.co.mdc.pathways
 
+import grails.test.mixin.Mock
+import grails.test.mixin.TestFor
 import grails.test.spock.IntegrationSpec
 import org.eclipse.jetty.util.ajax.JSON
+import spock.lang.Specification
 import spock.lang.Unroll
 
 
@@ -13,9 +16,12 @@ import spock.lang.Unroll
  *
  * Created by rb on 23/01/2014.
  */
+
 class PathwayServiceSpec extends IntegrationSpec{
 
     def pathwayService
+
+
 
     @Unroll
     def "createOrSaveNodesForPathway takes a new node and adds it to an existing pathway"(){
@@ -99,11 +105,14 @@ class PathwayServiceSpec extends IntegrationSpec{
         ]
     }
 
+
     def createPathwayAndUseId(def incomingMap){
+
+
         Pathway pathway = new Pathway(name: incomingMap?.name, userVersion: incomingMap?.userVersion, isDraft: incomingMap?.isDraft)
-        //if(!pathway.validate()){
-        //    throw new IllegalArgumentException("Pathway fixture has errors and doesn't validate")
-        //}
+        if(!pathway.validate()){
+            throw new IllegalArgumentException("Pathway fixture has errors and doesn't validate")
+        }
         pathway.save()
 
         incomingMap.id = pathway.id
