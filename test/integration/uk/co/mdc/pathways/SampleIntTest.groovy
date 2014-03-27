@@ -15,10 +15,15 @@ class SampleIntTest extends IntegrationSpec{
         Pathway pathway = new Pathway(name: "TestA", userVersion: "2.1", isDraft: true)
         if(!pathway.validate()){
             throw new IllegalArgumentException("Pathway has errors and doesn't validate")
+
         }
         pathway.save()
 
         then:"It should be saved!"
         Pathway.list().size() == pathwayCount + 1
+    }
+    def "more integration tests"()
+    {
+
     }
 }
