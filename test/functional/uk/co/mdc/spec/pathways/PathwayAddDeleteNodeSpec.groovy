@@ -130,6 +130,9 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
     {
         setup: "Create a new pathway and on pathway"
         to PathwayListPage
+        waitFor {
+            at PathwayListPage
+        }
         createPathway("test") //do this test in a new pathway as it's going to save it
         waitFor {
             at PathwayShowPage
