@@ -1,14 +1,25 @@
 package uk.co.mdc.Importers
 
-import org.apache.poi.ss.usermodel.*
-import org.apache.poi.hssf.usermodel.*
-import org.apache.poi.xssf.usermodel.*
 import org.apache.poi.ss.util.*
 import org.apache.poi.ss.usermodel.*
 
+public class ExcelSheet {
+        String name;
+        def headers = [];
+        def rows = [];
+}
+
 class ExcelLoader {
 
-    private InputStream
+    private static InputStream
+
+//    private static final String[] sheetNames={
+//        "INTRODUCTION", "CONTENTS", "SUMMARY", "KEY", "Core",
+//        "Breast", "CNS", "Colorectal", "CTYA", "Gynaecology",
+//        "Haematology", "Headn & Neck", "Lung", "Sarcoma","Skin",
+//        "Upper GI", "Urology", "Reference - Other standards", "Reference - Other Sources", "Change Control Log"
+//    };
+
 
     public ExcelLoader(String path)
     {
@@ -44,6 +55,53 @@ class ExcelLoader {
 		}
 		[headers, rows]
 	}
+
+
+    def parseCOSD() {
+
+        def String[] sheetNamesToImport = [
+                "Core",
+                "Breast", "CNS", "Colorectal", "CTYA ", "Gynaecology",
+                "Haematology", "Head & Neck", "Lung", "Sarcoma", "Skin",
+                "Upper GI", "Urology", "Reference - Other Sources"
+        ];
+
+        Workbook wb = WorkbookFactory.create(InputStream);
+        ExcelSheet[] excelSheets = new ExcelSheet[sheetNamesToImport.size()];
+
+        for (def cont=0; cont<sheetNamesToImport.size();cont++) {
+            def sheetName = sheetNamesToImport[cont];
+            Sheet sheet = wb.getSheetAt(wb.getSheetIndex(sheetName));
+
+            Iterator<Row> rowIt = sheet.rowIterator()
+            Row row = rowIt.next()
+            def headers = [];
+            def rows = [];
+
+            //Finding header
+            while (row.getCell(0).getRichStringCellValue().getString().trim() != "Data item No." && rowIt.hasNext()) {
+
+                row = rowIt.next();
+            }
+            if (row.getCell(0).getRichStringCellValue().getString().trim() == "Data item No.") {
+                headers = getRowData(row);
+                //Finding the first Data item row
+                while (rowIt.hasNext()) {
+                    row = rowIt.next()
+                    // the Data item No has the format aa0000[0]
+                    def regularExpression = ~/[a-zA-Z]{2}[0-9]{4,5}/
+
+                    def rowData = getRowData(row)
+                    def text = rowData[0];
+                    if ((text ==~ regularExpression) || (rowData[0] == "" && rowData[5].toString() != "" && rowData[6].toString() != ""))
+                        rows << getRowData(row);
+                }
+            }
+            //add the excelSheet to the excelSheets collection
+            excelSheets[cont] =  new ExcelSheet(name: sheetName, headers: headers, rows: rows);
+        }
+        return excelSheets
+    }
 
 	def getRowData(Row row) {
 		def data = []
