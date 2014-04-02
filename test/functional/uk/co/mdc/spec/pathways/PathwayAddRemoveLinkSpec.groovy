@@ -49,6 +49,9 @@ class PathwayAddRemoveLinkSpec extends GebReportingSpec{
     {
         setup: "Create a pathway and add a couple of nodes and a link to it"
         to PathwayListPage
+        waitFor {
+            at PathwayListPage
+        }
         createPathway("test") //do this test in a new pathway as it's going to save it
         at  PathwayShowPage
         createLink(createNode(),'down',createNode(),'up')
@@ -70,6 +73,9 @@ class PathwayAddRemoveLinkSpec extends GebReportingSpec{
     {
         setup: "Create a pathway and add a couple of nodes and a link to it"
         to PathwayListPage
+        waitFor {
+            at PathwayListPage
+        }
         createPathway("test") //do this test in a new pathway as it's going to save it
         waitFor {
             at  PathwayShowPage

@@ -34,6 +34,8 @@ class ExcelLoader {
 
 	def parse(path) {
 		Workbook wb = WorkbookFactory.create(InputStream);
+        if(!wb)
+            return [[],[]]
 		Sheet sheet = wb.getSheetAt(0);
 
 		Iterator<Row> rowIt = sheet.rowIterator()

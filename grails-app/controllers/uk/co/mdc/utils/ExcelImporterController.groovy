@@ -42,7 +42,8 @@ class ExcelImporterController {
             }
             catch(Exception ex)
             {
-                log.error("Exception in handling excel file :"+ex.message)
+                //log.error("Exception in handling excel file: "+ ex.message)
+                log.error("Exception in handling excel file")
                 flash.message ="Error in importing the excel file.";
             }
          }

@@ -1,14 +1,15 @@
-package uk.co.mdc.pathways
+package uk.co.mdc.utils
 
 import grails.test.mixin.TestFor
+import spock.lang.Specification
 import uk.co.mdc.Importers.ExcelLoader
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
  */
-class ExcelLoaderSpec extends spock.lang.Specification {
+class ExcelLoaderSpec extends Specification {
 
-    def fileName= "test/integration/resources/ICUData.xls"
+    def fileName= "test/unit/resources/ICUData.xls"
 
     void "Test if parse will load an excel file"() {
 
