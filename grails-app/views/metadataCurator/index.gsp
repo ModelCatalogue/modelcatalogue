@@ -25,16 +25,16 @@
 </head>
 
 <body>
-<div ng-app="metadataCurator">
+<div id="metadataCurator" ng-app="metadataCurator">
     <div class="navbar navbar-default">
         <div class="navbar-inner">
             <ul class="nav navbar-nav">
-                <li><a href="#/catalogueElement/model">Models</a></li>
-                <li><a href="#/catalogueElement/dataElement">Data Elements</a></li>
-                <li><a href="#/catalogueElement/valueDomain">Value Domains</a></li>
-                <li><a href="#/catalogueElement/conceptualDomain">Conceptual Domains</a></li>
-                <li><a href="#/catalogueElement/dataType">Data Types</a></li>
-                <li><a href="#/catalogueElement/relationshipType">Relationship Types</a></li>
+                <li><a id="modelLink" href="#/catalogueElement/model">Models</a></li>
+                <li><a id="dataElementLink" href="#/catalogueElement/dataElement">Data Elements</a></li>
+                <li><a id="valueDomainLink" href="#/catalogueElement/valueDomain">Value Domains</a></li>
+                <li><a id="conceptualDomainLink" href="#/catalogueElement/conceptualDomain">Conceptual Domains</a></li>
+                <li><a id="dataTypeLink" href="#/catalogueElement/dataType">Data Types</a></li>
+                <li><a id="relationshipTypeLink" href="#/catalogueElement/relationshipType">Relationship Types</a></li>
             </ul>
             <div class="col-sm-3 col-md-3 pull-right">
                 <form ng-controller="metadataCurator.searchCtrl" class="navbar-form" role="search" ng-submit="search()">

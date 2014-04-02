@@ -19,6 +19,7 @@ class BootStrap {
 	def sessionFactory
 	def springSecurityService
 	def grailsApplication
+    def domainModellerService
 
 	def init = { servletContext ->
 
@@ -115,6 +116,9 @@ class BootStrap {
     }
 
 	private importDevData(){
+
+        domainModellerService.modelDomains()
+
 		if(!SecUser.findByUsername('user1')){
 			//this if needs to be removed....only for development purposes
 
