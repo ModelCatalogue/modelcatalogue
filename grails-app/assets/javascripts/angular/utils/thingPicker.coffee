@@ -55,7 +55,7 @@ module.controller('ThingPickerCtrl',['$scope', 'ngTableParams', ($scope, ngTable
 				# update table params
 				params.total(data.total)
 				# set new data
-				$defer.resolve(data.objects)
+				$defer.resolve(data.list)
 			)
 	}
 

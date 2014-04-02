@@ -774,19 +774,23 @@ class ImportNHICService {
             //def matches = Model.findAllWhere("name" : name, "parentName" : models)
 
             //see if there are any models with this name
-            def matches
+            Model match
             def namedChildren = Model.findAllWhere("name": childName)
 
             //see if there are any models with this name that have the same parentName
-            if (namedChildren) {
-                matches = namedChildren.childOf.contains(parentName)
+            if (namedChildren.size()>0) {
+                namedChildren.each{ Model childModel ->
+                    if(childModel.childOf.collect{it.name}.contains(parentName)){
+                        match = childModel
+                    }
+                }
             }
 
             //if there isn't a matching model with the same name and parentName
-            if (!matches) {
+            if (!match) {
                 //new Model('name': name, 'parentName': parentName).save()
-                def child
-                def parent
+                Model child
+                Model parent
 
                 //create the child model
                 child = new Model('name': childName).save()
@@ -814,7 +818,8 @@ class ImportNHICService {
                 //add the parent child relationship between models
 
             } else {
-                modelToReturn = matches.first();
+                modelToReturn = match
+                match.name
             }
         }
 

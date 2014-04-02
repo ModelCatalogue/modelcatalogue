@@ -6,11 +6,11 @@ import geb.Module
 
 class ModelListPage extends Page{
 	
-	static url = "/valueDomain/list"
+	static url = "/metadataCurator#/catalogueElement/dataElement"
 	
 	static at = {
-		url == "/valueDomain/list" &&
-		title == "ValueDomain List"
+		url == "metadataCurator#/catalogueElement/dataElement" &&
+		title == "Model Catalogue Core"
 	}
 	
 	static content = {

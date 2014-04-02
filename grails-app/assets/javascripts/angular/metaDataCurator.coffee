@@ -17,7 +17,7 @@ metadataCurator = angular.module('metadataCurator', [
   'ui.bootstrap'
 ])
 
-metadataCurator.controller('metadataCurator.elementTypeList', ['catalogueElementResource', 'modelCatalogueSearch', '$scope', '$log', '$q', '$stateParams','$state', 'list','columns', (catalogueElementResource, modelCatalogueSearch, $scope, $log, $q, $stateParams, $state, list, columns)->
+metadataCurator.controller('metadataCurator.elementTypeList', ['catalogueElementResource', 'modelCatalogueSearch', '$scope', '$log', '$q', '$stateParams','$state', 'list', 'type', 'columns', (catalogueElementResource, modelCatalogueSearch, $scope, $log, $q, $stateParams, $state, list, type, columns)->
   emptyList =
     list: []
     next: {size: 0}
@@ -28,7 +28,7 @@ metadataCurator.controller('metadataCurator.elementTypeList', ['catalogueElement
 
   $scope.list = list
 
-  $scope.type = $stateParams.elementType.split(".").pop()
+  $scope.type = type
 
   $scope.selection = []
 
@@ -71,6 +71,9 @@ metadataCurator.config(($stateProvider, $urlRouterProvider)->
         list: ['$stateParams','catalogueElementResource', ($stateParams,catalogueElementResource) ->
           return catalogueElementResource($stateParams.elementType).list()
         ]
+        type: [ '$stateParams', ($stateParams) ->
+          return $stateParams.elementType.split(".").pop()
+        ]
       },
       controller: "metadataCurator.elementTypeList"
     }).state('catalogueElement.show', {
@@ -82,15 +85,37 @@ metadataCurator.config(($stateProvider, $urlRouterProvider)->
         ]
       },
       controller: "metadataCurator.elementTypeShow",
-    })
+    }).state('search', {
+      url: "/search/{searchString}",
+      templateUrl: '/' + grailsAppName + "/assets/angular/partials/metadata-curator/list.html",
+      resolve: {
+        list: ['$stateParams','modelCatalogueSearch', ($stateParams, modelCatalogueSearch) ->
+          return modelCatalogueSearch($stateParams.searchString)
+        ]
+        type: [() ->
+          return "Search"
+        ]
+      },
+      controller: "metadataCurator.elementTypeList",
+  })
 )
 
 
-metadataCurator.controller('metadataCurator.elementTypeShow', ['catalogueElementResource', 'modelCatalogueSearch', '$scope', '$log', '$q', '$state', 'element', (catalogueElementResource, modelCatalogueSearch, $scope, $log, $q, $state, element)->
+metadataCurator.controller('metadataCurator.elementTypeShow', ['catalogueElementResource', 'modelCatalogueSearch', '$scope', '$log', '$q', '$state', 'element', 'columns', (catalogueElementResource, modelCatalogueSearch, $scope, $log, $q, $state, element, columns)->
 
   $scope.element = element
+  $scope.columns = columns()
 
   $scope.$on 'showCatalogueElement', (event, element) ->
     $state.go('catalogueElement.show', {elementType: element.elementType.split(".").pop(), elementId: element.id})
+
+])
+
+metadataCurator.controller('metadataCurator.searchCtrl', ['catalogueElementResource', 'modelCatalogueSearch', '$scope', '$log', '$q', '$state', (catalogueElementResource, modelCatalogueSearch, $scope, $log, $q, $state)->
+
+  $scope.searchTerm
+
+  $scope.search = () ->
+    $state.go('search', {searchString: $scope.searchTerm })
 
 ])

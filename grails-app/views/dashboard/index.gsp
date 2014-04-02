@@ -28,7 +28,7 @@
 				<span>Projects</span>
 			</div>
 			-->
-			<div class="dashboard_option" id="metadata">
+			<div id="metadata">
 				<img src="../images/dashboard/Advanced_colour.png"/>
 				<span>Metadata Curation</span>
 			</div>
