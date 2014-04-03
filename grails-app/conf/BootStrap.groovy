@@ -38,6 +38,7 @@ class BootStrap {
 			}
 			test{
 				importDevData()
+                domainModellerService.modelDomains()
 			}
 			development {
 				importDevData()
@@ -116,8 +117,6 @@ class BootStrap {
     }
 
 	private importDevData(){
-
-        domainModellerService.modelDomains()
 
 		if(!SecUser.findByUsername('user1')){
 			//this if needs to be removed....only for development purposes

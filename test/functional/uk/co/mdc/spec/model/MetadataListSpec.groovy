@@ -129,8 +129,75 @@ class MetadataListSpec extends GebReportingSpec{
             actor.text()=="actor"
         }
 
-        when: ""
+        when:
+        page3.click()
 
+        then:
+        waitFor{
+            enumerations.text()=="enumerations"
+        }
+
+        when:
+        previous.click()
+
+        then:
+        waitFor{
+            version.text()=="version"
+        }
+
+        when:
+        next.click()
+
+        then:
+        waitFor{
+            enumerations.text()=="enumerations"
+        }
+
+
+    }
+
+    def "go to models list navigate to a particular model and then to the elements it contains"(){
+        when: "I go to the dashboard metadata screen"
+        $("#metadata").click()
+
+        then:
+        waitFor{
+            at MetadataListPage
+            heading.text() =="DataElements"
+        }
+
+
+        when: "I click on the model link"
+        $("#modelLink").click()
+
+        then: "I go to the model page"
+        waitFor {
+            heading.text() == "Models"
+        }
+
+
+        when: "I click on conceptualDomain"
+        conceptualDomain.click()
+
+        then: "I go to the show screen for conceptual domain"
+        waitFor {
+            heading3.text() == "ConceptualDomain (Model: 14)"
+        }
+        when: "I click on the contains tab"
+        containsTab.click()
+
+        then: "I go to the elements contained in the conceptualdomain screen"
+        waitFor {
+            dataElement.text() == "Data Element: 123"
+        }
+
+        when: "I click on the name data element"
+        dataElement.click()
+
+        then: "I go to the name data element"
+        waitFor {
+            heading3.text() == "name (Data Element: 123)"
+        }
     }
 
 
