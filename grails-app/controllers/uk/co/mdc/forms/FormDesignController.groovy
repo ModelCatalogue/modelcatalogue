@@ -1,14 +1,10 @@
 package uk.co.mdc.forms
 
 import org.springframework.dao.DataIntegrityViolationException
-import uk.co.mdc.model.*
 import grails.converters.*
 import org.springframework.security.acls.model.Permission
-import grails.plugins.springsecurity.Secured
 import org.codehaus.groovy.grails.web.json.*
 import groovy.json.StringEscapeUtils
-
-@Secured(['ROLE_USER'])
 
 class FormDesignController {
 
@@ -179,7 +175,6 @@ class FormDesignController {
 			
 			//define temporary variables that need to be stored in the questions array
 			//whilst looping through data elements (below)
-			ValueDomain valueDomain
 			def valueDomains
 			def label
 			def unitOfMeasure

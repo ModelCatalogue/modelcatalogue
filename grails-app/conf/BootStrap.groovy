@@ -2,16 +2,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder as SCH
 import org.springframework.web.context.support.WebApplicationContextUtils
+import uk.co.mdc.Requestmap
 import uk.co.mdc.SecAuth
 import uk.co.mdc.SecUser
 import uk.co.mdc.SecUserSecAuth
 import uk.co.mdc.forms.*
-import uk.co.mdc.model.*
 import uk.co.mdc.pathways.Link
 import uk.co.mdc.pathways.Node
 import uk.co.mdc.pathways.Pathway
-import org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.security.acls.domain.BasePermission
 
 
@@ -21,6 +19,7 @@ class BootStrap {
 	def sessionFactory
 	def springSecurityService
 	def grailsApplication
+    def domainModellerService
 
 	def init = { servletContext ->
 
@@ -39,14 +38,86 @@ class BootStrap {
 			}
 			test{
 				importDevData()
+                domainModellerService.modelDomains()
 			}
 			development {
 				importDevData()
 			}
 		}
+
+        configureRequestMapSecurity()
 	}
 
+    private configureRequestMapSecurity(){
+
+        //permit all for assets and initial pages
+        for (String url in [
+                '/',
+                '/**/favicon.ico',
+                '/fonts/**',
+                '/assets/**',
+                '/plugins/**/js/**',
+                '/js/vendor/**',
+                '/**/*.less',
+                '/**/js/**',
+                '/**/css/**',
+                '/**/images/**',
+                '/**/img/**',
+                '/login', '/login.*', '/login/*',
+                '/logout', '/logout.*', '/logout/*',
+                '/register/*', '/errors','/errors/*'
+        ]) {
+            new Requestmap(url: url, configAttribute: 'permitAll').save()
+        }
+
+        //only permit users
+        new Requestmap(url: '/dashboard', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/dashboard/**', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/pathways', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/pathways/**', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/pathway', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/pathway/**', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/pathways.json', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/metadataCurator', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/metadataCurator/**', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+
+        //only permit admin user registrationCode
+        new Requestmap(url: '/bootstrap-data/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/dataImport/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/admin', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/admin/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/securityInfo/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/role', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/role/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/registrationCode', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/registrationCode/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/user', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/user/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/aclClass', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/aclClass/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/aclSid', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/aclSid/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/aclEntry', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/aclEntry/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/aclObjectIdentity', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+
+        //only permit metadatacurator users access to the api
+
+        new Requestmap(url: '/api/modelCatalogue/core/**', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+ //       new Requestmap(url: '/api/modelCatalogue/core/*/search', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+ //       new Requestmap(url: '/api/modelCatalogue/core/**/outgoing', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+ //       new Requestmap(url: '/api/modelCatalogue/core/**/incoming', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/search/**', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/create', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/edit', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/save', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/update', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.PUT).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/delete', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.DELETE).save()
+
+    }
+
 	private importDevData(){
+
 		if(!SecUser.findByUsername('user1')){
 			//this if needs to be removed....only for development purposes
 
@@ -73,6 +144,7 @@ class BootStrap {
      */
     private createBaseRoles(){
         SecAuth.findByAuthority('ROLE_ADMIN') ?: new SecAuth(authority: 'ROLE_ADMIN').save(failOnError: true)
+        SecAuth.findByAuthority('ROLE_METADATA_CURATOR') ?: new SecAuth(authority: 'ROLE_METADATA_CURATOR').save(failOnError: true)
         SecAuth.findByAuthority('ROLE_PENDING') ?: new SecAuth(authority: 'ROLE_PENDING').save(failOnError: true)
         SecAuth.findByAuthority('ROLE_USER') ?: new SecAuth(authority: 'ROLE_USER').save(failOnError: true)
     }
@@ -80,11 +152,13 @@ class BootStrap {
 	private createAdminAccount(){
 		def roleUser = SecAuth.findByAuthority('ROLE_USER') ?: new SecAuth(authority: 'ROLE_USER').save(failOnError: true)
 		def roleAdmin = SecAuth.findByAuthority('ROLE_ADMIN') ?: new SecAuth(authority: 'ROLE_ADMIN').save(failOnError: true)
-		
-		def admin = SecUser.findByUsername('localadmin') ?: new SecUser(username: 'localadmin', emailAddress: "brcmodelcatalogue@gmail.com", enabled: true, password: 'QpAsN#6HVP.6da').save(failOnError: true)
+        def metadataCurator = SecAuth.findByAuthority('ROLE_METADATA_CURATOR') ?: new SecAuth(authority: 'ROLE_METADATA_CURATOR').save(failOnError: true)
+
+        def admin = SecUser.findByUsername('localadmin') ?: new SecUser(username: 'localadmin', emailAddress: "brcmodelcatalogue@gmail.com", enabled: true, password: 'QpAsN#6HVP.6da').save(failOnError: true)
 		
 				if (!admin.authorities.contains(roleAdmin)) {
 					SecUserSecAuth.create admin, roleUser
+                    SecUserSecAuth.create admin, metadataCurator
 					SecUserSecAuth.create admin, roleAdmin, true
 				}
 	}
@@ -101,6 +175,8 @@ class BootStrap {
         def roleAdmin = SecAuth.findByAuthority('ROLE_ADMIN') ?: new SecAuth(authority: 'ROLE_ADMIN').save(failOnError: true)
         def rolePending = SecAuth.findByAuthority('ROLE_PENDING') ?: new SecAuth(authority: 'ROLE_PENDING').save(failOnError: true)
         def roleUser = SecAuth.findByAuthority('ROLE_USER') ?: new SecAuth(authority: 'ROLE_USER').save(failOnError: true)
+        def metadataCurator = SecAuth.findByAuthority('ROLE_METADATA_CURATOR') ?: new SecAuth(authority: 'ROLE_METADATA_CURATOR').save(failOnError: true)
+
 
 		def roleUCL = SecAuth.findByAuthority('ROLE_UCL') ?: new SecAuth(authority: 'ROLE_UCL').save(failOnError: true)
 		def roleOxford = SecAuth.findByAuthority('ROLE_OXFORD') ?: new SecAuth(authority: 'ROLE_OXFORD').save(failOnError: true)
@@ -179,17 +255,6 @@ class BootStrap {
 
 		// grant ROLE_ADMIN on everything
 
-		grantAdminPermissions(DataElement.list())
-		grantAdminPermissions(ValueDomain.list())
-		grantAdminPermissions(ConceptualDomain.list())
-		grantAdminPermissions(DataElementConcept.list())
-		grantAdminPermissions(DataType.list())
-		grantAdminPermissions(Document.list())
-		grantAdminPermissions(ExternalReference.list())
-		grantAdminPermissions(Collection.list())
-		grantAdminPermissions(FormDesign.list())
-		grantAdminPermissions(QuestionElement.list())
-		grantAdminPermissions(InputField.list())
 		grantAdminPermissions(Node.list())
 		grantAdminPermissions(Link.list())
 
@@ -198,17 +263,6 @@ class BootStrap {
 
 
 		// Grant ROLE_USER on everything
-		grantUserPermissions(DataElement.list())
-		grantUserPermissions(ValueDomain.list())
-		grantUserPermissions(ConceptualDomain.list())
-		grantUserPermissions(DataElementConcept.list())
-		grantUserPermissions(DataType.list())
-		grantUserPermissions(Document.list())
-		grantUserPermissions(ExternalReference.list())
-		grantUserPermissions(Collection.list())
-		grantUserPermissions(FormDesign.list())
-		grantUserPermissions(QuestionElement.list())
-		grantUserPermissions(InputField.list())
 
         // We don't need to add permissions for nodes and links
 		grantUserPermissions(Pathway.list())
@@ -255,311 +309,7 @@ class BootStrap {
 		
 		def date
 		
-		
-		if (!ConceptualDomain.count()) {
-			ConceptualDomain COSD = new ConceptualDomain(name:"TESTDOMAIN", description:"Cancer Outcomes and Services Dataset").save(failOnError: true)
 
-			if (!DataElementConcept.count()) {
-					DataElementConcept CORE = new DataElementConcept(name:"CORE", description:"CORE data set").save(failOnError: true)
-					DataElementConcept HAEMA = new DataElementConcept(name:"HAEMATOLOGY", description:"HAEMATOLOGY data set").save(failOnError: true)
-					new DataElementConcept(name:"CORE - DIAGNOSTIC DETAILS", parent: CORE).save(failOnError: true)
-					new DataElementConcept(name:"CORE - PATIENT IDENTITY DETAILS", parent: CORE).save(failOnError: true)
-					DEM = new DataElementConcept(name:"CORE - DEMOGRAPHICS",  parent: CORE).save(failOnError: true)
-					DataElementConcept REF = new DataElementConcept(name:"CORE - REFERRALS", parent: CORE).save(failOnError: true)
-					new DataElementConcept(name:"CORE - IMAGING", parent: CORE).save(failOnError: true)
-					new DataElementConcept(name:"CORE - DIAGNOSIS", parent: CORE).save(failOnError: true)
-					new DataElementConcept(name:"CORE - CANCER CARE PLAN", parent: CORE).save(failOnError: true)
-					new DataElementConcept(name:"CORE - CLINICAL TRIALS", parent: CORE).save(failOnError: true)
-					new DataElementConcept(name:"CORE - STAGING", parent: CORE).save(failOnError: true)
-
-
-
-					if (!DataType.count()) {
-
-
-							//declare cancer enumerated data types....to get things going
-							Map nhsStatusEnumeration = ["01": "Number present and verified",
-									"02": "Number present but not traced",
-									"03": "Trace required", "04": "Trace attempted - No match or multiple match found",
-									"05": "Trace needs to be resolved - (NHS Number or patient detail conflict)",
-									"06": "Trace in progress" ,
-									"07": "Number not present and trace not required",
-									"08": "Trace postponed (baby under six weeks old)"]
-
-							new DataType(name:"NHS NUMBER STATUS INDICATOR", enumerated: true, enumerations: nhsStatusEnumeration).save(failOnError: true)
-
-							Map genderCode = ["0": "Not Known", "1": "Male", "2": "Female", "9": "Not Specified"]
-
-							new DataType(name:"NHS PERSON GENDER", enumerated: true, enumerations: genderCode).save(failOnError: true)
-
-							Map enthicCat = [ "A":"(White) British",
-									"B":"(White) Irish",
-									"C":"Any other White background",
-									"D":"White and Black Caribbean",
-									"E":"White and Black African",
-									"F":"White and Asian",
-									"G":"Any other mixed background",
-									"H":"Indian",
-									"J":"Pakistani",
-									"K":"Bangladeshi",
-									"L":"Any other Asian background",
-									"M":"Caribbean",
-									"N":"African",
-									"P":"Any other Black background",
-									"R":"Chinese",
-									"S":"Any other ethnic group",
-									"Z":"Not stated",
-									"99":"Not Known"]
-
-
-							DataType ETH_CAT = new DataType(name:"NHS ETHIC CATEGORY", enumerated: true, enumerations: enthicCat).save(failOnError: true)
-
-							Map referralSource = [
-									"01":"following an emergency admission",
-									"02":"following a Domiciliary Consultation",
-									"10":"following an Accident And Emergency Attendance (including Minor Injuries Units and Walk In Centres)",
-									"11":"other - initiated by the CONSULTANT responsible for the Consultant Out-Patient Episode",
-									"03":"referral from a GENERAL MEDICAL PRACTITIONER",
-									"92":"referral from a GENERAL DENTAL PRACTITIONER",
-									"12":"referral from a GENERAL PRACTITIONER with a Special Interest (GPwSI) or dentist with a Special Interest (DwSI)",
-									"04":"referral from an Accident And Emergency Department (including Minor Injuries Units and Walk In Centres)",
-									"05":"referral from a CONSULTANT other than in an Accident And Emergency Department",
-									"06":"self-referral",
-									"07":"referral from a Prosthetist",
-									"13":"referral from a Specialist NURSE (Secondary Care)",
-									"14":"referral from an Allied Health Professional",
-									"15":"referral from an OPTOMETRIST",
-									"16":"referral from an Orthoptist",
-									"17":"referral from a National Screening Programme",
-									"93":"referral from a Community Dental Service",
-									"97":"other - not initiated by the CONSULTANT responsible for the Consultant Out-Patient Episode"]
-
-							DataType OP_REF = new DataType(name:"NHS SOURCE OUT-PATIENT REFERRAL ", enumerated: true, enumerations: referralSource).save(failOnError: true)
-
-
-							//declare normal data types
-
-							string = new DataType(name:"String", enumerated: false).save(failOnError: true)
-							new DataType(name:"Text", enumerated: false).save(failOnError: true)
-							new DataType(name:"Integer", enumerated: false).save(failOnError: true)
-							date = new DataType(name:"Date", enumerated: false).save(failOnError: true)
-							new DataType(name:"Datetime", enumerated: false).save(failOnError: true)
-							new DataType(name:"Time", enumerated: false).save(failOnError: true)
-							new DataType(name:"Float", enumerated: false).save(failOnError: true)
-							new DataType(name:"Boolean", enumerated: false).save(failOnError: true)
-							new DataType(name:"Blob", enumerated: false).save(failOnError: true)
-
-							if (!DataElement.count()&&!ValueDomain.count()) {
-
-									DataElementValueDomain.link(new DataElement(name:"SOURCE OF REFERRAL FOR OUT-PATIENTS",
-									description:"This identifies the source of referral of each Consultant Out-Patient Episode.",
-									dataElementConcept: REF).save(failOnError: true),
-									new ValueDomain(name:"NHS SOURCE OF REFERRAL FOR OUT-PATIENTS",
-									description:"",
-									dataType: OP_REF,
-									conceptualDomain: COSD,
-									format:"an2").save(failOnError: true))
-
-
-									DataElementValueDomain.link(new DataElement(name:"ETHNIC CATEGORY",
-									description:"The ethnicity of a PERSON, as specified by the PERSON.. The 16+1 ethnic data categories defined in the 2001 census is the national mandatory standard for the collection and analysis of ethnicity.(The Office for National Statistics has developed a further breakdown of the group from that given, which may be used locally.)",
-									dataElementConcept: DEM).save(failOnError: true),
-									new ValueDomain(name:"NHS ETHNIC CATEGORY",
-									description:"",
-									dataType: ETH_CAT,
-									conceptualDomain: COSD,
-									format:"an2").save(failOnError: true))
-
-									DataElementValueDomain.link(new DataElement(name:"PERSON FAMILY NAME (AT BIRTH)",
-									description:"The PATIENTs surname at birth.",
-									dataElementConcept: DEM).save(failOnError: true),
-									new ValueDomain(name:"NHS PERSON FAMILY NAME (AT BIRTH)",
-									description:"",
-									dataType: string,
-									conceptualDomain: COSD,
-									format:"max 35 characters").save(failOnError: true))
-
-                                DataElementValueDomain.link(new DataElement(name:"GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION)",
-                                        description:"The GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION) is an ORGANISATION CODE. This is the code of the GP Practice that the PATIENT is registered with.",
-                                        dataElementConcept: DEM).save(failOnError: true),
-                                        new ValueDomain(name:"NHS GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION)",
-                                                description:"",
-                                                dataType: string,
-                                                conceptualDomain: COSD,
-                                                format:"an6").save(failOnError: true))
-
-                                100.times { it ->
-                                    DataElementValueDomain.link(new DataElement(name:"TEST ELEMENT ${it}",
-                                            description:"A test element",
-                                            dataElementConcept: DEM).save(failOnError: true),
-                                            new ValueDomain(name:"Test value domain ${it}",
-                                                    description:"",
-                                                    dataType: string,
-                                                    conceptualDomain: COSD,
-                                                    format:"an6").save(failOnError: true))
-                                }
-
-									
-
-							}
-							
-							def dataElement = DataElement.get(1);
-							
-							DataElementCollection.link(dataElement,
-								new Collection(refId: 'Col1',
-								name: 'TestCol',
-								description: 'blah blah blah').save(failOnError: true), SchemaSpecification.MANDATORY)
-
-
-
-							
-							}
-					}
-			}
-		
-		
-		
-		
-
-		if(!FormDesign.count()){
-			
-			def rule1 = new Rule(
-				name: 'display section rule',
-				predicate: 'question1 > 5',
-				consequence: 'display'
-				).save(failOnError:true)
-
-			def inputField1 = new InputField(
-
-					defaultValue: 'test default',
-					placeholder: 'test placeholder',
-					maxCharacters: 11,
-					unitOfMeasure: 'test UOM',
-					dataType: string,
-					format: 'test format',
-
-					).save(failOnError: true)
-
-			def inputField2 = new InputField(
-
-					defaultValue: 'test default',
-					placeholder: 'test placeholder',
-					maxCharacters: 20,
-					unitOfMeasure: 'test2 UOM',
-					dataType: string,
-					format: 'test format2',
-
-					).save(failOnError: true)
-
-			def inputField3 = new InputField(
-
-					defaultValue: 'te3st default',
-					placeholder: 'test3 placeholder',
-					maxCharacters: 13,
-					unitOfMeasure: 'tes3t UOM',
-					dataType: date,
-					format: 'test forma3t',
-
-					).save(failOnError: true)
-
-			def inputField4 = new InputField(
-
-					defaultValue: 'test default',
-					placeholder: 'test placeholder',
-					maxCharacters: 9,
-					unitOfMeasure: 'test UOM',
-					dataType: string,
-					format: 'test format',
-
-					).save(failOnError: true)
-
-			def inputField5 = new InputField(
-
-					defaultValue: 'test default',
-					placeholder: 'test pladasceholder',
-					maxCharacters: 11,
-					unitOfMeasure: 'test UOM',
-					dataType: string,
-					format: 'test format',
-
-					).save(failOnError: true)
-
-			def question1 = new QuestionElement(
-					designOrder: 1,
-					prompt: 'how old are you',
-					style: 'this style1',
-					label: 'how old are you?',
-					additionalInstructions: 'more instructions',
-					inputField: inputField1
-					).save(failOnError: true)
-
-			def question2 = new QuestionElement(
-					designOrder: 2,
-					prompt: 'operation reference',
-					style: 'this style3',
-					label: 'origin of referral',
-					additionalInstructions: 'more instructions2 ',
-					inputField: inputField2
-					).save(failOnError: true)
-
-			def question3 = new QuestionElement(
-					designOrder: '3',
-					prompt: 'this is the thirs question',
-					style: 'this style5',
-					label: 'what is your favorite colour ?',
-					additionalInstructions: 'more instructions',
-					inputField: inputField3
-					).save(failOnError: true)
-
-			def question4 = new QuestionElement(
-					designOrder: 4,
-					prompt: 'this is the 4th question',
-					style: 'this style5',
-					label: 'what is your favorite animal ?',
-					additionalInstructions: 'more instructions',
-					inputField: inputField4
-					).save(failOnError: true)
-
-			def question5 = new QuestionElement(
-					designOrder: 5,
-					prompt: 'this is the 5th question',
-					style: 'this style5',
-					label: 'what is your favorite car ?',
-					additionalInstructions: 'more instructions',
-					inputField: inputField5
-					).save(failOnError: true)
-
-
-			def formDesignInstance = new FormDesign(
-			name:'formDesignName1',
-			versionNo:'V0.1',
-			isDraft:true,
-			description:'test description 1'
-			).save(failOnError: true)
-
-
-			def section1 = new SectionElement(
-					title: 'section1',
-					designOrder: 1
-					).save(failOnError:true)
-
-			def section2 = new SectionElement(
-					title: 'section2',
-					designOrder: 2
-					).save(failOnError:true)
-					
-			section1.addToQuestionElements(question1)
-			section1.addToQuestionElements(question2)
-			section1.addToQuestionElements(question3)
-
-			
-			section2.addToRules(rule1)
-			section2.addToQuestionElements(question4)
-			section2.addToQuestionElements(question5)
-
-			formDesignInstance.addToFormDesignElements(section1)
-			formDesignInstance.addToFormDesignElements(section2)
-		}
 
 		if(!Pathway.count()){
 
@@ -580,9 +330,6 @@ class BootStrap {
                     y: '330px',
                     parent: pathway1,
             ).save(failOnError:true)
-            .addToDataElements(DataElement.get(1))
-            .addToDataElements(DataElement.get(2))
-            //.addToForms(FormDesign.get(1))
 
             Node node1 = new Node(
                     name: 'Guard Patient',
@@ -625,8 +372,6 @@ class BootStrap {
             subPathway1.addToLinks(link1)
             subPathway1.addToLinks(link2)
 
-
-
             def node21 = new Node(
                     name: 'transfer to O.R.',
                     x: '455px',
@@ -662,7 +407,7 @@ class BootStrap {
                     .addToNodes(subPathway1)
                     .addToLinks(link21)
                     .addToLinks(link22)
-		}		
+		}
 	}
 	
 

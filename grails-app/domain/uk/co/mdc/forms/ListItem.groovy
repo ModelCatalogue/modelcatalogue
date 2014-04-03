@@ -9,5 +9,7 @@ class ListItem {
 	//N.B. removed guard.....we are implementing guards differently from the model using James' constraints language
 	
     static constraints = {
+        promptForItem size: 1..255
+        meaningForItem size: 1..255
     }
 }

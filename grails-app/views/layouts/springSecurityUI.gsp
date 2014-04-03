@@ -1,7 +1,4 @@
-<%@ page import="org.codehaus.groovy.grails.plugins.PluginManagerHolder" %>
-<%@ page import="org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils" %>
-<%@ page import="grails.plugins.springsecurity.SecurityConfigType" %>
-
+<%@ page import="org.codehaus.groovy.grails.plugins.PluginManagerHolder; grails.plugin.springsecurity.SecurityConfigType; grails.plugin.springsecurity.SpringSecurityUtils" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 

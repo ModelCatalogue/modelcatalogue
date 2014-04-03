@@ -7,6 +7,11 @@
 /build/
 /buildPlugins/
 
+# elasticsearch index
+/data
+/data/**
+data/**
+
 # web application files bootstrap data
 /web-app/WEB-INF/bootstrap-data
 
@@ -83,3 +88,4 @@
 ehthumbs.db
 Thumbs.db
 cobertura.ser
+

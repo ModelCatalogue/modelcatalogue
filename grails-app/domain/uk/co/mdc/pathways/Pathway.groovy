@@ -1,7 +1,7 @@
 package uk.co.mdc.pathways
 
 import uk.co.mdc.forms.FormDesign
-import uk.co.mdc.model.DataElement
+import org.modelcatalogue.core.DataElement
 
 /**
  * A pathway object. Pathways contain <b>nodes</b>, which are connected by <b>links</b>.

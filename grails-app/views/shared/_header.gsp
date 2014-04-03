@@ -1,7 +1,3 @@
-<%@ page import="org.codehaus.groovy.grails.plugins.PluginManagerHolder"%>
-<%@ page import="org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils"%>
-<%@ page import="grails.plugins.springsecurity.SecurityConfigType"%>
-
 <!DOCTYPE html>
 <!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
 <!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
@@ -65,7 +61,7 @@
 <sec:ifLoggedIn>
                         <li><a href="${createLink(uri: '/dashboard/')}">Dashboard</a></li>
                         <!-- Metadata curation menu -->
-                        <li><g:link action="list" controller="ValueDomain"> Data model </g:link></li>
+                        <li><a href="${createLink(uri: '/metadataCurator')}">Data model</a></li>
 
                         <!-- Pathways menu -->
                         <li class="dropdown">
@@ -106,12 +102,11 @@
                             </ul>
                         </li>
                     </ul>
+    </sec:ifAnyGranted>
                     <ul class="nav navbar-nav navbar-right">
                         <li><g:link data-placement="bottom" class="btn btn-inverse" data-original-title="Logout" rel="tooltip" controller="logout"> Logout </g:link></li>
-    </sec:ifAnyGranted>
-</sec:ifLoggedIn>
                     </ul>
-
+</sec:ifLoggedIn>
                 </div>
             </div>
         </nav>
