@@ -9,11 +9,6 @@ import org.modelcatalogue.core.Model
 import org.modelcatalogue.core.RelationshipType
 import org.modelcatalogue.core.ValueDomain
 import org.springframework.security.acls.domain.BasePermission
-//import uk.co.mdc.model.ValueDomain
-//import uk.co.mdc.model.DataElement
-//import uk.co.mdc.model.DataType
-//import uk.co.mdc.model.DataElementConcept
-//import uk.co.mdc.model.ConceptualDomain
 
 class ImportNHICService {
 

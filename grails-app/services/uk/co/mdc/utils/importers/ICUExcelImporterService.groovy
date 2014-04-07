@@ -1,13 +1,14 @@
 package uk.co.mdc.utils.importers
 
 import grails.transaction.Transactional
+import org.modelcatalogue.core.EnumeratedType
+import org.modelcatalogue.core.Model
 import org.springframework.security.acls.domain.BasePermission
 import uk.co.mdc.Importers.ExcelLoader
-import uk.co.mdc.model.ConceptualDomain
-import uk.co.mdc.model.DataElement
-import uk.co.mdc.model.DataElementConcept
-import uk.co.mdc.model.DataType
-import uk.co.mdc.model.ValueDomain
+import org.modelcatalogue.core.ConceptualDomain
+import org.modelcatalogue.core.DataElement
+import org.modelcatalogue.core.DataType
+import org.modelcatalogue.core.ValueDomain
 import uk.co.mdc.pathways.*
 
 class ICUExcelImporterService {
@@ -24,7 +25,6 @@ class ICUExcelImporterService {
         def pathway1Index= headers.indexOf("Section_1")
         def pathway2Index= headers.indexOf("Section_2")
         def pathway3Index= headers.indexOf("Section_3")
-
         def commentsIndex = headers.indexOf("Comments")
         def supportingIndex = headers.indexOf("Supporting")
         def associatedDateTimeIndex = headers.indexOf("Associated date and time")
@@ -74,7 +74,7 @@ class ICUExcelImporterService {
         def cd = findOrCreateConceptualDomain("ICU","ICU");
         grantUserPermissions(cd)
 
-        def dec=new DataElementConcept([name:"ICU" , description:"ICU main DataElementConcept"]).save();
+        def dec=new Model([name:"ICU" , description:"ICU main DataElementConcept"]).save();
         grantUserPermissions(dec)
 
         Pathway mainPathway = new Pathway([name:"ICU",description: "ICU",isDraft:false]).save(failOnError: true);
@@ -86,10 +86,10 @@ class ICUExcelImporterService {
         def vd = CreateValueDomain(el, dataType,cd)
         def de = CreateDataElement(el,dec)
 
-        dec.addToDataElements(de)
+        dec.addToContains(de)
         dec.save()
 
-        de.addToDataElementValueDomains(vd);
+        de.addToInstantiates(vd);
         de.save()
 
 
@@ -137,25 +137,24 @@ class ICUExcelImporterService {
     }
 
     @Transactional
-    private DataElement CreateDataElement(el,dataElementConcept) {
+    private DataElement CreateDataElement(el,model) {
         def de = new DataElement([
                 name: el.name,
-                description: el.description,
-                dataElementConcept: dataElementConcept
+                description: el.description
         ]).save(flush: true);
-        grantUserPermissions(de)
+        de.addToContainedIn(model)
         de
     }
 
     @Transactional
-    private ValueDomain CreateValueDomain(el, dataType,conceptualDomain) {
+    private ValueDomain CreateValueDomain(el, dataType, conceptualDomain) {
         def vd = new ValueDomain(name: el.name,
-                conceptualDomain: conceptualDomain,
                 dataType: dataType,
                 format: el.template,
                 description: el.description).save(failOnError: true);
 
-        grantUserPermissions(vd)
+        vd.addToIncludedIn(conceptualDomain)
+
         vd
     }
 
@@ -166,7 +165,6 @@ class ICUExcelImporterService {
 
         if (!cd) {
             cd = new ConceptualDomain(name: name, description: description).save(failOnError: true)
-            grantUserPermissions(cd)
         }
         return cd
     }
@@ -197,12 +195,24 @@ class ICUExcelImporterService {
             }
         }
 
-        dataTypeReturn = new DataType(name: name,
-                                      enumerated: enumerated,
-                                      enumerations: enumerations).save(failOnError: true)
+        if (enumerated) {
 
 
-        grantUserPermissions(dataTypeReturn);
+            String enumString = enumerations.sort() collect { key, val ->
+                "${this.quote(key)}:${this.quote(val)}"
+            }.join('|')
+
+            dataTypeReturn = EnumeratedType.findWhere(enumAsString: enumString)
+
+            if (!dataTypeReturn) {
+                dataTypeReturn = new EnumeratedType(name: name.replaceAll("\\s", "_"), enumerations: enumerations).save()
+            }
+        } else {
+
+            dataTypeReturn = (DataType.findByName(name)) ?: new DataType(name: name)
+
+        }
+
         return dataTypeReturn
     };
 
