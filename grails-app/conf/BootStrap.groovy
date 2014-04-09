@@ -1,3 +1,6 @@
+import org.modelcatalogue.core.DataType
+import org.modelcatalogue.core.MeasurementUnit
+import org.modelcatalogue.core.RelationshipType
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder as SCH
@@ -27,6 +30,9 @@ class BootStrap {
 		
 		//register custom json Marshallers
 		registerJSONMarshallers(springContext)
+
+        DataType.initDefaultDataTypes()
+        RelationshipType.initDefaultRelationshipTypes()
 		
 		environments {
 			production {
@@ -84,6 +90,7 @@ class BootStrap {
         //only permit admin user registrationCode
         new Requestmap(url: '/bootstrap-data/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/dataImport/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/excelImporter/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/admin', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/admin/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/securityInfo/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()

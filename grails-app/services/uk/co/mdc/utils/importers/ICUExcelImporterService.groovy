@@ -13,6 +13,13 @@ import uk.co.mdc.pathways.*
 
 class ICUExcelImporterService {
 
+    private static final QUOTED_CHARS = [
+            "\\": "&#92;",
+            ":": "&#58;",
+            "|": "&#124;",
+            "%": "&#37;",
+    ]
+
     def aclUtilService
 
     def GetICUDataElementNames(InputStream inputStream) {
@@ -72,24 +79,29 @@ class ICUExcelImporterService {
     def SaveICUDataElement(def elements)
     {
         def cd = findOrCreateConceptualDomain("ICU","ICU");
-        grantUserPermissions(cd)
 
         def dec=new Model([name:"ICU" , description:"ICU main DataElementConcept"]).save();
-        grantUserPermissions(dec)
 
         Pathway mainPathway = new Pathway([name:"ICU",description: "ICU",isDraft:false]).save(failOnError: true);
         grantUserPermissions(mainPathway)
 
         elements.eachWithIndex { def el, int i ->
 
-        def dataType =  CreateDataType(el.name,el.units,el.listContent);
+        def dataType =  CreateDataType(el.name,el.units,el.listContent)
         def vd = CreateValueDomain(el, dataType,cd)
         def de = CreateDataElement(el,dec)
 
         dec.addToContains(de)
         dec.save()
 
-        de.addToInstantiates(vd);
+        de.addToInstantiatedBy(vd);
+
+        de.ext.put("Timing of Data Collection", el?.timingDef);
+        de.ext.put("Associated Time and Date", el?.associatedDateTime);
+        de.ext.put("Comments", el?.comments);
+        de.ext.put("Supporting", el?.supporting);
+        de.ext.put("sourceUCH", el?.sourceUCHIndex);
+
         de.save()
 
 
@@ -153,7 +165,7 @@ class ICUExcelImporterService {
                 format: el.template,
                 description: el.description).save(failOnError: true);
 
-        vd.addToIncludedIn(conceptualDomain)
+         vd.addToIncludedIn(conceptualDomain)
 
         vd
     }
@@ -205,13 +217,15 @@ class ICUExcelImporterService {
             dataTypeReturn = EnumeratedType.findWhere(enumAsString: enumString)
 
             if (!dataTypeReturn) {
-                dataTypeReturn = new EnumeratedType(name: name.replaceAll("\\s", "_"), enumerations: enumerations).save()
+                dataTypeReturn = new EnumeratedType(name: name.replaceAll("\\s", "_"), enumerations: enumerations)
             }
         } else {
 
-            dataTypeReturn = (DataType.findByName(name)) ?: new DataType(name: name)
+            dataTypeReturn = (DataType.findByName(name)) ?: DataType.findByName("String")
 
         }
+
+        dataTypeReturn.save()
 
         return dataTypeReturn
     };
@@ -227,5 +241,14 @@ class ICUExcelImporterService {
             aclUtilService.addPermission objectOrList, 'ROLE_ADMIN', BasePermission.ADMINISTRATION
             aclUtilService.addPermission objectOrList, 'ROLE_USER', BasePermission.READ
         }
+    }
+
+    private static String quote(String s) {
+        if (s == null) return null
+        String ret = s
+        QUOTED_CHARS.each { original, replacement ->
+            ret = ret.replace(original, replacement)
+        }
+        ret
     }
  }

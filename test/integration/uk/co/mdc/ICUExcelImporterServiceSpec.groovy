@@ -1,9 +1,14 @@
 package uk.co.mdc
+
+import grails.plugin.springsecurity.acl.AclUtilService
 import grails.test.spock.IntegrationSpec
 import org.modelcatalogue.core.ConceptualDomain
 import org.modelcatalogue.core.DataElement
 import org.modelcatalogue.core.DataType
+import org.modelcatalogue.core.EnumeratedType
 import org.modelcatalogue.core.Model
+import org.modelcatalogue.core.RelationshipType
+import org.modelcatalogue.core.ValueDomain
 import uk.co.mdc.pathways.Pathway
 
 class ICUExcelImporterServiceSpec extends IntegrationSpec {
@@ -12,6 +17,12 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
     def fileNameError="test/unit/resources/ICUDataError.xls"
     def ICUExcelImporterService
 
+    def setup()
+    {
+        RelationshipType.initDefaultRelationshipTypes()
+        ICUExcelImporterService.aclUtilService = Mock(AclUtilService)
+        ICUExcelImporterService.aclUtilService.addPermission() >> true
+    }
 
     private def createTestDataElement()
     {
@@ -118,9 +129,8 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
 
 
             then:"it should save the dataElements name and description"
-            element.dataElementConcept
-            element.dataElementConcept.name == "ICU"
-            element.dataElementConcept.description == "ICU main DataElementConcept"
+            element.containedIn
+            element.containedIn.contains(Model.findByName("ICU"))
         }
 
 
@@ -133,8 +143,9 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
 
 
         then:"it should save the dataElements name and description"
-        element.dataElementValueDomains[0].valueDomain.name == dataElements[0].name
-        element.dataElementValueDomains[0].valueDomain.description == dataElements[0].description
+        element.instantiatedBy
+        element.instantiatedBy[0].name == dataElements[0].name
+        element.instantiatedBy[0].description == dataElements[0].description
     }
 
 
@@ -146,13 +157,12 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
         def listOfContent = "01=Number present and verified\n"+
                             "02=Number present but not traced"
         def dtCountPre = DataType.count()
-        DataType dataType= ICUExcelImporterService.CreateDataType("test","List",listOfContent);
+        EnumeratedType dataType= ICUExcelImporterService.CreateDataType("test","List",listOfContent);
 
         then:"it should save the DataType"
         DataType.count() == dtCountPre + 1
-        dataType.enumerated
-        dataType.enumerations["01"] == "Number present and verified"
-        dataType.enumerations["02"] == "Number present but not traced"
+        dataType.enumerations.get("01") == "Number present and verified"
+        dataType.enumerations.get("02") == "Number present but not traced"
     }
 
 
@@ -165,7 +175,7 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
         then:"it should save the DataType"
         DataType.count() == dtCountPre + 1
         dataType
-        !dataType.enumerated
+        !dataType.instanceOf(EnumeratedType)
     }
 
     void "Test if SaveICUDataElement creates a conceptualDomain"()
@@ -298,9 +308,9 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
         result.pathway.nodes.size()== 1
         result.pathway.nodes[0].name == "Admission"
         result.pathway.nodes[0].nodes.size() == 3
-        result.pathway.nodes[0].nodes[0].name == "SubPath1"
-        result.pathway.nodes[0].nodes[1].name == "SubPath2"
-        result.pathway.nodes[0].nodes[2].name == "SubPath3"
+        result.pathway.nodes[0].nodes[0].name == "SubPath2"
+        result.pathway.nodes[0].nodes[1].name == "SubPath3"
+        result.pathway.nodes[0].nodes[2].name == "SubPath1"
     }
 
 

@@ -117,5 +117,4 @@ metadataCurator.controller('metadataCurator.searchCtrl', ['catalogueElementResou
 
   $scope.search = () ->
     $state.go('search', {searchString: $scope.searchTerm })
-
 ])

@@ -1,5 +1,6 @@
 package uk.co.mdc.utils.importers
 
+import org.grails.datastore.mapping.core.Session
 import org.json.simple.JSONObject
 import org.modelcatalogue.core.ConceptualDomain
 import org.modelcatalogue.core.DataElement
@@ -14,8 +15,8 @@ class ImportNHICService {
 
     static transactional = true
 
-    def grailsApplication
- //   def aclUtilService
+    def grailsApplication, sessionFactory
+    def errors = new HashMap()
 
         private static final QUOTED_CHARS = [
             "\\": "&#92;",
@@ -24,11 +25,12 @@ class ImportNHICService {
             "%": "&#37;",
     ]
 
-
     def importData() {
         DataType.initDefaultDataTypes()
         RelationshipType.initDefaultRelationshipTypes()
-        getNhicFiles().each { filename -> singleImport(filename) }
+        getNhicFiles().each {
+            filename -> singleImport(filename)
+        }
     }
 //
 //    private grantUserPermissions(objectOrList) {
@@ -61,695 +63,337 @@ class ImportNHICService {
         def applicationContext = grailsApplication.mainContext
         String basePath = applicationContext.getResource("/").getFile().toString()
 
+        Integer counter = 0
+
         new File("${basePath}" + "/WEB-INF/bootstrap-data" + filename).toCsvReader([charset: 'UTF-8', skipLines: 1]).eachLine { tokens ->
             fileFunctions[filename](tokens);
+
+            if(counter>40) {
+                sessionFactory.currentSession.flush()
+                sessionFactory.currentSession.clear()
+                counter = 0
+            }else{
+                counter++
+            }
         }
+
+        println(errors)
     }
 
     private fileFunctions = [
-                        '/CAN_CUH.csv':
+                        '/CAN/CAN_CUH.csv':
                     { tokens ->
-                        def categories = ["NHIC Datasets", "Ovarian Cancer", "CUH", "Round 1", tokens[1], tokens[2]]
-                        def cd = findOrCreateConceptualDomain("NHIC", "NHIC conceptual domain i.e. value domains used the NHIC project")
-                        def models = importModels(categories, cd)
-                        def dataTypes = [tokens[5]]
-                        def dataType = importDataTypes(tokens[3], dataTypes)
-                        def ext = new HashMap()
+                        def section = tokens[1]
+                        def subsection = tokens[2]
+                        def name = tokens[3]
+                        def valueDomainInfo = tokens[5]
+                        def description = tokens[4]
+                        def conceptualDomain = "NHIC : Ovarian Cancer"
+                        def conceptualDomainDescription  = "NHIC : Ovarian Cancer"
+                        def metadataColumns = [
+                                "NHIC_Identifier":tokens[0],
+                                "Link_to_existing definition:":tokens[6],
+                                "Notes_from_GD_JCIS:":tokens[7],
+                                "[Optional]_Local_Identifier:":tokens[8],
+                                "A":tokens[9],
+                                "B":tokens[10],
+                                "C":tokens[11],
+                                "D":tokens[12],
+                                "E":tokens[13],
+                                "F":tokens[14],
+                                "G":tokens[15],
+                                "H":tokens[16],
+                                "E2":tokens[17],
+                        ]
+                        def categories = ["NHIC Datasets", "Ovarian Cancer", "CUH", "Round 1", section, subsection]
+                        importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+                        //println "importing: " + tokens[0] + "CAN_CUH"
+                    },
 
-                        def vd = new ValueDomain(name: tokens[3].replaceAll("\\s", "_"),
-                                //conceptualDomain: cd,
-                                dataType: dataType,
-                                description: tokens[5]).save(failOnError: true);
-
-                        vd.addToIncludedIn(cd)
-
-                        def de = new DataElement(name: tokens[3],
-                                description: tokens[4], code: tokens[0])
-                        //dataElementConcept: models,
-                        //extension: ext).save(failOnError: true)
-
-                        de.save()
-
-                        de.ext.put("NHIC_Identifier:", tokens[0].take(255));
-                        de.ext.put("Link_to_existing definition:", tokens[6].take(255));
-                        de.ext.put("Notes_from_GD_JCIS", tokens[7].take(255));
-                        de.ext.put("[Optional]_Local_Identifier", tokens[8].take(255));
-                        de.ext.put("A", tokens[9].take(255));
-                        de.ext.put("B", tokens[10].take(255));
-                        de.ext.put("C", tokens[11].take(255));
-                        de.ext.put("D", tokens[12].take(255));
-                        de.ext.put("E", tokens[13].take(255));
-                        de.ext.put("F", tokens[14].take(255));
-                        de.ext.put("G", tokens[15].take(255));
-                        de.ext.put("H", tokens[16]);
-                        de.ext.put("E2", tokens[17].take(255))
+            '/CAN/CAN_GSTT.csv':
+                    { tokens ->
 
 
-                        de.addToInstantiatedBy(vd)
-                        de.addToContainedIn(models)
+                        def section = tokens[1]
+                        def subsection = tokens[2]
+                        def name = tokens[3]
+                        def valueDomainInfo = tokens[5]
+                        def description = tokens[4]
+                        def conceptualDomain = "NHIC : Ovarian Cancer"
+                        def conceptualDomainDescription  = "NHIC : Ovarian Cancer"
+                        def metadataColumns = [
+                                "NHIC_Identifier":tokens[0],
+                                "Link_to_existing definition:":tokens[6],
+                                "Notes_from_GD_JCIS:":tokens[7],
+                                "[Optional]_Local_Identifier:":tokens[8],
+                                "A":tokens[9],
+                                "B":tokens[10],
+                                "C":tokens[11],
+                                "D":tokens[12],
+                                "E":tokens[13]
+                        ]
+                        def categories = ["NHIC Datasets", "Ovarian Cancer", "GSTT", "Round 1", section, subsection]
+                        importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+                        //println "importing: " + tokens[0] + "CAN_GSTT"
+                    },
 
-                        //de.addToDataElementValueDomains(vd);
-                        //de.save();
-                        println "importing: " + tokens[0] + "_Round1_CAN"
-                    }
+            '/CAN/CAN_IMP.csv':
+                    { tokens ->
+                        def section = tokens[1]
+                        def subsection = tokens[2]
+                        def name = tokens[3]
+                        def valueDomainInfo = tokens[5]
+                        def description = tokens[4]
+                        def conceptualDomain = "NHIC : Ovarian Cancer"
+                        def conceptualDomainDescription  = "NHIC : Ovarian Cancer"
+                        def metadataColumns = [
+                                "NHIC_Identifier":tokens[0],
+                                "Link_to_existing definition:":tokens[6],
+                                "Notes_from_GD_JCIS:":tokens[7],
+                                "[Optional]_Local_Identifier:":tokens[8],
+                                "A":tokens[9],
+                                "B":tokens[10],
+                                "C":tokens[11],
+                                "D":tokens[12],
+                                "E":tokens[13]
+                        ]
+                        def categories = ["NHIC Datasets", "Ovarian Cancer", "IMP", "Round 1", section, subsection]
+                        importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+                        //println "importing: " + tokens[0] + "CAN_IMP"
+                   },
+
+                '/CAN/CAN_UCL.csv':
+                        { tokens ->
+                            def section = tokens[1]
+                            def subsection = tokens[2]
+                            def name = tokens[3]
+                            def valueDomainInfo = tokens[6]
+                            def description = tokens[5]
+                            def conceptualDomain = "NHIC : Ovarian Cancer"
+                            def conceptualDomainDescription  = "NHIC : Ovarian Cancer"
+                            def metadataColumns = [
+                                    "NHIC_Identifier":tokens[0],
+                                    "Link_to_existing definition:":tokens[6],
+                                    "Notes_from_GD_JCIS:":tokens[7],
+                                    "[Optional]_Local_Identifier:":tokens[8],
+                                    "A":tokens[9],
+                                    "B":tokens[10],
+                                    "C":tokens[11],
+                                    "D":tokens[12],
+                                    "E":tokens[13],
+                                    "System": tokens[4]
+                            ]
+                            def categories = ["NHIC Datasets", "Ovarian Cancer", "UCL", "Round 1", section, subsection]
+                            importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+                            //println "importing: " + tokens[0] + "CAN_UCL"
+                        },
+
+                '/ACS/ACS_UCL.csv':
+                        { tokens ->
+                            def section = tokens[1]
+                            def subsection = tokens[2]
+                            def name = tokens[3]
+                            def valueDomainInfo = tokens[5]
+                            def description = tokens[4]
+                            def conceptualDomain = "NHIC : Acute Coronary Syndrome"
+                            def conceptualDomainDescription  = "NHIC : Acute Coronary Syndrome"
+                            def metadataColumns = [
+                                    "NHIC_Identifier":tokens[0],
+                                    "Link_to_existing definition:":tokens[6],
+                                    "[Optional]_Local_Identifier:":tokens[7],
+                                    "A":tokens[8],
+                                    "B":tokens[9],
+                                    "C":tokens[10],
+                                    "D":tokens[11],
+                                    "E":tokens[12]
+                            ]
+                            def categories = ["NHIC Datasets", "Acute Coronary Syndrome", "UCL", "Round 1", section, subsection]
+                            importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+                            //println "importing: " + tokens[0] + "ACS_UCL"
+                        },
+
+            '/ACS/ACS_OUH.csv':
+                    { tokens ->
+                        def section = tokens[1]
+                        def subsection = tokens[2]
+                        def name = tokens[3]
+                        def valueDomainInfo = tokens[5]
+                        def description = tokens[4]
+                        def conceptualDomain = "NHIC : Acute Coronary Syndrome"
+                        def conceptualDomainDescription  = "NHIC : Acute Coronary Syndrome"
+                        def metadataColumns = [
+                                "NHIC_Identifier":tokens[0],
+                                "Link_to_existing definition:":tokens[6],
+                                "[Optional]_Local_Identifier:":tokens[7],
+                                "A":tokens[8],
+                                "B":tokens[9],
+                                "C":tokens[10],
+                                "D":tokens[11],
+                                "E":tokens[12]
+                        ]
+                        def categories = ["NHIC Datasets", "Acute Coronary Syndrome", "OUH", "Round 1", section, subsection]
+                        importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+                        //println "importing: " + tokens[0] + "ASC_OUH"
+                    },
+
+            '/ACS/ACS_GSTT.csv':
+                    { tokens ->
+                        def section = tokens[1]
+                        def subsection = tokens[2]
+                        def name = tokens[3]
+                        def valueDomainInfo = tokens[5]
+                        def description = tokens[4]
+                        def conceptualDomain = "NHIC : Acute Coronary Syndrome"
+                        def conceptualDomainDescription  = "NHIC : Acute Coronary Syndrome"
+                        def metadataColumns = [
+                                "NHIC_Identifier":tokens[0],
+                                "Link_to_existing definition:":tokens[6],
+                                "[Optional]_Local_Identifier:":tokens[7],
+                                "A":tokens[8],
+                                "B":tokens[9],
+                                "C":tokens[10],
+                                "D":tokens[11],
+                                "E":tokens[12]
+                        ]
+                        def categories = ["NHIC Datasets", "Acute Coronary Syndrome", "GSTT", "Round 1", section, subsection]
+                        importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+                        //println "importing: " + tokens[0] + "ACS_GSTT"
+                    },
 
 
-//            '/Initial/CAN.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "Initial Proposal - CUH", "Ovarian Cancer", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("Local Identifier", tokens[8]);
-//                        ext.put("Link to Existing Definition", tokens[6]);
-//                        ext.put("Notes from GD/JCIS", tokens[7]);
-//
-//                        def cd = findOrCreateConceptualDomain("CAN", "NHIC : Ovarian Cancer")
-//
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[5]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0]
-//                    },
+            '/HEP/HEP_OUH.csv':
+                    { tokens ->
 
+                        def section = tokens[1]
+                        def subsection = tokens[2]
+                        def name = tokens[3]
+                        def valueDomainInfo = tokens[5]
+                        def description = tokens[4]
+                        def conceptualDomain = "NHIC : Hepatitus"
+                        def conceptualDomainDescription  = "NHIC : Hepatitus"
+                        def metadataColumns = [
+                                "NHIC_Identifier":tokens[0],
+                                "Link_to_existing definition:":tokens[7],
+                                "[Optional]_Local_Identifier:":tokens[8],
+                                "A":tokens[9],
+                                "B":tokens[10],
+                                "C":tokens[11],
+                                "D":tokens[12],
+                                "E":tokens[13]
+                        ]
+                        def categories = ["NHIC Datasets", "Hepatitus", "OUH", "Round 1", section, subsection]
+                        importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
 
-//            '/Initial/ACS.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "Initial Proposal - IMP", "Acute Coronary Syndromes", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("Local Identifier", tokens[7]);
-//                        ext.put("Data Dictionary Element", tokens[6]);
-//
-//                        def cd = findOrCreateConceptualDomain("ACS", "NHIC : Acute Coronary Syndromes")
-//
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[5]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0]
-//                    },
-//            '/Initial/HEP.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "Initial Proposal - OUH", "Viral Hepatitis C/B", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("Local Identifier", tokens[8]);
-//
-//                        def cd = findOrCreateConceptualDomain("HEP", "NHIC : Viral Hepatitis C/B")
-//
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[5]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0]
-//                    },
-//            '/Initial/TRA.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "Initial Proposal - GSTT", "Renal Transplantation", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = [
-//                                "NHIC Identifier": tokens[0]
-//                        ]
-//
-//                        def cd = findOrCreateConceptualDomain("TRA", "NHIC : Renal Transplantation")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[5]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0]
-//                    },
-//
-//            '/Initial/ICU.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "Initial Proposal - UCL", "Intensive Care", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = [
-//                                "NHIC Identifier": tokens[0]
-//                        ]
-//
-//                        def cd = findOrCreateConceptualDomain("ICU", "NHIC : Intensive Care")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[5]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0]
-//                    },
-//            '/Round1/ACS/ACS_GSTT.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "GSTT", "Round 1", "Acute Coronary Syndromes", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("Data Dictionary Element", tokens[6]);
-//                        ext.put("[Optional] Local Identifier", tokens[7]);
-//                        ext.put("A: How is the data item collected", tokens[8]);
-//                        ext.put("B. How is the data item stored, within the centre?", tokens[9]);
-//                        ext.put("C. How would you describe the existing coverage?", tokens[10]);
-//                        ext.put("D. How would you describe the existing quality?", tokens[11]);
-//                        ext.put("E. How hard would it be to achieve a score of 1 for Parts A to D?", tokens[12]);
-//
-//                        def cd = findOrCreateConceptualDomain("ACS", "NHIC : Acute Coronary Syndromes")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[5]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0] + "_Round1_GSTT"
-//                    },
-//
-//            '/Round1/ACS/ACS_OUH.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "OUH", "Round 1", "Acute Coronary Syndromes", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("Data Dictionary Element", tokens[6]);
-//                        ext.put("[Optional] Local Identifier", tokens[7]);
-//                        ext.put("A: How is the data item collected", tokens[8]);
-//                        ext.put("B. How is the data item stored, within the centre?", tokens[9]);
-//                        ext.put("C. How would you describe the existing coverage?", tokens[10]);
-//                        ext.put("D. How would you describe the existing quality?", tokens[11]);
-//                        ext.put("E. How hard would it be to achieve a score of 1 for Parts A to D?", tokens[12]);
-//
-//                        def cd = findOrCreateConceptualDomain("ACS", "NHIC : Acute Coronary Syndromes")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[5]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0] + "_Round1_OUH"
-//                    },
-//
-//            '/Round1/ACS/ACS_UCL.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "UCL", "Round 1", "Acute Coronary Syndromes", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("Data Dictionary Element", tokens[6]);
-//                        ext.put("[Optional] Local Identifier", tokens[7]);
-//                        ext.put("A: How is the data item collected", tokens[8]);
-//                        ext.put("B. How is the data item stored, within the centre?", tokens[9]);
-//                        ext.put("C. How would you describe the existing coverage?", tokens[10]);
-//                        ext.put("D. How would you describe the existing quality?", tokens[11]);
-//                        ext.put("E. How hard would it be to achieve a score of 1 for Parts A to D?", tokens[12]);
-//
-//                        def cd = findOrCreateConceptualDomain("ACS", "NHIC : Acute Coronary Syndromes")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[5]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0] + "_Round1_UCL"
-//                    },
-//            '/Round1/CAN/CAN_CUH.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "CUH", "Round 1", "Ovarian Cancer", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = [
-//                                "NHIC Identifier": tokens[0],
-//                                "Link to existing definition": tokens[6],
-//                                "Notes from GD/JCIS": tokens[7],
-//                                "[Optional] Local Identifier": tokens[8],
-//                                "A: How is the data item collected": tokens[9],
-//                                "B. How is the data item stored, within the centre?": tokens[10],
-//                                "C. How would you describe the existing coverage?": tokens[11],
-//                                "D. How would you describe the existing quality?": tokens[12],
-//                                "E. How hard would it be to achieve a score of 1 for Parts A to D?": tokens[13],
-//                                "F. what  are the circumstances of data collection?  where and when is the data recorded?  who is responsible for data entry?": tokens[14],
-//                                "G. is there a particular form (or data standard, or proforma) used for the collection of the data?   If so, please supply a copy or reference. ": tokens[15],
-//                                "H. if the data is stored in a local database or data warehouse, what is the name and version of the database application?": tokens[16],
-//                                "E2. Source for column E - how data established?": tokens[17]
-//                        ]
-//
-//
-//                        def cd = findOrCreateConceptualDomain("CAN", "NHIC : Ovarian Cancer")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[5]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0] + "_Round1_CAN"
-//                    },
-//            '/Round1/CAN/CAN_GSTT.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "GSTT", "Round 1", "Ovarian Cancer", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("Link to existing definition", tokens[6]);
-//                        ext.put("Notes from GD/JCIS", tokens[7]);
-//                        ext.put("[Optional] Local Identifier", tokens[8]);
-//                        ext.put("A: How is the data item collected", tokens[9]);
-//                        ext.put("B. How is the data item stored, within the centre?", tokens[10]);
-//                        ext.put("C. How would you describe the existing coverage?", tokens[11]);
-//                        ext.put("D. How would you describe the existing quality?", tokens[12]);
-//                        ext.put("E. How hard would it be to achieve a score of 1 for Parts A to D?", tokens[13]);
-//
-//                        def cd = findOrCreateConceptualDomain("CAN", "NHIC : Ovarian Cancer")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[5]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0] + "_Round1_GSTT"
-//                    },
-//
-//            '/Round1/CAN/CAN_IMP.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "IMP", "Round 1", "Ovarian Cancer", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("Link to existing definition", tokens[6]);
-//                        ext.put("Notes from GD/JCIS", tokens[7]);
-//                        ext.put("[Optional] Local Identifier", tokens[8]);
-//                        ext.put("Location", tokens[9]);
-//                        ext.put("Comments", tokens[10]);
-//                        ext.put("A: How is the data item collected", tokens[11]);
-//                        ext.put("B. How is the data item stored, within the centre?", tokens[12]);
-//                        ext.put("C. How would you describe the existing coverage?", tokens[13]);
-//                        ext.put("D. How would you describe the existing quality?", tokens[14]);
-//                        ext.put("E. How hard would it be to achieve a score of 1 for Parts A to D?", tokens[15]);
-//
-//                        def cd = findOrCreateConceptualDomain("CAN", "NHIC : Ovarian Cancer")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[5]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0] + "_Round1_IMP"
-//                    },
-//
-//            '/Round1/CAN/CAN_UCL.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "UCL", "Round 1", "Ovarian Cancer", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[6]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("Link to existing definition", tokens[7]);
-//                        ext.put("Notes from GD/JCIS", tokens[8]);
-//                        ext.put("[Optional] Local Identifier", tokens[9]);
-//                        ext.put("Location", tokens[4]);
-//                        ext.put("A: How is the data item collected", tokens[10]);
-//                        ext.put("B. How is the data item stored, within the centre?", tokens[11]);
-//                        ext.put("C. How would you describe the existing coverage?", tokens[12]);
-//                        ext.put("D. How would you describe the existing quality?", tokens[13]);
-//                        ext.put("E. How hard would it be to achieve a score of 1 for Parts A to D?", tokens[14]);
-//                        ext.put("Comments", tokens[15]);
-//
-//                        def cd = findOrCreateConceptualDomain("CAN", "NHIC : Ovarian Cancer")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[5]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[5],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0] + "_Round1_UCL"
-//                    },
-//
-//            '/Round1/HEP/HEP_OUH.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "OUH", "Round 1", "Viral Hepatitis C/B", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("National Code", tokens[6]);
-//                        ext.put("Data Dictionary Element", tokens[7]);
-//                        ext.put("[Optional] Local Identifier", tokens[8]);
-//                        ext.put("A: How is the data item collected", tokens[9]);
-//                        ext.put("B. How is the data item stored, within the centre?", tokens[10]);
-//                        ext.put("C. How would you describe the existing coverage?", tokens[11]);
-//                        ext.put("D. How would you describe the existing quality?", tokens[12]);
-//                        ext.put("E. How hard would it be to achieve a score of 1 for Parts A to D?", tokens[13]);
-//
-//                        def cd = findOrCreateConceptualDomain("HEP", "NHIC : Viral Hepatitis C/B")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[4]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0] + "_Round1_OUH"
-//                    },
-//
-//            '/Round1/HEP/HEP_UCL.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "UCL", "Round 1", "Viral Hepatitis C/B", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("National Code", tokens[6]);
-//                        ext.put("Data Dictionary Element", tokens[7]);
-//                        ext.put("[Optional] Local Identifier", tokens[8]);
-//                        ext.put("A: How is the data item collected", tokens[9]);
-//                        ext.put("B. How is the data item stored, within the centre?", tokens[10]);
-//                        ext.put("C. How would you describe the existing coverage?", tokens[11]);
-//                        ext.put("D. How would you describe the existing quality?", tokens[12]);
-//                        ext.put("E. How hard would it be to achieve a score of 1 for Parts A to D?", tokens[13]);
-//
-//                        def cd = findOrCreateConceptualDomain("HEP", "NHIC : Viral Hepatitis C/B")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[4]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0] + "_Round1_UCL"
-//                    },
-//
-//            '/Round1/ICU/ICU_GSTT.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "GSTT", "Round 1", "Intensive Care", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("A: How is the data item collected", tokens[8]);
-//                        ext.put("B. How is the data item stored, within the centre?", tokens[9]);
-//                        ext.put("C. How would you describe the existing coverage?", tokens[10]);
-//                        ext.put("D. How would you describe the existing quality?", tokens[11]);
-//                        ext.put("E. How hard would it be to achieve a score of 1 for Parts A to D?", tokens[12]);
-//
-//                        def cd = findOrCreateConceptualDomain("HEP", "NHIC : Intensive Care")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[4]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0] + "_Round1_GSTT"
-//                    },
-//
-//            '/Round1/ICU/ICU_UCL.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "UCL", "Round 1", "Intensive Care", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("A: How is the data item collected", tokens[8]);
-//                        ext.put("B. How is the data item stored, within the centre?", tokens[9]);
-//                        ext.put("C. How would you describe the existing coverage?", tokens[10]);
-//                        ext.put("D. How would you describe the existing quality?", tokens[11]);
-//                        ext.put("E. How hard would it be to achieve a score of 1 for Parts A to D?", tokens[12]);
-//
-//                        def cd = findOrCreateConceptualDomain("HEP", "NHIC : Intensive Care")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[4]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0] + "_Round1_UCL"
-//                    },
-//
-//            '/Round1/TRA/TRA_CUH.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "CUH", "Round 1", "Renal Transplantation", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("A: How is the data item collected", tokens[8]);
-//                        ext.put("B. How is the data item stored, within the centre?", tokens[9]);
-//                        ext.put("C. How would you describe the existing coverage?", tokens[10]);
-//                        ext.put("D. How would you describe the existing quality?", tokens[11]);
-//                        ext.put("E. How hard would it be to achieve a score of 1 for Parts A to D?", tokens[12]);
-//                        ext.put("F. what  are the circumstances of data collection?  where and when is the data recorded?  who is responsible for data entry?", tokens[13]);
-//                        ext.put("G. is there a particular form (or data standard, or proforma) used for the collection of the data?   If so, please supply a copy or reference.", tokens[14]);
-//                        ext.put("H. if the data is stored in a local database or data warehouse, what is the name and version of the database application?", tokens[15]);
-//
-//                        def cd = findOrCreateConceptualDomain("TRA", "NHIC : Renal Transplantation")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[4]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0] + "_Round1_CUH"
-//                    },
-//
-//            '/Round1/TRA/TRA_GSTT.csv':
-//                    { tokens ->
-//                        def categories = [tokens[2], tokens[1], "GSTT", "Round 1", "Renal Transplantation", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [tokens[5]]
-//                        def dataType = importDataTypes(tokens[3], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("A: How is the data item collected", tokens[8]);
-//                        ext.put("B. How is the data item stored, within the centre?", tokens[9]);
-//                        ext.put("C. How would you describe the existing coverage?", tokens[10]);
-//                        ext.put("D. How would you describe the existing quality?", tokens[11]);
-//                        ext.put("E. How hard would it be to achieve a score of 1 for Parts A to D?", tokens[12]);
-//
-//                        def cd = findOrCreateConceptualDomain("TRA", "NHIC : Renal Transplantation")
-//
-//                        def vd = new ValueDomain(name: tokens[3],
-//
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[4]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0] + "_Round1_GSTT"
-//                    },
-//
-//            '/Round1/TRA/TRA_OUH.csv':
-//                    { tokens ->
-//                        def categories = [tokens[1], "OUH", "Round 1", "Renal Transplantation", "NHIC Datasets"];
-//                        def dec = importDataElementConcepts(categories, null);
-//                        def dataTypes = [""]
-//                        def dataType = importDataTypes(tokens[2], dataTypes);
-//                        def ext = new JSONObject();
-//                        ext.put("NHIC Identifier", tokens[0]);
-//                        ext.put("A: How is the data item collected", tokens[4]);
-//                        ext.put("B. How is the data item stored, within the centre?", tokens[5]);
-//                        ext.put("C. How would you describe the existing coverage?", tokens[6]);
-//                        ext.put("D. How would you describe the existing quality?", tokens[7]);
-//                        ext.put("E. How hard would it be to achieve a score of 1 for Parts A to D?", tokens[8]);
-//
-//                        def cd = findOrCreateConceptualDomain("TRA", "NHIC : Renal Transplantation")
-//
-//                        def vd = new ValueDomain(name: tokens[2],
-//
-//                                conceptualDomain: cd,
-//                                dataType: dataType,
-//                                description: tokens[3]).save(failOnError: true);
-//
-//                        def de = new DataElement(name: tokens[2],
-//                                description: tokens[3],
-//                                dataElementConcept: dec,
-//                                extension: ext).save(failOnError: true)
-//                        grantUserPermissions(de)
-//                        grantUserPermissions(vd)
-//                        de.addToDataElementValueDomains(vd);
-//                        de.save();
-//                        println "importing: " + tokens[0] + "_Round1_OUH"
-//                    }
+                    },
+
+            '/HEP/HEP_UCL.csv':
+                    { tokens ->
+
+                        def section = tokens[1]
+                        def subsection = tokens[2]
+                        def name = tokens[3]
+                        def valueDomainInfo = tokens[5]
+                        def description = tokens[4]
+                        def conceptualDomain = "NHIC : Hepatitus"
+                        def conceptualDomainDescription  = "NHIC : Hepatitus"
+                        def metadataColumns = [
+                                "NHIC_Identifier":tokens[0],
+                                "Link_to_existing definition:":tokens[7],
+                                "[Optional]_Local_Identifier:":tokens[8],
+                                "A":tokens[9],
+                                "B":tokens[10],
+                                "C":tokens[11],
+                                "D":tokens[12],
+                                "E":tokens[13]
+                        ]
+                        def categories = ["NHIC Datasets", "Hepatitus", "UCL", "Round 1", section, subsection]
+                        importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+
+                    },
+
+                '/TRA/TRA_CUH.csv':
+                        { tokens ->
+                            if(tokens.size()==16){
+                                def section = tokens[1]
+                                def subsection = tokens[2]
+                                def name = tokens[3]
+                                def valueDomainInfo = tokens[5]
+                                def description = tokens[4]
+                                def conceptualDomain = "NHIC : TRA"
+                                def conceptualDomainDescription  = "NHIC : TRA"
+                                def metadataColumns = [
+                                        "NHIC_Identifier":tokens[0],
+                                        "Link_to_existing definition:":tokens[6],
+                                        "[Optional]_Local_Identifier:":tokens[7],
+                                        "A":tokens[8],
+                                        "B":tokens[9],
+                                        "C":tokens[10],
+                                        "D":tokens[11],
+                                        "E":tokens[12],
+                                        "F":tokens[13],
+                                        "G":tokens[14],
+                                        "H":tokens[15]
+                                ]
+                                def categories = ["NHIC Datasets", "TRA", "CUH", "Round 1", section, subsection]
+                                importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+                            }
+                        },
+
+                    '/TRA/TRA_GSTT.csv':
+                            { tokens ->
+                                if(tokens.size()==16){
+                                    def section = tokens[1]
+                                    def subsection = tokens[2]
+                                    def name = tokens[3]
+                                    def valueDomainInfo = tokens[5]
+                                    def description = tokens[4]
+                                    def conceptualDomain = "NHIC : TRA"
+                                    def conceptualDomainDescription  = "NHIC : TRA"
+                                    def metadataColumns = [
+                                            "NHIC_Identifier":tokens[0],
+                                            "Link_to_existing definition:":tokens[6],
+                                            "[Optional]_Local_Identifier:":tokens[7],
+                                            "A":tokens[8],
+                                            "B":tokens[9],
+                                            "C":tokens[10],
+                                            "D":tokens[11],
+                                            "E":tokens[12],
+                                            "F":tokens[13],
+                                            "G":tokens[14],
+                                            "H":tokens[15]
+                                    ]
+                                    def categories = ["NHIC Datasets", "TRA", "GSTT", "Round 1", section, subsection]
+                                    importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+                                }
+                            },
+
+                    '/TRA/TRA_OUH.csv':
+                            { tokens ->
+                                if(tokens.size()==16){
+                                    def section = tokens[1]
+                                    def subsection = tokens[2]
+                                    def name = tokens[3]
+                                    def valueDomainInfo = tokens[5]
+                                    def description = tokens[4]
+                                    def conceptualDomain = "NHIC : TRA"
+                                    def conceptualDomainDescription  = "NHIC : TRA"
+                                    def metadataColumns = [
+                                            "NHIC_Identifier":tokens[0],
+                                            "Link_to_existing definition:":tokens[6],
+                                            "[Optional]_Local_Identifier:":tokens[7],
+                                            "A":tokens[8],
+                                            "B":tokens[9],
+                                            "C":tokens[10],
+                                            "D":tokens[11],
+                                            "E":tokens[12],
+                                            "F":tokens[13],
+                                            "G":tokens[14],
+                                            "H":tokens[15]
+                                    ]
+                                    def categories = ["NHIC Datasets", "TRA", "GSTT", "Round 1", section, subsection]
+                                    importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+                                }
+                            }
     ]
 
 
@@ -761,9 +405,13 @@ class ImportNHICService {
 
         categories.inject { parentName, childName ->
 
+            parentName = parentName.trim()
+
             //if there isn't a name for the child return the parentName
             if (childName.equals("")) {
                 return parentName;
+            }else{
+                childName = childName.trim()
             }
 
             //def matches = Model.findAllWhere("name" : name, "parentName" : models)
@@ -850,6 +498,7 @@ class ImportNHICService {
 
                         key = key.trim()
                         value = value.trim()
+                        if(value.isEmpty()){ value="_" }
 
                         enumerated = true
                         enumerations.put(key, value)
@@ -876,11 +525,14 @@ class ImportNHICService {
             } else {
                 dataTypeReturn = DataType.findByName("String")
             }
+
         }
+
         return dataTypeReturn
     }
 
     private static findOrCreateConceptualDomain(String name, String description) {
+        name = name.trim()
         def cd = ConceptualDomain.findByName(name)
         if (!cd) {
             cd = new ConceptualDomain(name: name, description: description).save()
@@ -896,6 +548,59 @@ class ImportNHICService {
         }
         ret
     }
+
+
+    private void importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns){
+        def cd = findOrCreateConceptualDomain(conceptualDomain, conceptualDomainDescription)
+        def models = importModels(categories, cd)
+        def dataTypes = [valueDomainInfo]
+        def dataType = importDataTypes(name, dataTypes)
+        def valid = true
+
+        if(name.isEmpty()){
+            valid=false
+            errors.put("name", "no name for the given data element: ${metadataColumns.get("NHIC_Identifier")}")
+        }else if(conceptualDomain.isEmpty()){
+            valid=false
+            errors.put("name", "no name for the given data element: ${metadataColumns.get("NHIC_Identifier")}")
+        }else if(categories.isEmpty()){
+            valid=false
+            errors.put("models", "no models specified for the given data element: ${metadataColumns.get("NHIC_Identifier")}")
+        }else if(!dataType){
+            valid=false
+            errors.put("data type", "no models specified for the given data element: ${metadataColumns.get("NHIC_Identifier")}")
+        }
+
+        if(valid) {
+
+            def de = new DataElement(name: name,
+                    description: description.take(2000))
+            de.save()
+
+            metadataColumns.each { key, value ->
+                de.ext.put(key, value.take(255))
+            }
+
+            de.addToContainedIn(models)
+
+            if(!valueDomainInfo.isEmpty()){
+
+                def vd = new ValueDomain(name: name.replaceAll("\\s", "_"),
+                        //conceptualDomain: cd,
+                        dataType: dataType,
+                        description: valueDomainInfo.take(2000)).save(failOnError: true);
+
+                vd.addToIncludedIn(cd)
+                de.addToInstantiatedBy(vd)
+
+            }
+
+            println "importing: " + name + categories.last()
+        }else{
+            println("invalid data item")
+        }
+    }
+
 }
 
 
@@ -955,7 +660,7 @@ class ImportNHICService {
 //                        vd.addToIncludedIn(cd)
 //
 //                        def de = new DataElement(name: tokens[3],
-//                                description: tokens[4], code: tokens[0])
+//                                description: tokens[4])
 //                        //dataElementConcept: models,
 //                        //extension: ext).save(failOnError: true)
 //
