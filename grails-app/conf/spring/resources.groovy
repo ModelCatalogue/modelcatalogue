@@ -1,3 +1,4 @@
+import org.modelcatalogue.core.ModelCatalogueSearchService
 import uk.co.mdc.pathways.PathwayMarshaller
 import util.marshalling.CustomObjectMarshallers
 import uk.co.mdc.pathways.LinkMarshaller
@@ -6,6 +7,8 @@ import grails.util.Environment
 
 // Place your Spring DSL code here
 beans = {
+
+    modelCatalogueSearchService(ModelCatalogueSearchService)
 
 	Environment.executeForCurrentEnvironment {
 		// Override mail server for dummy in 'development' mode only.

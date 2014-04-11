@@ -18,11 +18,7 @@ import org.springframework.security.acls.domain.BasePermission
 
 class BootStrap {
 	def aclService
-	def aclUtilService
-	def sessionFactory
-	def springSecurityService
-	def grailsApplication
-    def domainModellerService
+	def aclUtilService, sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService
 
 	def init = { servletContext ->
 
@@ -31,8 +27,8 @@ class BootStrap {
 		//register custom json Marshallers
 		registerJSONMarshallers(springContext)
 
-        DataType.initDefaultDataTypes()
-        RelationshipType.initDefaultRelationshipTypes()
+        initCatalogueService.initDefaultDataTypes()
+        initCatalogueService.initDefaultRelationshipTypes()
 		
 		environments {
 			production {

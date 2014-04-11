@@ -19,7 +19,6 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
 
     def setup()
     {
-        RelationshipType.initDefaultRelationshipTypes()
         ICUExcelImporterService.aclUtilService = Mock(AclUtilService)
         ICUExcelImporterService.aclUtilService.addPermission() >> true
     }
@@ -166,14 +165,14 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
     }
 
 
-    void "Test if CreateDataType saves the simple DataType correctly"()
+    void "Test if CreateDataType finds the DataType correctly"()
     {
         when:"calling CreateDataType"
         def dtCountPre = DataType.count()
         DataType dataType= ICUExcelImporterService.CreateDataType("test","text","");
 
         then:"it should save the DataType"
-        DataType.count() == dtCountPre + 1
+        DataType.count() == dtCountPre
         dataType
         !dataType.instanceOf(EnumeratedType)
     }
@@ -192,7 +191,7 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
     }
 
 
-    void "Test if SaveICUDataElement creates and saves a dataType for each item"()
+    void "Test if SaveICUDataElement creates and finds dataType for each item"()
     {
         when:"calling SaveICUDataElement"
         def dataElements = createTestDataElement();
@@ -200,8 +199,8 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
         ICUExcelImporterService.SaveICUDataElement(dataElements);
 
 
-        then:"it should create and save a DataType"
-        DataType.count() ==  preDataType+1
+        then:"it should find and the DataType"
+        DataType.count() ==  preDataType
     }
 
 
@@ -308,8 +307,8 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
         result.pathway.nodes.size()== 1
         result.pathway.nodes[0].name == "Admission"
         result.pathway.nodes[0].nodes.size() == 3
-        result.pathway.nodes[0].nodes[0].name == "SubPath2"
-        result.pathway.nodes[0].nodes[1].name == "SubPath3"
+        result.pathway.nodes[0].nodes[0].name == "SubPath3"
+        result.pathway.nodes[0].nodes[1].name == "SubPath2"
         result.pathway.nodes[0].nodes[2].name == "SubPath1"
     }
 

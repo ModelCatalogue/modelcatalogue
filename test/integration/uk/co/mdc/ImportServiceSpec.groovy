@@ -8,7 +8,7 @@ import spock.lang.Specification
  */
 class ImportServiceSpec extends Specification {
 
-    def importNHICService
+    def importNHICService, dataArchitectService
 
     def setupSpec(){
         //RelationshipType.initDefaultRelationshipTypes()
@@ -17,7 +17,7 @@ class ImportServiceSpec extends Specification {
     def "import nhic spreadsheet"() {
 
         when:
-        importNHICService.importData()
+        importNHICService.singleImport('/CAN/CAN_CUH.csv')
 
         then:
         def models = Model.list()
@@ -65,5 +65,38 @@ class ImportServiceSpec extends Specification {
         valueDomain.instantiates == [dataElement]
 
     }
+
+    def "test two imports of the same data produce"(){
+
+        when:
+        def error1 = importNHICService.singleImport('/TRA/TRA_OUH.csv')
+        def error2 = importNHICService.singleImport('/TRA/TRA_OUH.csv')
+
+        then:
+        error2.toMapString() == "[model exists:model already exists for TRA_OUH]"
+
+    }
+
+
+//    def "metadata check"(){
+//
+//        expect:
+//        def one = importNHICService.singleImport('/CAN/CAN_CUH.csv')
+//        def two = importNHICService.singleImport('/TRA/TRA_OUH.csv')
+//        def deTRA = DataElement.findByName("NHSBT/ODT Number")
+//        def deCUH = DataElement.findByName("CANCER IMAGING MODALITY*")
+//
+//        when:
+//        Map params = [:]
+//        params.put("max", 1000)
+//        params.put("key", "Comments")
+//        def dataElements = dataArchitectService.metadataKeyCheck(params)
+//
+//        then:
+//        deTRA
+//        deCUH
+//        dataElements.results.contains(deCUH)
+//        !dataElements.results.contains(deTRA)
+//    }
 
 }

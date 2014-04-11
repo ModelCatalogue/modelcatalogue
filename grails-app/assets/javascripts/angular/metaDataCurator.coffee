@@ -17,7 +17,7 @@ metadataCurator = angular.module('metadataCurator', [
   'ui.bootstrap'
 ])
 
-metadataCurator.controller('metadataCurator.elementTypeList', ['catalogueElementResource', 'modelCatalogueSearch', '$scope', '$log', '$q', '$stateParams','$state', 'list', 'type', 'columns', (catalogueElementResource, modelCatalogueSearch, $scope, $log, $q, $stateParams, $state, list, type, columns)->
+metadataCurator.controller('metadataCurator.elementTypeList', ['catalogueElementResource', 'modelCatalogueSearch', 'modelCatalogueDataArchitect', '$scope', '$log', '$q', '$stateParams','$state', 'list', 'type', 'columns', (catalogueElementResource, modelCatalogueSearch, modelCatalogueDataArchitect, $scope, $log, $q, $stateParams, $state, list, type, columns)->
   emptyList =
     list: []
     next: {size: 0}
@@ -97,6 +97,34 @@ metadataCurator.config(($stateProvider, $urlRouterProvider)->
         ]
       },
       controller: "metadataCurator.elementTypeList",
+  }).state('dataArchitect', {
+    abstract: true,
+    url: "/dataArchitect"
+    templateUrl: '/' + grailsAppName + "/assets/angular/partials/metadata-curator/metadata.html",
+  }).state('dataArchitect.uninstantiatedDataElements', {
+    url: "/uninstantiatedDataElements",
+    templateUrl: '/' + grailsAppName + "/assets/angular/partials/metadata-curator/list.html",
+    resolve: {
+      list: ['$stateParams','modelCatalogueDataArchitect', ($stateParams, modelCatalogueDataArchitect) ->
+        return modelCatalogueDataArchitect.uninstantiatedDataElements()
+      ]
+      type: [ '$stateParams', ($stateParams) ->
+        return "UninstantiatedDataElement"
+      ]
+    },
+    controller: "metadataCurator.elementTypeList",
+  }).state('dataArchitect.metadataKeyCheck', {
+    url: "/metadataKeyCheck/{metadata}",
+    templateUrl: '/' + grailsAppName + "/assets/angular/partials/metadata-curator/list.html",
+    resolve: {
+      list: ['$stateParams','modelCatalogueDataArchitect', ($stateParams, modelCatalogueDataArchitect) ->
+        return modelCatalogueDataArchitect.metadataKeyCheck($stateParams.metadata)
+      ]
+      type: [ '$stateParams', ($stateParams) ->
+        return "metadataKeyCheck"
+      ]
+    },
+    controller: "metadataCurator.elementTypeList",
   })
 )
 

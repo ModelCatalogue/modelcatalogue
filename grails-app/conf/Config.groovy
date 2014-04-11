@@ -227,6 +227,7 @@ coffeescript.modules = {
 elasticSearch.client.mode = 'local'
 elasticSearch.index.store.type = 'memory' // store local node in memory and not on disk
 elasticSearch.datastoreImpl = 'hibernateDatastore'
+elasticSearch.disableAutoIndex = true
 
 
 

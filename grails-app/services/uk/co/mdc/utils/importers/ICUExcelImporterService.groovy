@@ -221,7 +221,7 @@ class ICUExcelImporterService {
             }
         } else {
 
-            dataTypeReturn = (DataType.findByName(name)) ?: DataType.findByName("String")
+            dataTypeReturn = (DataType.findByNameLike(name)) ?: DataType.findByName("String")
 
         }
 

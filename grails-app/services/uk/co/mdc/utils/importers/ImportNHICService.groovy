@@ -2,11 +2,13 @@ package uk.co.mdc.utils.importers
 
 import org.grails.datastore.mapping.core.Session
 import org.json.simple.JSONObject
+import org.modelcatalogue.core.CatalogueElement
 import org.modelcatalogue.core.ConceptualDomain
 import org.modelcatalogue.core.DataElement
 import org.modelcatalogue.core.DataType
 import org.modelcatalogue.core.EnumeratedType
 import org.modelcatalogue.core.Model
+import org.modelcatalogue.core.Relationship
 import org.modelcatalogue.core.RelationshipType
 import org.modelcatalogue.core.ValueDomain
 import org.springframework.security.acls.domain.BasePermission
@@ -26,11 +28,11 @@ class ImportNHICService {
     ]
 
     def importData() {
-        DataType.initDefaultDataTypes()
-        RelationshipType.initDefaultRelationshipTypes()
+        errors = new HashMap()
         getNhicFiles().each {
             filename -> singleImport(filename)
         }
+        return errors
     }
 //
 //    private grantUserPermissions(objectOrList) {
@@ -58,55 +60,63 @@ class ImportNHICService {
 //     */
     def singleImport(String filename) {
 
-        DataType.initDefaultDataTypes()
-        RelationshipType.initDefaultRelationshipTypes()
         def applicationContext = grailsApplication.mainContext
         String basePath = applicationContext.getResource("/").getFile().toString()
 
         Integer counter = 0
 
-        new File("${basePath}" + "/WEB-INF/bootstrap-data" + filename).toCsvReader([charset: 'UTF-8', skipLines: 1]).eachLine { tokens ->
-            fileFunctions[filename](tokens);
+        def modelName = filename.replace(".csv", "")
+        modelName = modelName.replaceAll("\\/.*?\\/", "")
+        def model = Model.findByName(modelName)
 
-            if(counter>40) {
-                sessionFactory.currentSession.flush()
-                sessionFactory.currentSession.clear()
-                counter = 0
-            }else{
-                counter++
+        if(model==null) {
+
+            new File("${basePath}" + "/WEB-INF/bootstrap-data" + filename).toCsvReader([charset: 'UTF-8', skipLines: 1]).eachLine { tokens ->
+                fileFunctions[filename](tokens);
+
+                if (counter > 40) {
+                    sessionFactory.currentSession.flush()
+                    sessionFactory.currentSession.clear()
+                    counter = 0
+                } else {
+                    counter++
+                }
             }
+        }else{
+            errors.put("model exists", "model already exists for ${modelName}")
         }
 
-        println(errors)
+        return errors
     }
 
     private fileFunctions = [
                         '/CAN/CAN_CUH.csv':
                     { tokens ->
-                        def section = tokens[1]
-                        def subsection = tokens[2]
-                        def name = tokens[3]
-                        def valueDomainInfo = tokens[5]
-                        def description = tokens[4]
-                        def conceptualDomain = "NHIC : Ovarian Cancer"
-                        def conceptualDomainDescription  = "NHIC : Ovarian Cancer"
-                        def metadataColumns = [
-                                "NHIC_Identifier":tokens[0],
-                                "Link_to_existing definition:":tokens[6],
-                                "Notes_from_GD_JCIS:":tokens[7],
-                                "[Optional]_Local_Identifier:":tokens[8],
-                                "A":tokens[9],
-                                "B":tokens[10],
-                                "C":tokens[11],
-                                "D":tokens[12],
-                                "E":tokens[13],
-                                "F":tokens[14],
-                                "G":tokens[15],
-                                "H":tokens[16],
-                                "E2":tokens[17],
-                        ]
-                        def categories = ["NHIC Datasets", "Ovarian Cancer", "CUH", "Round 1", section, subsection]
-                        importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+                            def section = tokens[1]
+                            def subsection = tokens[2]
+                            def name = tokens[3]
+                            def valueDomainInfo = tokens[5]
+                            def description = tokens[4]
+                            def conceptualDomain = "NHIC : Ovarian Cancer"
+                            def conceptualDomainDescription = "NHIC : Ovarian Cancer"
+                            def metadataColumns = [
+                                    "NHIC_Identifier"             : tokens[0],
+                                    "Link_to_existing_definition": tokens[6],
+                                    "Notes_from_GD_JCIS:"         : tokens[7],
+                                    "[Optional]_Local_Identifier:": tokens[8],
+                                    "A"                           : tokens[9],
+                                    "B"                           : tokens[10],
+                                    "C"                           : tokens[11],
+                                    "D"                           : tokens[12],
+                                    "E"                           : tokens[13],
+                                    "F"                           : tokens[14],
+                                    "G"                           : tokens[15],
+                                    "H"                           : tokens[16],
+                                    "E2"                          : tokens[17],
+                            ]
+                            def categories = ["NHIC Datasets", "Ovarian Cancer", "CAN_CUH", "Round 1", section, subsection]
+                            importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+
                         //println "importing: " + tokens[0] + "CAN_CUH"
                     },
 
@@ -123,7 +133,7 @@ class ImportNHICService {
                         def conceptualDomainDescription  = "NHIC : Ovarian Cancer"
                         def metadataColumns = [
                                 "NHIC_Identifier":tokens[0],
-                                "Link_to_existing definition:":tokens[6],
+                                "Link_to_existing_definition":tokens[6],
                                 "Notes_from_GD_JCIS:":tokens[7],
                                 "[Optional]_Local_Identifier:":tokens[8],
                                 "A":tokens[9],
@@ -132,7 +142,7 @@ class ImportNHICService {
                                 "D":tokens[12],
                                 "E":tokens[13]
                         ]
-                        def categories = ["NHIC Datasets", "Ovarian Cancer", "GSTT", "Round 1", section, subsection]
+                        def categories = ["NHIC Datasets", "Ovarian Cancer", "CAN_GSTT", "Round 1", section, subsection]
                         importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
                         //println "importing: " + tokens[0] + "CAN_GSTT"
                     },
@@ -148,7 +158,7 @@ class ImportNHICService {
                         def conceptualDomainDescription  = "NHIC : Ovarian Cancer"
                         def metadataColumns = [
                                 "NHIC_Identifier":tokens[0],
-                                "Link_to_existing definition:":tokens[6],
+                                "Link_to_existing_definition":tokens[6],
                                 "Notes_from_GD_JCIS:":tokens[7],
                                 "[Optional]_Local_Identifier:":tokens[8],
                                 "A":tokens[9],
@@ -157,7 +167,7 @@ class ImportNHICService {
                                 "D":tokens[12],
                                 "E":tokens[13]
                         ]
-                        def categories = ["NHIC Datasets", "Ovarian Cancer", "IMP", "Round 1", section, subsection]
+                        def categories = ["NHIC Datasets", "Ovarian Cancer", "CAN_IMP", "Round 1", section, subsection]
                         importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
                         //println "importing: " + tokens[0] + "CAN_IMP"
                    },
@@ -173,7 +183,7 @@ class ImportNHICService {
                             def conceptualDomainDescription  = "NHIC : Ovarian Cancer"
                             def metadataColumns = [
                                     "NHIC_Identifier":tokens[0],
-                                    "Link_to_existing definition:":tokens[6],
+                                    "Link_to_existing_definition":tokens[6],
                                     "Notes_from_GD_JCIS:":tokens[7],
                                     "[Optional]_Local_Identifier:":tokens[8],
                                     "A":tokens[9],
@@ -183,7 +193,7 @@ class ImportNHICService {
                                     "E":tokens[13],
                                     "System": tokens[4]
                             ]
-                            def categories = ["NHIC Datasets", "Ovarian Cancer", "UCL", "Round 1", section, subsection]
+                            def categories = ["NHIC Datasets", "Ovarian Cancer", "CAN_UCL", "Round 1", section, subsection]
                             importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
                             //println "importing: " + tokens[0] + "CAN_UCL"
                         },
@@ -199,7 +209,7 @@ class ImportNHICService {
                             def conceptualDomainDescription  = "NHIC : Acute Coronary Syndrome"
                             def metadataColumns = [
                                     "NHIC_Identifier":tokens[0],
-                                    "Link_to_existing definition:":tokens[6],
+                                    "Link_to_existing_definition":tokens[6],
                                     "[Optional]_Local_Identifier:":tokens[7],
                                     "A":tokens[8],
                                     "B":tokens[9],
@@ -207,7 +217,7 @@ class ImportNHICService {
                                     "D":tokens[11],
                                     "E":tokens[12]
                             ]
-                            def categories = ["NHIC Datasets", "Acute Coronary Syndrome", "UCL", "Round 1", section, subsection]
+                            def categories = ["NHIC Datasets", "Acute Coronary Syndrome", "ACS_UCL", "Round 1", section, subsection]
                             importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
                             //println "importing: " + tokens[0] + "ACS_UCL"
                         },
@@ -223,7 +233,7 @@ class ImportNHICService {
                         def conceptualDomainDescription  = "NHIC : Acute Coronary Syndrome"
                         def metadataColumns = [
                                 "NHIC_Identifier":tokens[0],
-                                "Link_to_existing definition:":tokens[6],
+                                "Link_to_existing_definition":tokens[6],
                                 "[Optional]_Local_Identifier:":tokens[7],
                                 "A":tokens[8],
                                 "B":tokens[9],
@@ -231,7 +241,7 @@ class ImportNHICService {
                                 "D":tokens[11],
                                 "E":tokens[12]
                         ]
-                        def categories = ["NHIC Datasets", "Acute Coronary Syndrome", "OUH", "Round 1", section, subsection]
+                        def categories = ["NHIC Datasets", "Acute Coronary Syndrome", "ACS_OUH", "Round 1", section, subsection]
                         importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
                         //println "importing: " + tokens[0] + "ASC_OUH"
                     },
@@ -247,7 +257,7 @@ class ImportNHICService {
                         def conceptualDomainDescription  = "NHIC : Acute Coronary Syndrome"
                         def metadataColumns = [
                                 "NHIC_Identifier":tokens[0],
-                                "Link_to_existing definition:":tokens[6],
+                                "Link_to_existing_definition":tokens[6],
                                 "[Optional]_Local_Identifier:":tokens[7],
                                 "A":tokens[8],
                                 "B":tokens[9],
@@ -255,7 +265,7 @@ class ImportNHICService {
                                 "D":tokens[11],
                                 "E":tokens[12]
                         ]
-                        def categories = ["NHIC Datasets", "Acute Coronary Syndrome", "GSTT", "Round 1", section, subsection]
+                        def categories = ["NHIC Datasets", "Acute Coronary Syndrome", "ACS_GSTT", "Round 1", section, subsection]
                         importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
                         //println "importing: " + tokens[0] + "ACS_GSTT"
                     },
@@ -273,7 +283,7 @@ class ImportNHICService {
                         def conceptualDomainDescription  = "NHIC : Hepatitus"
                         def metadataColumns = [
                                 "NHIC_Identifier":tokens[0],
-                                "Link_to_existing definition:":tokens[7],
+                                "Link_to_existing_definition":tokens[7],
                                 "[Optional]_Local_Identifier:":tokens[8],
                                 "A":tokens[9],
                                 "B":tokens[10],
@@ -281,39 +291,36 @@ class ImportNHICService {
                                 "D":tokens[12],
                                 "E":tokens[13]
                         ]
-                        def categories = ["NHIC Datasets", "Hepatitus", "OUH", "Round 1", section, subsection]
+                        def categories = ["NHIC Datasets", "Hepatitus", "HEP_OUH", "Round 1", section, subsection]
                         importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
 
                     },
 
             '/HEP/HEP_UCL.csv':
                     { tokens ->
-
-                        def section = tokens[1]
-                        def subsection = tokens[2]
-                        def name = tokens[3]
-                        def valueDomainInfo = tokens[5]
-                        def description = tokens[4]
-                        def conceptualDomain = "NHIC : Hepatitus"
-                        def conceptualDomainDescription  = "NHIC : Hepatitus"
-                        def metadataColumns = [
-                                "NHIC_Identifier":tokens[0],
-                                "Link_to_existing definition:":tokens[7],
-                                "[Optional]_Local_Identifier:":tokens[8],
-                                "A":tokens[9],
-                                "B":tokens[10],
-                                "C":tokens[11],
-                                "D":tokens[12],
-                                "E":tokens[13]
-                        ]
-                        def categories = ["NHIC Datasets", "Hepatitus", "UCL", "Round 1", section, subsection]
-                        importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
-
+                            def section = tokens[1]
+                            def subsection = tokens[2]
+                            def name = tokens[3]
+                            def valueDomainInfo = tokens[5]
+                            def description = tokens[4]
+                            def conceptualDomain = "NHIC : Hepatitus"
+                            def conceptualDomainDescription = "NHIC : Hepatitus"
+                            def metadataColumns = [
+                                    "NHIC_Identifier"             : tokens[0],
+                                    "Link_to_existing_definition": tokens[7],
+                                    "[Optional]_Local_Identifier:": tokens[8],
+                                    "A"                           : tokens[9],
+                                    "B"                           : tokens[10],
+                                    "C"                           : tokens[11],
+                                    "D"                           : tokens[12],
+                                    "E"                           : tokens[13]
+                            ]
+                            def categories = ["NHIC Datasets", "Hepatitus", "HEP_UCL", "Round 1", section, subsection]
+                            importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
                     },
 
                 '/TRA/TRA_CUH.csv':
                         { tokens ->
-                            if(tokens.size()==16){
                                 def section = tokens[1]
                                 def subsection = tokens[2]
                                 def name = tokens[3]
@@ -323,7 +330,7 @@ class ImportNHICService {
                                 def conceptualDomainDescription  = "NHIC : TRA"
                                 def metadataColumns = [
                                         "NHIC_Identifier":tokens[0],
-                                        "Link_to_existing definition:":tokens[6],
+                                        "Link_to_existing_definition":tokens[6],
                                         "[Optional]_Local_Identifier:":tokens[7],
                                         "A":tokens[8],
                                         "B":tokens[9],
@@ -334,14 +341,12 @@ class ImportNHICService {
                                         "G":tokens[14],
                                         "H":tokens[15]
                                 ]
-                                def categories = ["NHIC Datasets", "TRA", "CUH", "Round 1", section, subsection]
+                                def categories = ["NHIC Datasets", "TRA", "TRA_CUH", "Round 1", section, subsection]
                                 importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
-                            }
                         },
 
                     '/TRA/TRA_GSTT.csv':
                             { tokens ->
-                                if(tokens.size()==16){
                                     def section = tokens[1]
                                     def subsection = tokens[2]
                                     def name = tokens[3]
@@ -351,48 +356,38 @@ class ImportNHICService {
                                     def conceptualDomainDescription  = "NHIC : TRA"
                                     def metadataColumns = [
                                             "NHIC_Identifier":tokens[0],
-                                            "Link_to_existing definition:":tokens[6],
+                                            "Link_to_existing_definition:":tokens[6],
                                             "[Optional]_Local_Identifier:":tokens[7],
                                             "A":tokens[8],
                                             "B":tokens[9],
                                             "C":tokens[10],
                                             "D":tokens[11],
-                                            "E":tokens[12],
-                                            "F":tokens[13],
-                                            "G":tokens[14],
-                                            "H":tokens[15]
+                                            "E":tokens[12]
                                     ]
-                                    def categories = ["NHIC Datasets", "TRA", "GSTT", "Round 1", section, subsection]
+                                    def categories = ["NHIC Datasets", "TRA", "TRA_GSTT", "Round 1", section, subsection]
                                     importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
-                                }
                             },
 
                     '/TRA/TRA_OUH.csv':
                             { tokens ->
-                                if(tokens.size()==16){
                                     def section = tokens[1]
-                                    def subsection = tokens[2]
-                                    def name = tokens[3]
-                                    def valueDomainInfo = tokens[5]
-                                    def description = tokens[4]
+                                    def subsection = null
+                                    def name = tokens[2]
+                                    def valueDomainInfo = null
+                                    def description = tokens[3]
                                     def conceptualDomain = "NHIC : TRA"
                                     def conceptualDomainDescription  = "NHIC : TRA"
                                     def metadataColumns = [
                                             "NHIC_Identifier":tokens[0],
-                                            "Link_to_existing definition:":tokens[6],
-                                            "[Optional]_Local_Identifier:":tokens[7],
-                                            "A":tokens[8],
-                                            "B":tokens[9],
-                                            "C":tokens[10],
-                                            "D":tokens[11],
-                                            "E":tokens[12],
-                                            "F":tokens[13],
-                                            "G":tokens[14],
-                                            "H":tokens[15]
+                                            "A":tokens[4],
+                                            "B":tokens[5],
+                                            "C":tokens[6],
+                                            "D":tokens[7],
+                                            "E":tokens[8],
+                                            "Comments":tokens[9]
                                     ]
-                                    def categories = ["NHIC Datasets", "TRA", "GSTT", "Round 1", section, subsection]
+                                    def categories = ["NHIC Datasets", "TRA", "TRA_OUH", "Round 1", section, subsection]
                                     importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
-                                }
                             }
     ]
 
@@ -408,7 +403,7 @@ class ImportNHICService {
             parentName = parentName.trim()
 
             //if there isn't a name for the child return the parentName
-            if (childName.equals("")) {
+            if (childName.equals("") || childName==null) {
                 return parentName;
             }else{
                 childName = childName.trim()
@@ -519,7 +514,7 @@ class ImportNHICService {
                     }
                 } else {
 
-                    dataTypeReturn = (DataType.findByName(name)) ?: DataType.findByName("String")
+                    dataTypeReturn = (DataType.findByNameLike(name)) ?: DataType.findByName("String")
 
                 }
             } else {
@@ -553,22 +548,25 @@ class ImportNHICService {
     private void importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns){
         def cd = findOrCreateConceptualDomain(conceptualDomain, conceptualDomainDescription)
         def models = importModels(categories, cd)
-        def dataTypes = [valueDomainInfo]
-        def dataType = importDataTypes(name, dataTypes)
+        def dataTypes
+        def dataType
+
+        if(valueDomainInfo!=null && !valueDomainInfo.isEmpty()) {
+            dataTypes = [valueDomainInfo]
+            dataType = importDataTypes(name, dataTypes)
+        }
+
         def valid = true
 
         if(name.isEmpty()){
             valid=false
-            errors.put("name", "no name for the given data element: ${metadataColumns.get("NHIC_Identifier")}")
+            errors.put(metadataColumns.get("NHIC_Identifier"), "no name for the given data element: ${metadataColumns.get("NHIC_Identifier")}")
         }else if(conceptualDomain.isEmpty()){
             valid=false
-            errors.put("name", "no name for the given data element: ${metadataColumns.get("NHIC_Identifier")}")
+            errors.put(metadataColumns.get("NHIC_Identifier"), "no name for the given data element: ${metadataColumns.get("NHIC_Identifier")}")
         }else if(categories.isEmpty()){
             valid=false
-            errors.put("models", "no models specified for the given data element: ${metadataColumns.get("NHIC_Identifier")}")
-        }else if(!dataType){
-            valid=false
-            errors.put("data type", "no models specified for the given data element: ${metadataColumns.get("NHIC_Identifier")}")
+            errors.put(metadataColumns.get("NHIC_Identifier"), "no models specified for the given data element: ${metadataColumns.get("NHIC_Identifier")}")
         }
 
         if(valid) {
@@ -583,7 +581,7 @@ class ImportNHICService {
 
             de.addToContainedIn(models)
 
-            if(!valueDomainInfo.isEmpty()){
+            if(valueDomainInfo!=null && dataType!=null){
 
                 def vd = new ValueDomain(name: name.replaceAll("\\s", "_"),
                         //conceptualDomain: cd,
@@ -667,7 +665,7 @@ class ImportNHICService {
 //                        de.save()
 //
 //                        de.ext.put("NHIC_Identifier:", tokens[0].take(255));
-//                        de.ext.put("Link_to_existing definition:", tokens[6].take(255));
+//                        de.ext.put("Link_to_existing_definition", tokens[6].take(255));
 //                        de.ext.put("Notes_from_GD_JCIS", tokens[7].take(255));
 //                        de.ext.put("[Optional]_Local_Identifier", tokens[8].take(255));
 //                        de.ext.put("A", tokens[9].take(255));
