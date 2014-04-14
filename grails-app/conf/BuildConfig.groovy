@@ -108,7 +108,6 @@ grails.project.dependency.resolution = {
             excludes 'spring-test'
         }
 
-
         //as suggested on http://grails.org/2.3.5+Release+Notes to use    build ':tomcat:7.0.50'
         //build ":tomcat:7.0.47"
         build ':tomcat:7.0.50'
@@ -126,8 +125,9 @@ grails.project.dependency.resolution = {
         runtime ":jquery:1.8.3"
         runtime ":resources:1.1.6"
 
-        compile ":coffee-asset-pipeline:1.5.0"
-        compile ":less-asset-pipeline:1.5.0"
+        compile ":asset-pipeline:1.7.6"
+        compile ":coffee-asset-pipeline:1.7.0"
+        compile ":less-asset-pipeline:1.7.0"
 
         // The following are dead, we shouldn't use them!
         compile ":csv:0.3.1"

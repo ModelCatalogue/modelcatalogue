@@ -17,8 +17,7 @@ import org.springframework.security.acls.domain.BasePermission
 
 
 class BootStrap {
-	def aclService
-	def aclUtilService, sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService
+	def aclService, aclUtilService, sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService
 
 	def init = { servletContext ->
 
