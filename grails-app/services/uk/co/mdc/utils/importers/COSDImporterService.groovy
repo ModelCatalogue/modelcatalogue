@@ -6,8 +6,8 @@
 
  import grails.transaction.Transactional
  import org.springframework.security.acls.domain.BasePermission
- import uk.co.mdc.Importers.ExcelLoader
- import uk.co.mdc.Importers.ExcelSheet
+ import uk.co.mdc.Importers.COSDExcelLoader
+ import uk.co.mdc.Importers.COSDExcelSheet
  import uk.co.mdc.model.ConceptualDomain
  import uk.co.mdc.model.DataElement
  import uk.co.mdc.model.DataElementConcept
@@ -34,8 +34,8 @@
         def dataItemNationalCodeDefinition
 
         def totalDataElementsImported=0;
-        ExcelLoader parser = new ExcelLoader(inputStream)
-        ExcelSheet[] excelSheets = parser.parseCOSD();
+        COSDExcelLoader parser = new COSDExcelLoader(inputStream)
+        COSDExcelSheet[] excelSheets = parser.parseCOSD();
         def conceptualDomain = findOrCreateConceptualDomain("COSD", "COSD");
         grantUserPermissions(conceptualDomain)
         def sectionDataElementConcept;
