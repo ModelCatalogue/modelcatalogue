@@ -47,6 +47,7 @@ class DataImportController {
             flash.default = "Error: invalid dataset"
         }
 
+
         elasticSearchService.index(DataElement)
         elasticSearchService.index(ValueDomain)
         elasticSearchService.index(Model)

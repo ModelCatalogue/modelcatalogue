@@ -37,9 +37,9 @@
                 <li><a id="relationshipTypeLink" href="#/catalogueElement/relationshipType">Relationship Types</a></li>
             </ul>
             <div class="col-sm-3 col-md-3 pull-right">
-                <form ng-controller="metadataCurator.searchCtrl" class="navbar-form" role="search" ng-submit="search()">
+                <form ng-controller="metadataCurator.searchCtrl" class="navbar-form" role="search" autocomplete="off" ng-submit="search()">
                     <div class="input-group">
-                        <input ng-model="searchTerm" type="text" id="search" name="search-term" id="search-term"  catalogue-element-picker>
+                        <input ng-model="searchSelect" type="text" id="search" name="search-term" id="search-term"  catalogue-element-picker>
                         <div class="input-group-btn">
                             <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                         </div>

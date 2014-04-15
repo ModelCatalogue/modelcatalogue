@@ -11,7 +11,6 @@ class ImportServiceSpec extends Specification {
     def importNHICService, dataArchitectService
 
     def setupSpec(){
-        //RelationshipType.initDefaultRelationshipTypes()
     }
 
     def "import nhic spreadsheet"() {

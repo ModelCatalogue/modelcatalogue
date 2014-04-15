@@ -45,6 +45,7 @@ metadataCurator.controller('metadataCurator.elementTypeList', ['catalogueElement
   $scope.$on 'showCatalogueElement', (event, element) ->
     $state.go('catalogueElement.show', {elementType: element.elementType.split(".").pop(), elementId: element.id})
 
+
 ])
 
 metadataCurator.run(['$rootScope', '$state', '$stateParams', ($rootScope,   $state,   $stateParams) ->
@@ -141,8 +142,11 @@ metadataCurator.controller('metadataCurator.elementTypeShow', ['catalogueElement
 
 metadataCurator.controller('metadataCurator.searchCtrl', ['catalogueElementResource', 'modelCatalogueSearch', '$scope', '$log', '$q', '$state', (catalogueElementResource, modelCatalogueSearch, $scope, $log, $q, $state)->
 
-  $scope.searchTerm
+  $scope.searchSelect
 
   $scope.search = () ->
-    $state.go('search', {searchString: $scope.searchTerm })
+    if(typeof $scope.searchSelect == 'string')
+      $state.go('search', {searchString: $scope.searchSelect })
+    else
+      $state.go('catalogueElement.show', {elementType: $scope.searchSelect.elementType.split(".").pop(), elementId: $scope.searchSelect.id})
 ])
