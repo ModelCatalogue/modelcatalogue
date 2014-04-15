@@ -61,7 +61,7 @@
 
             //Check the Data Item Name column exists
             if (dataItemNameIndex == -1)
-                throw new Exception("Can not find 'Data Item Name' column")
+                throw new Exception("Cannot find 'Data Item Name' column")
 
             def COSDdataElementConcept = new DataElementConcept([name: sheetName, description: sheetName + " DataElementConcept"]).save();
             grantUserPermissions(COSDdataElementConcept)
@@ -92,7 +92,7 @@
                     dataItemFormat = rows[cont][dataItemFormatIndex];
                     dataItemNationalCode = rows[cont][dataItemNationalCodeIndex].toString();
                     dataItemNationalCodeDefinition = rows[cont][dataItemNationalCodeDefinitionIndex];
-                    if (dataElements.count { it.name == dataItemName } == 0)
+                    if (dataElements.count { it.dataItemNumber == dataItemNumber } == 0)
                         dataElements.add([dataItemNumber                : dataItemNumber,
                                           dataItemSection               : dataItemSection,
                                           dataItemName                  : dataItemName,
@@ -103,6 +103,10 @@
                                           dataItemDataDictionaryElement : rows[cont][dataItemDataDictionaryElementIndex],
                                           dataItemCurrentCollection     : rows[cont][dataItemCurrentCollectionIndex],
                                           dataItemSchemaSpecification   : rows[cont][dataItemSchemaSpecificationIndex]]);
+                    else
+                    {
+                        throw new Exception ("Data Item Number:'" + dataItemNumber + "' in Sheet:'" + sheetName + "' is duplicated")
+                    }
 
                     //Create the sectionDataElement if this doesn't exist
                     def dataSectionNameNoSpaces= dataItemSection.toString().replaceAll(" ", "");

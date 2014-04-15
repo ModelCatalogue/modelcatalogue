@@ -11,6 +11,25 @@ public class COSDExcelSheet {
 
 class COSDExcelLoader {
 
+    def String[] sheetNamesToImport = [
+            "Core",
+            "Breast", "CNS", "Colorectal", "CTYA ", "Gynaecology",
+            "Haematology", "Head & Neck", "Lung", "Sarcoma", "Skin",
+            "Upper GI", "Urology", "Reference - Other Sources"
+    ];
+
+    //"Data Item Description", "Description", are not included. Special case since there are different string are used for this header.
+    // Data Item Description is a special case:
+    // a) No 'Data Item Description' column in the Reference - Other Sources sheet .
+    // b) The columns name 'Description is also used.
+    // therefore this would be considered as optional.
+
+    String[] headerNamesToImport = [
+            "Data item No.", "Data Item Section", "Data Item Name",
+            "Format", "National Code", "National code definition", "Data Dictionary Element",
+            "Current Collection", "Schema Specification"
+    ]
+
     private static InputStream
 
     public COSDExcelLoader(String path)
@@ -23,21 +42,56 @@ class COSDExcelLoader {
         InputStream  = inputStream
     }
 
+    def checkSheetNames(Workbook wb)
+    {
+        def indexSheet
+        def message=""
+        sheetNamesToImport.eachWithIndex{ String sheetName, int i ->
+            indexSheet = wb.getSheetIndex(sheetName)
+            //checks the sheet is defined in the excel file.
+            if (indexSheet == -1)
+                message += ("\r\n" + sheetName)
+        }
+        return message
+
+    }
+
+    def checkHeaders(def headers)
+    {
+        // Data Item Description is a special case:
+        // a) No 'Data Item Description' column in the Reference - Other Sources sheet .
+        // b) The columns name 'Description is also used.
+        // therefore this would be considered as optional.
+
+        def message=""
+        def headerIndex
+        for (int i=0; i< headerNamesToImport.size(); i++)
+        {
+            headerIndex = headers.findIndexOf {it.toLowerCase().trim() == headerNamesToImport[i].toLowerCase().trim()}
+            if (headerIndex == -1 )
+                    message += ("\r\n " + headerNamesToImport[i])
+        }
+        return message
+    }
+
+
+
     def parseCOSD() {
-
-        def String[] sheetNamesToImport = [
-                "Core",
-                "Breast", "CNS", "Colorectal", "CTYA ", "Gynaecology",
-                "Haematology", "Head & Neck", "Lung", "Sarcoma", "Skin",
-                "Upper GI", "Urology", "Reference - Other Sources"
-        ];
-
         Workbook wb = WorkbookFactory.create(InputStream);
         COSDExcelSheet[] excelSheets = new COSDExcelSheet[sheetNamesToImport.size()];
+        def indexSheet
+        def sheetName
+        def message= checkSheetNames(wb)
+        if (message!="")
+            throw new Exception ("COSD File does not have the following sheets: " + message)
 
         for (def cont=0; cont<sheetNamesToImport.size();cont++) {
-            def sheetName = sheetNamesToImport[cont];
-            Sheet sheet = wb.getSheetAt(wb.getSheetIndex(sheetName));
+            sheetName = sheetNamesToImport[cont];
+            indexSheet = wb.getSheetIndex(sheetName)
+            //checks the sheet is defined in the excel file.
+            if (indexSheet == -1)
+                throw new Exception("Sheet: '" + sheetName + "' does not exist in the excel file")
+            Sheet sheet = wb.getSheetAt(indexSheet);
 
             Iterator<Row> rowIt = sheet.rowIterator()
             Row row = rowIt.next()
@@ -45,12 +99,17 @@ class COSDExcelLoader {
             def rows = [];
 
             //Finding header
-            while (row.getCell(0).getRichStringCellValue().getString().trim() != "Data item No." && rowIt.hasNext()) {
-
+            while (row.getCell(0)!= null && row.getCell(0).getRichStringCellValue().getString().trim() != "Data item No." && rowIt.hasNext()) {
                 row = rowIt.next();
             }
-            if (row.getCell(0).getRichStringCellValue().getString().trim() == "Data item No.") {
+
+            if (row.getCell(0)!=null &&  row.getCell(0).getRichStringCellValue().getString().trim() == "Data item No.") {
                 headers = getRowData(row);
+
+                message = checkHeaders(headers)
+                if (message != "")
+                    throw new Exception("Sheet: '" + sheetName + "' does not have the following headers:" + message)
+
                 //Finding the first Data item row
                 while (rowIt.hasNext()) {
                     row = rowIt.next()
@@ -63,8 +122,12 @@ class COSDExcelLoader {
                         rows << getRowData(row);
                 }
             }
+
             //add the excelSheet to the excelSheets collection
-            excelSheets[cont] =  new COSDExcelSheet(name: sheetName, headers: headers, rows: rows);
+            if (headers.size()!=0 & rows.size()!=0)
+                excelSheets[cont] =  new COSDExcelSheet(name: sheetName, headers: headers, rows: rows);
+            else
+                throw new Exception("'" + sheetName + "' sheet is empty")
         }
         return excelSheets
     }
