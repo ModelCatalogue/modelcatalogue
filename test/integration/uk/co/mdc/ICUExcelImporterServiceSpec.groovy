@@ -156,7 +156,7 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
         def listOfContent = "01=Number present and verified\n"+
                             "02=Number present but not traced"
         def dtCountPre = DataType.count()
-        EnumeratedType dataType= ICUExcelImporterService.CreateDataType("test","List",listOfContent);
+        EnumeratedType dataType= ICUExcelImporterService.findOrCreateDataType("test",listOfContent);
 
         then:"it should save the DataType"
         DataType.count() == dtCountPre + 1
@@ -169,7 +169,7 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
     {
         when:"calling CreateDataType"
         def dtCountPre = DataType.count()
-        DataType dataType= ICUExcelImporterService.CreateDataType("test","text","");
+        DataType dataType= ICUExcelImporterService.findOrCreateDataType("test","")
 
         then:"it should save the DataType"
         DataType.count() == dtCountPre

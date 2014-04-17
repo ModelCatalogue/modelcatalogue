@@ -11,7 +11,7 @@ import org.modelcatalogue.core.DataType
 import org.modelcatalogue.core.ValueDomain
 import uk.co.mdc.pathways.*
 
-class ICUExcelImporterService {
+class ICUExcelImporterService extends ModelCatalogueImporterService{
 
     private static final QUOTED_CHARS = [
             "\\": "&#92;",
@@ -52,57 +52,53 @@ class ICUExcelImporterService {
         rows.eachWithIndex { def row, int i ->
             def elementName  = row[dataItemNameIndex]
 
-            if (elements.count {it.name == elementName} == 0)
-                elements.add([name:elementName,
-                                description:row[dataItemDescriptionIndex],
-                                pathway0:row[pathway0Index],
-                                pathway1:row[pathway1Index],
-                                pathway2:row[pathway2Index],
-                                pathway3:row[pathway3Index],
-                                comments :row[commentsIndex],
-                                supporting:row[supportingIndex],
-                                associatedDateTime :row[associatedDateTimeIndex],
-                                units :row[unitsIndex],
-                                dataType :row[dataTypeIndex],
-                                template :row[templateIndex],
-                                listContent :row[listContentIndex],
-                                timingDef :row[timingOfDataCollectionIndex],
-                                sourceUCH :row[sourceUCHIndex],
-                                label1 :row[label1Index],
-                                label2 :row[label2Index] ]);
+            if (elements.count {it.name == elementName} == 0) {
+
+                def metadata = [comments          : row[commentsIndex],
+                                supporting        : row[supportingIndex],
+                                associatedDateTime: row[associatedDateTimeIndex],
+                                template          : row[templateIndex],
+                                listContent       : row[listContentIndex],
+                                timingDef         : row[timingOfDataCollectionIndex],
+                                sourceUCH         : row[sourceUCHIndex],
+                                label1            : row[label1Index],
+                                label2            : row[label2Index]]
+
+                elements.add([name       : elementName,
+                              description: row[dataItemDescriptionIndex],
+                              pathway0   : row[pathway0Index],
+                              pathway1   : row[pathway1Index],
+                              pathway2   : row[pathway2Index],
+                              pathway3   : row[pathway3Index],
+                              units      : row[unitsIndex],
+                              dataType   : row[dataTypeIndex],
+                              metadata   : metadata])
+            }
+
+
         }
         return elements;
     }
 
 
     @Transactional
-    def SaveICUDataElement(def elements)
+    def SaveICUDataElement(elements)
     {
-        def cd = findOrCreateConceptualDomain("ICU","ICU");
+        def cd = findOrCreateConceptualDomain("ICU","ICU")
 
-        def dec=new Model([name:"ICU" , description:"ICU main DataElementConcept"]).save();
+        def dec = new Model(name:"ICU" , description:"ICU main DataElementConcept").save()
 
-        Pathway mainPathway = new Pathway([name:"ICU",description: "ICU",isDraft:false]).save(failOnError: true);
+        Pathway mainPathway = new Pathway([name:"ICU",description: "ICU",isDraft:false]).save(failOnError: true)
+
         grantUserPermissions(mainPathway)
 
         elements.eachWithIndex { def el, int i ->
 
-        def dataType =  CreateDataType(el.name,el.units,el.listContent)
-        def vd = CreateValueDomain(el, dataType,cd)
-        def de = CreateDataElement(el,dec)
+        def dataType =  findOrCreateDataType(el.name, el.listContent)
 
-        dec.addToContains(de)
-        dec.save()
+        def de = createDataElement([name: el.name, description:el.description], el.metadata, dec)
 
-        de.addToInstantiatedBy(vd);
-
-        de.ext.put("Timing of Data Collection", el?.timingDef);
-        de.ext.put("Associated Time and Date", el?.associatedDateTime);
-        de.ext.put("Comments", el?.comments);
-        de.ext.put("Supporting", el?.supporting);
-        de.ext.put("sourceUCH", el?.sourceUCHIndex);
-
-        de.save()
+        if(dataType && cd && de) { def vd = createValueDomain(el.name, el.description, dataType, cd, de) }
 
 
         def path= mainPathway
@@ -148,87 +144,6 @@ class ICUExcelImporterService {
         node
     }
 
-    @Transactional
-    private DataElement CreateDataElement(el,model) {
-        def de = new DataElement([
-                name: el.name,
-                description: el.description
-        ]).save(flush: true);
-        de.addToContainedIn(model)
-        de
-    }
-
-    @Transactional
-    private ValueDomain CreateValueDomain(el, dataType, conceptualDomain) {
-        def vd = new ValueDomain(name: el.name,
-                dataType: dataType,
-                format: el.template,
-                description: el.description).save(failOnError: true);
-
-         vd.addToIncludedIn(conceptualDomain)
-
-        vd
-    }
-
-
-    @Transactional
-    def findOrCreateConceptualDomain(String name, String description) {
-        def cd = ConceptualDomain.findByName(name)
-
-        if (!cd) {
-            cd = new ConceptualDomain(name: name, description: description).save(failOnError: true)
-        }
-        return cd
-    }
-
-    @Transactional
-    private CreateDataType(name,units,listContent)
-    {
-        def enumerated=false
-        def dataTypeReturn
-        def enumerations
-
-        if(units=="List" && listContent!=null)
-        {
-            enumerated=true
-            String[] lines = listContent.split("\\r?\\n");
-
-            if (lines.size() > 0 && lines[] != null) {
-                enumerations = new HashMap()
-                lines.each { enumeratedValues ->
-                    def EV = enumeratedValues.split("=")
-                    if (EV != null && EV.size() > 1 && EV[0] != null && EV[1] != null) {
-                        def key = EV[0]
-                        def value = EV[1]
-                        enumerated = true
-                        enumerations.put(key, value)
-                    }
-                }
-            }
-        }
-
-        if (enumerated) {
-
-
-            String enumString = enumerations.sort() collect { key, val ->
-                "${this.quote(key)}:${this.quote(val)}"
-            }.join('|')
-
-            dataTypeReturn = EnumeratedType.findWhere(enumAsString: enumString)
-
-            if (!dataTypeReturn) {
-                dataTypeReturn = new EnumeratedType(name: name.replaceAll("\\s", "_"), enumerations: enumerations)
-            }
-        } else {
-
-            dataTypeReturn = (DataType.findByNameLike(name)) ?: DataType.findByName("String")
-
-        }
-
-        dataTypeReturn.save()
-
-        return dataTypeReturn
-    };
 
     @Transactional
     private grantUserPermissions(objectOrList) {
@@ -243,12 +158,4 @@ class ICUExcelImporterService {
         }
     }
 
-    private static String quote(String s) {
-        if (s == null) return null
-        String ret = s
-        QUOTED_CHARS.each { original, replacement ->
-            ret = ret.replace(original, replacement)
-        }
-        ret
-    }
  }

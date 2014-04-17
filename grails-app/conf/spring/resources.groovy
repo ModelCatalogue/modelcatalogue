@@ -21,7 +21,6 @@ beans = {
 		}
 	}
 
-
 	customObjectMarshallers( CustomObjectMarshallers ) {
 		marshallers = [
             new PathwayMarshaller(),

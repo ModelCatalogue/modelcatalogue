@@ -76,26 +76,4 @@ class ImportServiceSpec extends Specification {
 
     }
 
-
-//    def "metadata check"(){
-//
-//        expect:
-//        def one = importNHICService.singleImport('/CAN/CAN_CUH.csv')
-//        def two = importNHICService.singleImport('/TRA/TRA_OUH.csv')
-//        def deTRA = DataElement.findByName("NHSBT/ODT Number")
-//        def deCUH = DataElement.findByName("CANCER IMAGING MODALITY*")
-//
-//        when:
-//        Map params = [:]
-//        params.put("max", 1000)
-//        params.put("key", "Comments")
-//        def dataElements = dataArchitectService.metadataKeyCheck(params)
-//
-//        then:
-//        deTRA
-//        deCUH
-//        dataElements.results.contains(deCUH)
-//        !dataElements.results.contains(deTRA)
-//    }
-
 }
