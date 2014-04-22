@@ -1,6 +1,5 @@
 package uk.co.mdc.utils.importers
 
-import grails.transaction.Transactional
 import org.modelcatalogue.core.EnumeratedType
 import org.modelcatalogue.core.Model
 import org.springframework.security.acls.domain.BasePermission
@@ -56,7 +55,7 @@ class ModelCatalogueImporterService {
         return messages
     }
 
-    @Transactional
+    //
     protected importModels(categories, ConceptualDomain conceptualDomain) {
         //categories look something like ["Animals", "Mammals", "Dogs"]
         //where animal is a parent of mammals which is a parent of dogs......
@@ -124,7 +123,6 @@ class ModelCatalogueImporterService {
         modelToReturn
     }
 
-    @Transactional
     protected findOrCreateDataType(name, dataType) {
 
         //default data type to return is the string data type
@@ -178,8 +176,6 @@ class ModelCatalogueImporterService {
         return dataTypeReturn
     }
 
-
-    @Transactional
     protected ConceptualDomain findOrCreateConceptualDomain(String name, String description) {
         name = name.trim()
         def cd = ConceptualDomain.findByName(name)
@@ -190,7 +186,7 @@ class ModelCatalogueImporterService {
     }
 
 
-    @Transactional
+    
     protected ValueDomain createValueDomain(String name, String description, DataType dataType, ConceptualDomain cd){
         def vd = new ValueDomain(name: name.replaceAll("\\s", "_"),
                 dataType: dataType,
@@ -201,7 +197,7 @@ class ModelCatalogueImporterService {
     }
 
 
-    @Transactional
+    
     protected ValueDomain createValueDomain(String name, String description, DataType dataType, ConceptualDomain cd, DataElement de){
         def vd = new ValueDomain(name: name.replaceAll("\\s", "_"),
                 //conceptualDomain: cd,
@@ -214,13 +210,13 @@ class ModelCatalogueImporterService {
         return vd
     }
 
-    @Transactional
+    
     protected DataElement createDataElement(Map params){
         def de = new DataElement(params).save()
         return de
     }
 
-    @Transactional
+    
     protected DataElement createDataElement(Map params, Map metadata){
         def de = new DataElement(params).save()
 
@@ -234,7 +230,7 @@ class ModelCatalogueImporterService {
     }
 
 
-    @Transactional
+    
     protected DataElement createDataElement(Map params, Map metadata, Model model){
         def de = new DataElement(params).save()
 
@@ -250,7 +246,6 @@ class ModelCatalogueImporterService {
     }
 
 
-    @Transactional
     protected String quote(String s) {
         if (s == null) return null
         String ret = s
@@ -260,7 +255,7 @@ class ModelCatalogueImporterService {
         ret
     }
 
-    @Transactional
+    
     protected void importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns) {
         def dataType
         def cd = findOrCreateConceptualDomain(conceptualDomain, conceptualDomainDescription)
