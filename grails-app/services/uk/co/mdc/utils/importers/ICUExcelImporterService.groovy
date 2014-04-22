@@ -158,4 +158,59 @@ class ICUExcelImporterService extends ModelCatalogueImporterService{
         }
     }
 
+    protected findOrCreateDataTypeICU(name, dataType) {
+
+        //default data type to return is the string data type
+        def dataTypeReturn
+        String[] lines = []
+
+        if(dataType){lines = dataType.split('\\r?\\n') }
+
+//          if there is more than one line assume that the data type is enumerated and parse enumerations
+//          the script accepts enumerations in the format
+//          01=theatre and recovery
+//          02=recovery only (usrd as a temporary ccu)
+//          03=other ward
+
+            if (lines.size() > 0 && lines[] != null) {
+                Map enumerations = new HashMap()
+                lines.each { enumeratedValues ->
+                    def EV
+                    if(!EV){EV = enumeratedValues.split("=")}
+                    if (EV != null && EV.size() > 1 && EV[0] != null && EV[1] != null) {
+                        def key = EV[0]
+                        def value = EV[1]
+                        if (value.size() > 244) {
+                            value = value[0..244]
+                        }
+                        key = key.trim()
+                        value = value.trim()
+                        if (value.isEmpty()) {
+                            value = "_"
+                        }
+                        enumerations.put(key, value)
+                    }
+                }
+
+                if (!enumerations.isEmpty()) {
+
+                    String enumString = enumerations.sort() collect { key, val ->
+                        "${this.quote(key)}:${this.quote(val)}"
+                    }.join('|')
+
+                    dataTypeReturn = EnumeratedType.findWhere(enumAsString: enumString)
+                    if (!dataTypeReturn) {
+                        dataTypeReturn = new EnumeratedType(name: name.replaceAll("\\s", "_"), enumerations: enumerations).save()
+                    }
+
+                }
+            }
+
+        if(!dataTypeReturn){dataTypeReturn = (DataType.findByNameLike(name))}
+        if(!dataTypeReturn){dataTypeReturn = (new DataType(name: name))}
+
+        return dataTypeReturn
+    }
+
+
  }

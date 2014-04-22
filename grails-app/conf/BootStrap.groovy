@@ -39,7 +39,7 @@ class BootStrap {
 			}
 			test{
 				importDevData()
-                //domainModellerService.modelDomains()
+                domainModellerService.modelDomains()
 			}
 			development {
 				importDevData()

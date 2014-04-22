@@ -51,8 +51,8 @@ class ModelCatalogueImporterService {
             if(model){parentModels.add(model)}
             importLine(conceptualDomain, conceptualDomainDescription, parentModels, name, valueDomainInfo, description, metadataColumns)
         }
-        messages = messages.put("success", "data elements imported")
-        return messages
+       // messages = messages.put("success", "data elements imported")
+       // return messages
     }
 
     //
@@ -129,7 +129,7 @@ class ModelCatalogueImporterService {
         def dataTypeReturn
 
             dataType.each { line ->
-                String[] lines = line.split("\\r?\\n");
+                String[] lines = line.split('\\r?\\n')
 
 //          if there is more than one line assume that the data type is enumerated and parse enumerations
 //          the script accepts enumerations in the format
