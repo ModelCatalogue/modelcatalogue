@@ -13,9 +13,8 @@ env:
 before_install:
 - "export DISPLAY=:99.0"
 - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
-install:
-- TERM=dumb ./gradlew assemble
-script: npm install && bower install && ./grailsw refresh-dependencies && ./grailsw test-app -Dgeb.env=sauce --plain-output
+install: "npm install && bower install && ./grailsw refresh-dependencies"
+script: "./grailsw test-app -Dgeb.env=sauce --plain-output --non-interactive"
 #deploy:
 #  provider: heroku
 #  api_key:
@@ -24,4 +23,3 @@ script: npm install && bower install && ./grailsw refresh-dependencies && ./grai
 #  app:
 #    master: modelcatalogue
 #    develop: modelcatalogue-staging
-
