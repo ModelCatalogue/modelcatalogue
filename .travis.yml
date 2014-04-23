@@ -14,7 +14,7 @@ before_install:
 - "export DISPLAY=:99.0"
 - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
 install: "npm install && bower install && ./grailsw refresh-dependencies"
-script: "./grailsw test-app -Dgeb.env=sauce --plain-output --non-interactive"
+script: "./grailsw test-app --plain-output --non-interactive" # To use SauceConnect rather than local XVFB Geb tests add -Dgeb.env=sauce 
 #deploy:
 #  provider: heroku
 #  api_key:
