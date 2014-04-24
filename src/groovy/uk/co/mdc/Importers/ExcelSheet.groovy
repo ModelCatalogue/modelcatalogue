@@ -5,7 +5,7 @@ package uk.co.mdc.Importers
  */
 class ExcelSheet {
 
-    String name;
+    String sheetName;
     def headers = [];
     def rows = [];
 }

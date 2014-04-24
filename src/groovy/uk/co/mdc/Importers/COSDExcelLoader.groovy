@@ -101,6 +101,10 @@ class COSDExcelLoader extends ExcelLoader {
                 if (message != "")
                     throw new Exception("Sheet: '" + sheetName + "' does not have the following headers:" + message)
 
+                def dataItemNumberIndex = headers.indexOf("Data item No.")
+                def dataItemNationalCodeIndex = headers.indexOf("National Code")
+                def dataItemNationalCodeDefinitionIndex = headers.indexOf("National code definition")
+
                 //Finding the first Data item row
                 while (rowIt.hasNext()) {
                     row = rowIt.next()
@@ -108,15 +112,15 @@ class COSDExcelLoader extends ExcelLoader {
                     def regularExpression = ~/[a-zA-Z]{2}[0-9]{4,5}/
 
                     def rowData = getRowData(row)
-                    def text = rowData[0];
-                    if ((text ==~ regularExpression) || (rowData[0] == "" && rowData[5].toString() != "" && rowData[6].toString() != ""))
+                    def text = rowData[dataItemNumberIndex];
+                    if ((text ==~ regularExpression) || (rowData[dataItemNumberIndex] == "" && (rowData[dataItemNationalCodeIndex].toString() != "" || rowData[dataItemNationalCodeDefinitionIndex].toString() != "")))
                         rows << getRowData(row);
                 }
             }
 
             //add the excelSheet to the excelSheets collection
             if (headers.size()!=0 & rows.size()!=0)
-                excelSheets[cont] =  new ExcelSheet(name: sheetName, headers: headers, rows: rows);
+                excelSheets[cont] =  new ExcelSheet(sheetName: sheetName, headers: headers, rows: rows);
             else
                 throw new Exception("'" + sheetName + "' sheet is empty")
         }
@@ -176,6 +180,7 @@ class COSDExcelLoader extends ExcelLoader {
 
         def dataElements = []
 
+        String logMessage = ""
         //Check the Data Item Name column exists
         if (dataItemNameIndex == -1)
             throw new Exception("Cannot find 'Data Item Name' column")
@@ -210,64 +215,65 @@ class COSDExcelLoader extends ExcelLoader {
                     cosdRow[cosdDataItemDescriptionIndex] = dataItemDescription
                     cosdRow[cosdParentSection] = dataItemSection
                     cosdRow[cosdTemplateIndex] = dataItemFormat
-                    cosdRow[cosdListContentIndex] = rows[cont][dataItemNationalCodeIndex].toString() + "=" + rows[cont][dataItemNationalCodeDefinitionIndex].toString() + "\r\n"
+                    cosdRow[cosdListContentIndex] = ""
                     cosdRow[cosdDataDictionaryElementIndex] = rows[cont][dataItemDataDictionaryElementIndex]
                     cosdRow[cosdCurrentCollectionIndex] = rows[cont][dataItemCurrentCollectionIndex]
                     cosdRow[cosdSchemaSpecificationIndex] = rows[cont][dataItemSchemaSpecificationIndex]
-                } else {
-                    throw new Exception("Data Item Number:'" + dataItemNumber + "' in Sheet:'" + sheetName + "' is duplicated")
-                }
 
-                //Create the sectionDataElement if this doesn't exist
-                def dataSectionNameNoSpaces = dataItemSection.toString().replaceAll(" ", "");
-                if (activeSectionDataElementConceptIndex == -1 || itemSectionArray.count {
-                    it.toString().replaceAll(" ", "") == dataSectionNameNoSpaces
-                } == 0) {
-                    def index = activeSectionDataElementConceptIndex == -1 ? 0 : itemSectionArray.size();
-                    itemSectionArray[index] = dataItemSection
-                    activeSectionDataElementConceptIndex = index;
 
-                } else //Check is the sectionDataElement-DataElementConcept already exists
-                if (itemSectionArray[activeSectionDataElementConceptIndex].toString().replaceAll(" ", "") != dataItemSection.toString().replaceAll(" ", "")) {
-                    def indexAtSectionDataElementConcepts = itemSectionArray.indexOf {
-                        it.replaceAll(" ", "") == dataSectionNameNoSpaces
-                    }
+                    //Create the sectionDataElement if this doesn't exist
+                    def dataSectionNameNoSpaces = dataItemSection.toString().replaceAll(" ", "");
+                    if (activeSectionDataElementConceptIndex == -1 || itemSectionArray.count {
+                        it.toString().replaceAll(" ", "") == dataSectionNameNoSpaces
+                    } == 0) {
+                        def index = activeSectionDataElementConceptIndex == -1 ? 0 : itemSectionArray.size();
+                        itemSectionArray[index] = dataItemSection
+                        activeSectionDataElementConceptIndex = index;
 
-                    if (indexAtSectionDataElementConcepts != -1) {
-                        //sectionDataElementConcept = sectionDataElementConcepts[indexAtSectionDataElementConcepts]
-                        activeSectionDataElementConceptIndex = indexAtSectionDataElementConcepts;
-                    }
-                }
-                //Look for any additional value domain
-                //Check if NationalCode is not empty, since National Code Definition may have some
-                // text that shouldn't be considered as part of the value domain.
+                    } else //Check is the sectionDataElement-DataElementConcept already exists
+                    if (itemSectionArray[activeSectionDataElementConceptIndex].toString().replaceAll(" ", "") != dataItemSection.toString().replaceAll(" ", "")) {
+                        def indexAtSectionDataElementConcepts = itemSectionArray.indexOf {
+                            it.replaceAll(" ", "") == dataSectionNameNoSpaces
+                        }
 
-                if (dataItemNationalCode.toString().trim() != "" && dataItemNationalCodeDefinition.toString().trim() != "") {
-                    def key = rows[cont][dataItemNationalCodeIndex].toString();
-                    def value = rows[cont][dataItemNationalCodeDefinitionIndex].toString().size() <= 255 ? rows[cont][dataItemNationalCodeDefinitionIndex].toString() : rows[cont][dataItemNationalCodeDefinitionIndex].toString().substring(0, 254);
-                    cosdRow[cosdListContentIndex] += (key + "=" + value + "\r\n")
-
-                    if (cont + 1 < rows.size()) {
-                        nextDataItemNumber = rows[cont + 1][dataItemNumberIndex];
-                        while (nextDataItemNumber == "" && dataItemNationalCode.toString().trim() != "" && dataItemNationalCodeDefinition.toString().trim() != "") {
-                            //create a list of value domain
-                            cont++
-                            key = rows[cont][dataItemNationalCodeIndex].toString();
-                            value = rows[cont][dataItemNationalCodeDefinitionIndex].toString().size() <= 255 ? rows[cont][dataItemNationalCodeDefinitionIndex].toString() : rows[cont][dataItemNationalCodeDefinitionIndex].toString().substring(0, 254);
-                            cosdRow[cosdListContentIndex] += (key + "=" + value + "\r\n")
-                            if (cont + 1 < rows.size())
-                                nextDataItemNumber = rows[cont + 1][dataItemNumberIndex];
-                            else
-                                break;
+                        if (indexAtSectionDataElementConcepts != -1) {
+                            //sectionDataElementConcept = sectionDataElementConcepts[indexAtSectionDataElementConcepts]
+                            activeSectionDataElementConceptIndex = indexAtSectionDataElementConcepts;
                         }
                     }
-                }
+                    //Look for any additional value domain
+                    //Check if NationalCode is not empty, since National Code Definition may have some
+                    // text that shouldn't be considered as part of the value domain.
+
+                    if (dataItemNationalCode.toString().trim() != "" || dataItemNationalCodeDefinition.toString().trim() != "") {
+                        def key = rows[cont][dataItemNationalCodeIndex].toString();
+                        def value = rows[cont][dataItemNationalCodeDefinitionIndex].toString().size() <= 255 ? rows[cont][dataItemNationalCodeDefinitionIndex].toString() : rows[cont][dataItemNationalCodeDefinitionIndex].toString().substring(0, 254);
+                        cosdRow[cosdListContentIndex] = (key + "=" + value + "\r\n")
+
+                        if (cont + 1 < rows.size()) {
+                            nextDataItemNumber = rows[cont + 1][dataItemNumberIndex];
+                            while (nextDataItemNumber == "" && (dataItemNationalCode.toString().trim() != "" || dataItemNationalCodeDefinition.toString().trim() != "")) {
+                                //create a list of value domain
+                                cont++
+                                key = rows[cont][dataItemNationalCodeIndex].toString();
+                                value = rows[cont][dataItemNationalCodeDefinitionIndex].toString().size() <= 255 ? rows[cont][dataItemNationalCodeDefinitionIndex].toString() : rows[cont][dataItemNationalCodeDefinitionIndex].toString().substring(0, 254);
+                                cosdRow[cosdListContentIndex] += (key + "=" + value + "\r\n")
+                                if (cont + 1 < rows.size())
+                                    nextDataItemNumber = rows[cont + 1][dataItemNumberIndex];
+                                else
+                                    break;
+                            }
+                        }
+                    }
 
                 cosdRows.add(cosdRow)
+                } else {
+                    logMessage += ("Data Item Number:'" + dataItemNumber + "' in Sheet:'" + sheetName + "' is duplicated \r\n")
+                }
             }
         }
 
-        return [COSDHeaders, cosdRows]
+        return [COSDHeaders, cosdRows, logMessage]
     }
 
 
