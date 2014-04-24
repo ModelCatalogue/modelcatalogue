@@ -8,10 +8,10 @@
 <div id="main">
 
     <g:form action="upload" controller="COSDImporter"  enctype="multipart/form-data" encoding="multipart/form-data">
-        <h5>Please select files:</h5>
+        <h5>Please select the Excel COSD file:</h5>
         <p>
             <input type="file" id="excelFile" name="excelFile" multiple="false" />
-            <button id='btnUpload' type="submit" class="btn btn-primary">Upload</button>
+            <button id='btnUpload' type="submit" class="btn btn-primary">Upload COSD file </button>
         </p>
     </g:form>
 </div>

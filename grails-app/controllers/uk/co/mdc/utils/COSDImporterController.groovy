@@ -37,11 +37,15 @@ class COSDImporterController {
 
                 COSDExcelLoader parser = new COSDExcelLoader(file.inputStream)
                 ExcelSheet[] excelSheets = parser.parseCOSD();
-                def headers = []
-                def rows = []
-                (headers, rows) =  parser.generateCOSDInfoArray(excelSheets)
+                excelSheets.eachWithIndex{ ExcelSheet sheet, int contSheet ->
+                    def headers = excelSheets[contSheet].headers
+                    def sheetName = excelSheets[contSheet].name
+                    def rows = excelSheets[contSheet].rows
+                    def (headersCOSDSheet, rowsCOSDSheet) = parser.generateCOSDInfoArray(sheetName, headers, rows)
+                    //call  SERVICE!!!
+                }
 
-                //call  SERVICE!!!
+
             }
             catch(Exception ex)
             {
