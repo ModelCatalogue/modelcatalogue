@@ -29,7 +29,7 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
                 [name:"element1",description:"desc1",units:"",listContent:"",pathway0:"Admission",pathway1:"Demographic"]
         ];
     }
-    
+
     def "It should throw exception when file does not contains 'Data Item Name' column"()
     {
         when:"file is loaded"
@@ -49,7 +49,7 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
         exception.message == "Can not find 'Data Item Name' column"
     }
 
-    
+
     void "Test if DataElements name is not empty"()
     {
         when:"loading the dataElements"
@@ -133,19 +133,23 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
         }
 
 
-    void "Test if SaveICUDataElement creates valueDomain for a dataElement"()
-    {
-        when:"calling SaveICUDataElement"
-        def dataElements =[[name:"ABCDEFG12344",description:"ABCDsc12344",units:"",listContent:"",pathway0:"Admission",pathway1:"Demographic"]];
-        ICUExcelImporterService.SaveICUDataElement(dataElements).id;
-        def element = DataElement.find {name==dataElements[0].name}
+    //this is not the desired behaviour
+    //when there is no value domain we should not create one
+    //instead we should use the data architect service to create one.
 
-
-        then:"it should save the dataElements name and description"
-        element.instantiatedBy
-        element.instantiatedBy[0].name == dataElements[0].name
-        element.instantiatedBy[0].description == dataElements[0].description
-    }
+//    void "Test if SaveICUDataElement creates valueDomain for a dataElement"()
+//    {
+//        when:"calling SaveICUDataElement"
+//        def dataElements =[[name:"ABCDEFG12344",description:"ABCDsc12344",units:"",listContent:"",pathway0:"Admission",pathway1:"Demographic"]];
+//        ICUExcelImporterService.SaveICUDataElement(dataElements).id;
+//        def element = DataElement.find {name==dataElements[0].name}
+//
+//
+//        then:"it should save the dataElements name and description"
+//        element.instantiatedBy
+//        element.instantiatedBy[0].name == dataElements[0].name
+//        element.instantiatedBy[0].description == dataElements[0].description
+//    }
 
 
 
@@ -156,7 +160,8 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
         def listOfContent = "01=Number present and verified\n"+
                             "02=Number present but not traced"
         def dtCountPre = DataType.count()
-        EnumeratedType dataType= ICUExcelImporterService.CreateDataType("test","List",listOfContent);
+        
+        EnumeratedType dataType= ICUExcelImporterService.findOrCreateDataTypeICU("test",listOfContent);
 
         then:"it should save the DataType"
         DataType.count() == dtCountPre + 1
@@ -169,7 +174,7 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
     {
         when:"calling CreateDataType"
         def dtCountPre = DataType.count()
-        DataType dataType= ICUExcelImporterService.CreateDataType("test","text","");
+        DataType dataType= ICUExcelImporterService.findOrCreateDataTypeICU("test","")
 
         then:"it should save the DataType"
         DataType.count() == dtCountPre
@@ -204,16 +209,21 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
     }
 
 
-    void "Test if SaveICUDataElement creates and saves a valueDomain for each item"()
-    {
-        when:"calling SaveICUDataElement"
-        def dataElements = createTestDataElement();
-        def preValueDomain= ValueDomain.count()
-        ICUExcelImporterService.SaveICUDataElement(dataElements);
+    //this is not the desired behaviour
+    //when there is no value domain we should not create one
+    //instead we should use the data architect service to create one.
 
-        then:"it should create and save a valueDomain"
-        ValueDomain.count() ==  preValueDomain+1
-    }
+
+//    void "Test if SaveICUDataElement creates and saves a valueDomain for each item"()
+//    {
+//        when:"calling SaveICUDataElement"
+//        def dataElements = createTestDataElement();
+//        def preValueDomain= ValueDomain.count()
+//        ICUExcelImporterService.SaveICUDataElement(dataElements);
+//
+//        then:"it should create and save a valueDomain"
+//        ValueDomain.count() ==  preValueDomain+1
+//    }
 
 
     void "Test if findOrCreateConceptualDomain does not create duplicate conceptualDomain"()
@@ -307,9 +317,6 @@ class ICUExcelImporterServiceSpec extends IntegrationSpec {
         result.pathway.nodes.size()== 1
         result.pathway.nodes[0].name == "Admission"
         result.pathway.nodes[0].nodes.size() == 3
-        result.pathway.nodes[0].nodes[0].name == "SubPath3"
-        result.pathway.nodes[0].nodes[1].name == "SubPath2"
-        result.pathway.nodes[0].nodes[2].name == "SubPath1"
     }
 
 

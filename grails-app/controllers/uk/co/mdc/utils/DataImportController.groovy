@@ -1,5 +1,6 @@
 package uk.co.mdc.utils
 
+import org.modelcatalogue.core.CatalogueElement
 import org.modelcatalogue.core.ConceptualDomain
 import org.modelcatalogue.core.DataElement
 import org.modelcatalogue.core.DataType
@@ -59,6 +60,7 @@ class DataImportController {
         elasticSearchService.index(ExtensionValue)
         elasticSearchService.index(Relationship)
         elasticSearchService.index(RelationshipType)
+        elasticSearchService.index(CatalogueElement)
         elasticSearchAdminService.refresh()
 
         flash.args = [dataset]

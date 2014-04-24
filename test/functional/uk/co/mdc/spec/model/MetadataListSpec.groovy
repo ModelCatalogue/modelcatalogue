@@ -126,7 +126,7 @@ class MetadataListSpec extends GebReportingSpec{
         waitFor{
             at MetadataListPage
             heading.text() =="DataElements"
-            actor.text()=="actor"
+            id.text()=="id"
         }
 
         when:
@@ -134,7 +134,7 @@ class MetadataListSpec extends GebReportingSpec{
 
         then:
         waitFor{
-            enumerations.text()=="enumerations"
+            status.text()=="status"
         }
 
         when:
@@ -150,7 +150,7 @@ class MetadataListSpec extends GebReportingSpec{
 
         then:
         waitFor{
-            enumerations.text()=="enumerations"
+            status.text()=="status"
         }
 
 
@@ -177,26 +177,26 @@ class MetadataListSpec extends GebReportingSpec{
 
 
         when: "I click on conceptualDomain"
-        conceptualDomain.click()
+        catalogueElement.click()
 
         then: "I go to the show screen for conceptual domain"
         waitFor {
-            heading3.text() == "ConceptualDomain (Model: 14)"
+            heading3.text() == "CatalogueElement (Model: 13)"
         }
         when: "I click on the contains tab"
         containsTab.click()
 
         then: "I go to the elements contained in the conceptualdomain screen"
         waitFor {
-            dataElement.text() == "Data Element: 123"
+            dataElement.text() == "Data Element: 114"
         }
 
-        when: "I click on the name data element"
+        when: "I click on the description data element"
         dataElement.click()
 
-        then: "I go to the name data element"
+        then: "I go to the description data element"
         waitFor {
-            heading3.text() == "name (Data Element: 123)"
+            heading3.text() == "description (Data Element: 114)"
         }
     }
 
