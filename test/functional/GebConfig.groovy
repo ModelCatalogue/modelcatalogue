@@ -17,6 +17,12 @@ driver = {
 	new FirefoxDriver()
  }
 
+waiting {
+	timeout = 10
+	retryInterval = 0.5
+}
+// Default to wraping `at SomePage` declarations in `waitFor` closures
+atCheckWaiting = true
 
 // Download the driver and set it up automatically
 private void downloadDriver(File file, String path) {
@@ -48,6 +54,11 @@ environments {
 	}
 
     sauce {
+		waiting {
+			timeout = 15
+			retryInterval = 1
+		}
+
         //baseUrl = 'http://mc.test/model_catalogue/'
         String username = System.getenv("SAUCE_USERNAME");
         String apiKey = System.getenv("SAUCE_ACCESS_KEY");

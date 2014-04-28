@@ -120,8 +120,9 @@ class PathwayShowPage extends BasePageWithNav{
         def preCreationNodes = getNodeIds()
         addNodeButton.click()
 
+		// Wait for the node to be added
         waitFor {
-            preCreationNodes.size() ==  getNodeIds().size()-1
+			getNodeIds().size() == preCreationNodes.size() + 1
         }
         def postCreationNodes = getNodeIds()
         postCreationNodes.removeAll(preCreationNodes)
