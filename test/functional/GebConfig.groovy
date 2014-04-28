@@ -19,7 +19,7 @@ driver = {
 
 waiting {
 	timeout = 10
-	retryInterval = 0.5
+	retryInterval = 0.2
 }
 // Default to wraping `at SomePage` declarations in `waitFor` closures
 atCheckWaiting = true

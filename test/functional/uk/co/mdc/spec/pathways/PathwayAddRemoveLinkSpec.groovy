@@ -145,8 +145,6 @@ class PathwayAddRemoveLinkSpec extends GebReportingSpec{
         waitFor {
             getLocalLinkIds().size() == preCreationLinkCount
         }
-		!link.displayed
-
     }
 
     def "Check when we are in a subPathway and deleting a link, it will be removed from pathway"()
