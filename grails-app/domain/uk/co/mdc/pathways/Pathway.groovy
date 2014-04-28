@@ -35,7 +35,7 @@ class Pathway {
     }
 
     static mapping = {
-        nodes cascade: "all-delete-orphan"
-        links cascade: "all-delete-orphan"
+        //nodes cascade: "all-delete-orphan"
+        //links cascade: "all-delete-orphan"
     }
 }

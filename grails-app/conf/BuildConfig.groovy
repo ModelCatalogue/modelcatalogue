@@ -1,4 +1,4 @@
-grails.servlet.version = "2.5" // Change depending on target container compliance (2.5 or 3.0)
+grails.servlet.version = "3.0" // Change depending on target container compliance (2.5 or 3.0)
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
@@ -8,8 +8,14 @@ grails.project.source.level = 1.6
 
 // uncomment (and adjust settings) to fork the JVM to isolate classpaths
 grails.project.fork = [
-    test: false
-//   run: [maxMemory:1024, minMemory:64, debug:false, maxPerm:256]
+        // configure settings for the test-app JVM, uses the daemon by default
+        test: false,
+        // configure settings for the run-app JVM
+        run: false, //[maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
+        // configure settings for the run-war JVM
+        war: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
+        // configure settings for the Console UI JVM
+        console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
 
 
@@ -110,18 +116,18 @@ grails.project.dependency.resolution = {
 
         //as suggested on http://grails.org/2.3.5+Release+Notes to use    build ':tomcat:7.0.50'
         //build ":tomcat:7.0.47"
-        build ':tomcat:7.0.50'
+        build ':tomcat:7.0.52.1'
 
         test ":geb:0.9.2"
 
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0"
         //runtime ":cached-resources:1.0"
-        runtime ":database-migration:1.3.7"
+        runtime ":database-migration:1.4.0"
 
         //as suggested on http://grails.org/2.3.5+Release+Notes to use  runtime ':hibernate:3.6.10.7'
         //runtime ":hibernate:3.6.10.6"
-        runtime ":hibernate:3.6.10.7"
+        runtime ":hibernate:3.6.10.13"
         runtime ":jquery:1.8.3"
         runtime ":resources:1.1.6"
 

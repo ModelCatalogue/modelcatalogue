@@ -17,6 +17,7 @@ import org.springframework.security.acls.domain.BasePermission
 
 
 class BootStrap {
+
 	def aclService, aclUtilService, sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService
 
 	def init = { servletContext ->
@@ -24,11 +25,12 @@ class BootStrap {
 		def springContext = WebApplicationContextUtils.getWebApplicationContext( servletContext )
 		
 		//register custom json Marshallers
-		registerJSONMarshallers(springContext)
+		//registerJSONMarshallers(springContext)
 
         initCatalogueService.initDefaultDataTypes()
         initCatalogueService.initDefaultRelationshipTypes()
-		
+        initCatalogueService.initDefaultMeasurementUnits()
+
 		environments {
 			production {
                 createBaseRoles()
@@ -129,8 +131,11 @@ class BootStrap {
 			//login as admin so you can create the prepopulated data
 			loginAsAdmin()
 
+
 			//populate with some test data....there will be more
 			populateWithTestData()
+
+            sessionFactory.currentSession.flush()
 
 			//grant relevant permissions (i.e. admin user has admin on everything)
 			grantPermissions()
@@ -297,21 +302,11 @@ class BootStrap {
 
 
 	/*
-	 * **********************POPULATE WITH FORMS TEST DATA********************************
+	 * **********************POPULATE WITH PATHWAYS TEST DATA********************************
 	 *
 	 * */
 
 	private populateWithTestData(){
-
-
-		//populate with test data
-		def applicationContext = grailsApplication.mainContext
-		def DEM
-		def string
-		
-		def date
-		
-
 
 		if(!Pathway.count()){
 
@@ -320,7 +315,7 @@ class BootStrap {
                     name: 'Transplanting and Monitoring Pathway',
                     userVersion: '0.2',
                     isDraft: true
-            ).save(failOnError: true)
+            ).save(failOnError: true, flush:true)
 
 
             Node subPathway1 = new Node(
@@ -331,42 +326,42 @@ class BootStrap {
                     x: '325px',
                     y: '330px',
                     parent: pathway1,
-            ).save(failOnError:true)
+            ).save(failOnError:true, flush:true)
 
             Node node1 = new Node(
                     name: 'Guard Patient',
                     x: '250px',
                     y: '0px',
                     description: 'guard patient on recovery',
-            ).save(failOnError: true)
+            ).save(failOnError: true, flush:true)
 
             Node node2 = new Node(
                     name: 'Recovery',
                     x: '150px',
                     y: '100px',
                     description: 'recover',
-            ).save(failOnError: true)
+            ).save(failOnError: true, flush:true)
 
             Node node3 = new Node(
                     name: 'Transfer to nursing ward',
                     x: '250px',
                     y: '300px',
                     description: 'transfer patient to the nursing ward',
-            ).save(failOnError: true)
+            ).save(failOnError: true, flush:true)
 
             def link1 = new Link(
                     name: 'TM1',
                     pathway: subPathway1,
                     source: node1,
                     target: node2,
-            ).save(failOnError:true)
+            ).save(failOnError:true, flush:true)
 
             def link2 = new Link(
                     name: 'TM2',
                     pathway: subPathway1,
                     source: node2,
                     target: node3,
-            ).save(failOnError:true)
+            ).save(failOnError:true, flush:true)
 
             subPathway1.addToNodes(node1)
             subPathway1.addToNodes(node2)

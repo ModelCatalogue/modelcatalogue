@@ -11,14 +11,18 @@ import org.modelcatalogue.core.Model
 import org.modelcatalogue.core.Relationship
 import org.modelcatalogue.core.RelationshipType
 import org.modelcatalogue.core.ValueDomain
+import org.modelcatalogue.core.dataarchitect.DataImportService
+import org.modelcatalogue.core.dataarchitect.ImportRow
+import org.modelcatalogue.core.dataarchitect.Importer
 import org.springframework.security.acls.domain.BasePermission
 
-class ImportNHICService extends ModelCatalogueImporterService{
+class ImportNHICService {
 
     static transactional = true
 
     def grailsApplication, sessionFactory
     def errors = new HashMap()
+    Importer newImporter
 
         private static final QUOTED_CHARS = [
             "\\": "&#92;",
@@ -46,6 +50,7 @@ class ImportNHICService extends ModelCatalogueImporterService{
 //     */
     def singleImport(String filename) {
 
+        newImporter = new Importer()
         def applicationContext = grailsApplication.mainContext
         String basePath = applicationContext.getResource("/").getFile().toString()
 
@@ -82,14 +87,15 @@ class ImportNHICService extends ModelCatalogueImporterService{
     private fileFunctions = [
                         '/CAN/CAN_CUH.csv':
                     { tokens ->
-                            def section = tokens[1]
-                            def subsection = tokens[2]
-                            def name = tokens[3]
-                            def valueDomainInfo = tokens[5]
-                            def description = tokens[4]
-                            def conceptualDomain = "NHIC : Ovarian Cancer"
-                            def conceptualDomainDescription = "NHIC : Ovarian Cancer"
-                            def metadataColumns = [
+                            ImportRow importRow = new ImportRow()
+                            importRow.parentModelName = tokens[1]
+                            importRow.containingModelName = tokens[2]
+                            importRow.dataElementName = tokens[3]
+                            importRow.dataType = tokens[5]
+                            importRow.dataElementDescription = tokens[4]
+                            importRow.conceptualDomainName = "NHIC : CAN_CUH"
+                            importRow.conceptualDomainDescription = "NHIC : CAN_CUH"
+                            importRow.metadata = [
                                     "NHIC_Identifier"             : tokens[0],
                                     "Link_to_existing_definition": tokens[6],
                                     "Notes_from_GD_JCIS:"         : tokens[7],
@@ -104,8 +110,10 @@ class ImportNHICService extends ModelCatalogueImporterService{
                                     "H"                           : tokens[16],
                                     "E2"                          : tokens[17],
                             ]
-                            def categories = ["NHIC Datasets", "Ovarian Cancer", "CAN_CUH", "Round 1", section, subsection]
-                            importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+                            importRow.parentModels = ["NHIC Datasets", "Ovarian Cancer", "CAN_CUH"]
+
+                            newImporter.ingestRow(importRow)
+                        //importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
 
                         //println "importing: " + tokens[0] + "CAN_CUH"
                     },
@@ -378,6 +386,29 @@ class ImportNHICService extends ModelCatalogueImporterService{
                                     ]
                                     def categories = ["NHIC Datasets", "TRA", "TRA_OUH", "Round 1", section, subsection]
                                     importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+
+
+                                ImportRow importRow = new ImportRow()
+                                importRow.parentModelName = tokens[1]
+                                importRow.containingModelName = null
+                                importRow.dataElementName = tokens[2]
+                                importRow.dataType = null
+                                importRow.dataElementDescription = tokens[3]
+                                importRow.conceptualDomainName = "NHIC : TRA"
+                                importRow.conceptualDomainDescription = "NHIC : TRA"
+                                importRow.metadata = [
+                                        "NHIC_Identifier":tokens[0],
+                                        "A":tokens[4],
+                                        "B":tokens[5],
+                                        "C":tokens[6],
+                                        "D":tokens[7],
+                                        "E":tokens[8],
+                                        "Comments":tokens[9]
+                                ]
+
+                                importRow.parentModels = ["NHIC Datasets", "TRA", "TRA_OUH", "Round 1"]
+                                newImporter.ingestRow(importRow)
+
                             }
     ]
 

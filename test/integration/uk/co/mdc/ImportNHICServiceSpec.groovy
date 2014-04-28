@@ -6,9 +6,9 @@ import spock.lang.Specification
 /**
  * Created by adammilward on 11/02/2014.
  */
-class ImportServiceSpec extends Specification {
+class ImportNHICServiceSpec extends Specification {
 
-    def importNHICService, dataArchitectService
+    def importNHICService
 
     def setupSpec(){
     }
@@ -18,23 +18,12 @@ class ImportServiceSpec extends Specification {
         when:
         importNHICService.singleImport('/CAN/CAN_CUH.csv')
 
-        then:
-        def models = Model.list()
-        !models.isEmpty()
-        def dataTypes = DataType.list()
-        !dataTypes.isEmpty()
-        def dataElements = DataElement.list()
-        !dataElements.isEmpty()
-        def valueDomains = ValueDomain.list()
-        !valueDomains.isEmpty()
-
-        when:
-        def core = models.find { it.name == "CORE" }
-        def patientIdentity = models.find { it.name == "PATIENT IDENTITY DETAILS" }
+        def core = Model.findByName("CORE")
+        def patientIdentity = Model.findByName("PATIENT IDENTITY DETAILS")
         def NHICConceptualDomain = ConceptualDomain.findByName("NHIC : Ovarian Cancer")
-        def indicatorCode = dataTypes.find { it.name == "NHS_NUMBER_STATUS_INDICATOR_CODE" }
-        def valueDomain = valueDomains.find { it.name == "NHS_NUMBER_STATUS_INDICATOR_CODE" }
-        def dataElement = dataElements.find { it.name == "NHS NUMBER STATUS INDICATOR CODE" }
+        def indicatorCode = DataType.findByName("NHS_NUMBER_STATUS_INDICATOR_CODE")
+        def valueDomain = ValueDomain.findByName("NHS_NUMBER_STATUS_INDICATOR_CODE")
+        def dataElement = DataElement.findByName("NHS NUMBER STATUS INDICATOR CODE")
 
         then:
         core.id

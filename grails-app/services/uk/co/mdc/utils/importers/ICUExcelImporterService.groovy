@@ -11,7 +11,7 @@ import org.modelcatalogue.core.DataType
 import org.modelcatalogue.core.ValueDomain
 import uk.co.mdc.pathways.*
 
-class ICUExcelImporterService extends ModelCatalogueImporterService{
+class ICUExcelImporterService {
 
     private static final QUOTED_CHARS = [
             "\\": "&#92;",

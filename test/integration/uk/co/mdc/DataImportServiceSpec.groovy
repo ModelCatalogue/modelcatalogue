@@ -1,14 +1,14 @@
 package uk.co.mdc
 
 import grails.test.spock.IntegrationSpec
-import org.modelcatalogue.core.*
+import org.modelcatalogue.core.DataElement
 import uk.co.mdc.Importers.ExcelLoader
 
-class ModelCatalogueImporterServiceSpec extends IntegrationSpec {
+class DataImportServiceSpec extends IntegrationSpec {
 
     def fileName= "test/unit/resources/DataTemplate.xls"
     def fileNameError="test/unit/resources/ICUDataError.xls"
-    def modelCatalogueImporterService
+    def dataImportService
 
     def setup(){}
 
@@ -18,7 +18,7 @@ class ModelCatalogueImporterServiceSpec extends IntegrationSpec {
         def inputStream = new FileInputStream(fileName)
         ExcelLoader parser = new ExcelLoader(inputStream)
         def (headers, rows) = parser.parse()
-        modelCatalogueImporterService.importData(headers, rows, "NHIC : TRA", "NHIC TRA conceptual domain for renal transplantation", ["NHIC Datasets", "TRA", "TRA_OUH", "Round 1"])
+        dataImportService.importData(headers, rows, "NHIC : TRA", "NHIC TRA conceptual domain for renal transplantation", ["NHIC Datasets", "TRA", "TRA_OUH", "Round 1"])
 
         then:"the dataElement should have name"
         DataElement.findByName("NHS number")
