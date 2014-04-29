@@ -126,6 +126,10 @@ grails.project.dependency.resolution = {
 		// Code quality bits
 		compile ":codenarc:0.20"
 		test ":code-coverage:1.2.7"
+
+        //Generic Excel importer
+        compile ":excel-import:1.0.0"
+        compile ":joda-time:1.4"
     }
  }
 

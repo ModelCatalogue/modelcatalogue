@@ -23,6 +23,7 @@ class UrlMappings {
 		name pendingUsers: "/role/pendingUsers"( controller: "role", action: "listPendingUsers" )
 		name importData: "/admin/importData"(controller: "dataImport")
 		name importICU: "/admin/importICU"(controller: "excelImporter")
+        name importHEP: "/admin/importHEP"(controller: "HEPExcelImporter")
 
         "/"(view:"/index")
 
