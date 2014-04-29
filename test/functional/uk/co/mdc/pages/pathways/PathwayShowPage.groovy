@@ -46,9 +46,9 @@ class PathwayShowPage extends BasePageWithNav{
         goToParentButton { $("i", class: "fa-reply") }
         deleteSelectedElementButton {$("div", text: "Properties").parent().find("button", text: contains("Delete"))}
 
-        propertiesName { $("a", 'editable-text':"selectedNode.name")}
-        propertiesEditName { propertiesName.siblings("form").find("input", type: "text")}
-        propertiesDescription { $("a", 'editable-text':"selectedNode.description")}
+        propertiesName(required:false) { $("a", 'editable-text':"selectedNode.name")}
+        propertiesEditName(required:false) { propertiesName.siblings("form").find("input", type: "text")}
+        propertiesDescription(required:false) { $("a", 'editable-text':"selectedNode.description")}
 
         NodePropertiesPanel {$("#NodePropertiesPanel")}
         saveButton { $("button", text: "Save pathway") }
