@@ -41,6 +41,7 @@ class PathwayShowPage extends BasePageWithNav{
         formDesignCartListFirstItem { $("#formCartList li") }
 
         pathwayCanvas { $(".jsplumb-container") }
+		selectedNode(required: false) { $(".jsplumb-container .selectedItem") }
 
         goToParentButton { $("i", class: "fa-reply") }
         deleteSelectedElementButton {$("div", text: "Properties").parent().find("button", text: contains("Delete"))}
@@ -80,7 +81,7 @@ class PathwayShowPage extends BasePageWithNav{
      * @return
      */
     def getAllNodes(){
-        return $(".node")
+		$(".node")
     }
 
     /**
@@ -89,7 +90,7 @@ class PathwayShowPage extends BasePageWithNav{
      * @return
      */
     def getNode(String nodeId){
-        return pathwayCanvas?.find("div", id: nodeId)
+        pathwayCanvas?.find("div", id: nodeId)
     }
 
     /**
@@ -116,21 +117,20 @@ class PathwayShowPage extends BasePageWithNav{
      * Create a node on the canvas and return it
      */
     def createNode() {
+		def highlightedNode
+		if(selectedNode.present){
+			highlightedNode = selectedNode
+		}else{
+			highlightedNode = null
+		}
 
-        def preCreationNodes = getNodeIds()
         addNodeButton.click()
 
+		// Wait for the node to be added and selected
         waitFor {
-            preCreationNodes.size() ==  getNodeIds().size()-1
+			selectedNode != highlightedNode
         }
-        def postCreationNodes = getNodeIds()
-        postCreationNodes.removeAll(preCreationNodes)
-
-        assert postCreationNodes.size() == 1
-        def node = getNode(postCreationNodes[0])
-
-        return node
-
+        return selectedNode
     }
 
     /**
@@ -158,29 +158,16 @@ class PathwayShowPage extends BasePageWithNav{
         return (errorNodeName.style.color == 'red')
     }
 
-
-    /*
-     * returns the selected node
-     */
-    def getSelectedNode()
-    {
-        return  pathwayCanvas.find("div.selectedItem");
-    }
-
-
-    def getNodeId(node)
-    {
+    def getNodeId(node) {
         node.attr("id")
     }
 
 
-    def getNodeEndPoint(node,endpointType)
-    {
+    def getNodeEndPoint(node, endpointType) {
         node.find("div.ep."+endpointType)
     }
 
-    def getLinkIds()
-    {
+    def getLinkIds() {
         def ids = []
         $(".link").each { link ->
             ids.add( link.attr("id") )
@@ -188,16 +175,11 @@ class PathwayShowPage extends BasePageWithNav{
         return ids
     }
 
-
-
-    def getLink(linkId)
-    {
+    def getLink(linkId) {
         $(".link[id^='"+linkId+"']")
     }
 
-
-    def getLocalLinkIds()
-    {
+    def getLocalLinkIds() {
         def ids = []
         $(".link[id^='linkLOCAL']").each { link ->
             ids.add( link.attr("id") )
@@ -205,8 +187,7 @@ class PathwayShowPage extends BasePageWithNav{
         return ids
     }
 
-    def createLink(sourceNode,sourceEndPoint,targetNode,targetEndpoint)
-    {
+    def createLink(sourceNode,sourceEndPoint,targetNode,targetEndpoint) {
         def linkIdsPre
         def linkIdsPost
 
@@ -237,11 +218,9 @@ class PathwayShowPage extends BasePageWithNav{
             return getLink(linkIdsPost[0])
         else
             return  null
-
     }
 
-    def doubleClickOnNode(node)
-    {
+    def doubleClickOnNode(node) {
         interact { doubleClick(node) }
     }
 }
