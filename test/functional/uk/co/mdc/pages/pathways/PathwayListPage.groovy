@@ -70,7 +70,7 @@ class PathwayListPage extends BasePageWithNav{
      * @param name
      * @return
      */
-    def createPathway(String name) {
+    def createPathway(String name = 'Test Pathway') {
 
         nav.expandPathwayMenuLink.click()
         waitFor{
