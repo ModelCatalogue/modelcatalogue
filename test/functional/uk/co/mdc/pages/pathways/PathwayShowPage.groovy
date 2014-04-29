@@ -90,7 +90,7 @@ class PathwayShowPage extends BasePageWithNav{
      * @return
      */
     def getNode(String nodeId){
-        pathwayCanvas?.find("div", id: nodeId)
+        $(".jsplumb-container #${nodeId}" )
     }
 
     /**
