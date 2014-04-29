@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.*
 
 class COSDExcelLoader extends ExcelLoader {
 
-    private static final String[] sheetNamesToImport = [
+    public static final String[] sheetNamesToImport = [
             "Core",
             "Breast", "CNS", "Colorectal", "CTYA ", "Gynaecology",
             "Haematology", "Head & Neck", "Lung", "Sarcoma", "Skin",
@@ -19,7 +19,7 @@ class COSDExcelLoader extends ExcelLoader {
     // b) The columns name 'Description is also used.
     // therefore this would be considered as optional.
 
-    private static final String[] headerNamesToImport = [
+    public static final String[] headerNamesToImport = [
             "Data item No.", "Data Item Section", "Data Item Name",
             "Format", "National Code", "National code definition", "Data Dictionary Element",
             "Current Collection", "Schema Specification"
@@ -67,7 +67,7 @@ class COSDExcelLoader extends ExcelLoader {
         return message
     }
 
-    def parseCOSD() {
+    def parse() {
         Workbook wb = WorkbookFactory.create(fileInputStream);
         ExcelSheet[] excelSheets = new ExcelSheet[sheetNamesToImport.size()];
         def indexSheet
