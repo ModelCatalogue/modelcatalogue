@@ -56,7 +56,7 @@ grails.project.dependency.resolution = {
 
 
         // Selenium WebDriver, for use in Geb
-        def webDriverVersion = "2.37.0"
+        def webDriverVersion = "2.41.0"
 
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes
         compile 'com.googlecode.json-simple:json-simple:1.1.1'
