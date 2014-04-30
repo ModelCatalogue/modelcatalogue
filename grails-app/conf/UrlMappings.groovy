@@ -21,7 +21,8 @@ class UrlMappings {
 //       "/api/dataelements"(version:'1.0', resources:"dataElement", namespace:'v1')
 
 		name pendingUsers: "/role/pendingUsers"( controller: "role", action: "listPendingUsers" )
-		name importData: "/admin/importData"(controller: "dataImport")
+		name importDataOld: "/admin/oldImportData"(controller: "oldDataImport")
+        name importData: "/admin/importData"(controller: "dataImport")
 		name importICU: "/admin/importICU"(controller: "excelImporter")
         name importCOSD: "/admin/importCOSD"(controller:"COSDImporter")
 

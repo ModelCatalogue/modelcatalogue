@@ -1,70 +1,77 @@
 package uk.co.mdc.utils
 
-import org.modelcatalogue.core.CatalogueElement
-import org.modelcatalogue.core.ConceptualDomain
-import org.modelcatalogue.core.DataElement
-import org.modelcatalogue.core.DataType
-import org.modelcatalogue.core.EnumeratedType
-import org.modelcatalogue.core.ExtendibleElement
-import org.modelcatalogue.core.ExtensionValue
-import org.modelcatalogue.core.MeasurementUnit
 import org.modelcatalogue.core.Model
-import org.modelcatalogue.core.Relationship
-import org.modelcatalogue.core.RelationshipType
-import org.modelcatalogue.core.ValueDomain
+import org.modelcatalogue.core.dataarchitect.ExcelLoader
+import org.modelcatalogue.core.dataarchitect.HeadersMap
 import org.springframework.security.access.annotation.Secured
+import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.multipart.MultipartHttpServletRequest
 
 @Secured(['ROLE_ADMIN'])
 class DataImportController {
 
-	static allowedMethods = [importDataSet: "GET", ]
-	
-	def importNHICService, elasticSearchAdminService, elasticSearchService
+    def dataImportService
 
-    def index(){
-        [nhicFiles: importNHICService.getNhicFiles()]
-    }
-    def importDataSet() { 
-		def dataset = params.dataset
-        def errors
+    def index() {}
 
-		if(dataset == "nhic"){
-            if(params.nhicFile){
-                errors = importNHICService.singleImport(params.nhicFile)
-            }else{
-                errors =  importNHICService.importData()
-            }
-            if(errors.isEmpty()) {
-                flash.message = "dataimport.complete"
-                flash.default = "Process complete"
-            }else{
-                flash.message = "Process complete with errors: ${errors}"
-                flash.default = "Process complete with errors"
-                flash.errors = errors
-            }
-		}
-        else{
-            flash.message = "dataimport.paramError"
-            flash.default = "Error: invalid dataset"
+    def upload()
+    {
+        if(!(request instanceof MultipartHttpServletRequest))
+        {
+            flash.error="No File to process!"
+            render view:"index"
+            return
         }
 
+        MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)request;
+        MultipartFile  file = multiRequest.getFile("excelFile");
 
-        elasticSearchService.index(DataElement)
-        elasticSearchService.index(ValueDomain)
-        elasticSearchService.index(Model)
-        elasticSearchService.index(ConceptualDomain)
-        elasticSearchService.index(DataType)
-        elasticSearchService.index(EnumeratedType)
-        elasticSearchService.index(MeasurementUnit)
-        elasticSearchService.index(ExtendibleElement)
-        elasticSearchService.index(ExtensionValue)
-        elasticSearchService.index(Relationship)
-        elasticSearchService.index(RelationshipType)
-        elasticSearchService.index(CatalogueElement)
-        elasticSearchAdminService.refresh()
+        //Microsoft Excel files
+        //Microsoft Excel 2007 files
+        def okContentTypes = ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+        def confType=file.getContentType();
+        if (okContentTypes.contains(confType) && file.size > 0){
+            try {
+                ExcelLoader parser = new ExcelLoader(file.inputStream)
+                def (headers, rows) = parser.parse()
 
-        flash.args = [dataset]
-		render(view:"/dataImport/index")
-	}
+                HeadersMap headersMap = new HeadersMap()
+                headersMap.dataElementCodeRow = "Data Item Unique Code"
+                headersMap.dataElementNameRow = "Data Item Name"
+                headersMap.dataElementDescriptionRow = "Data Item Description"
+                headersMap.dataTypeRow = "Data type"
+                headersMap.parentModelNameRow = "Parent Model"
+                headersMap.parentModelCodeRow = "Parent Model Unique Code"
+                headersMap.containingModelNameRow = "Model"
+                headersMap.containingModelCodeRow = "Model Unique Code"
+                headersMap.measurementUnitNameRow = "Measurement Unit"
+                headersMap.metadataRow = "Metadata"
 
+                dataImportService.importData(headers, rows, "NHIC : CAN", "NHIC CAN conceptual domain for cancer", ["NHIC Datasets", "CAN", "CAN_CUH"], headersMap)
+
+
+                def models = Model.list()
+
+                //if (result) {
+                flash.message = "DataElements have been created.\n"
+                //}
+            }
+            catch(Exception ex)
+            {
+                //log.error("Exception in handling excel file: "+ ex.message)
+                log.error("Exception in handling excel file")
+                flash.message ="Error in importing the excel file.";
+            }
+         }
+        else
+        {
+            if(!okContentTypes.contains(confType))
+               flash.message ="Input should be an Excel file!\n"+
+                          "but uploaded content is "+confType
+            else if (file.size<=0)
+                flash.message ="The uploaded file is empty!"
+        }
+
+        render view: 'index'
+    }
 }

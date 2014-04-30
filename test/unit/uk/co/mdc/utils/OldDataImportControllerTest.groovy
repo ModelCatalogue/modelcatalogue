@@ -7,8 +7,8 @@ import uk.co.mdc.utils.importers.ImportNHICService
 /**
  * Created by Ryan Brooks on 19/02/2014.
  */
-@TestFor(DataImportController)
-class DataImportControllerTest extends Specification {
+@TestFor(OldDataImportController)
+class OldDataImportControllerTest extends Specification {
 
     def mockService = mockFor(ImportNHICService)
     def fileList = ["filea", "bc/fileb", "some/other/file"]
