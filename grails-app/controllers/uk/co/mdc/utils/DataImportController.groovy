@@ -23,13 +23,26 @@ class DataImportController {
             return
         }
 
-        MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)request;
-        MultipartFile  file = multiRequest.getFile("excelFile");
+        ArrayList parentModels
+        String conceptualDomainName, conceptualDomainDescription
+
+        MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)request
+        MultipartFile  file = multiRequest.getFile("excelFile")
+        def params = multiRequest.multipartParameters
+        if(!params.conceptualDomainName){
+            flash.error="No Conceptual Domain Name"
+            render view:"index"
+            return
+        }else{
+            conceptualDomainName = params.conceptualDomainName.toString().replaceAll('\\[', "").replaceAll('\\]', "").trim()
+        }
+        if(params.conceptualDomainDescription){conceptualDomainDescription = params.conceptualDomainDescription.toString().replaceAll('\\[', "").replaceAll('\\]', "").trim()}else{conceptualDomainDescription=""}
+        if(params.parentModels){parentModels  = params.parentModels.toString().replaceAll('\\[', "").replaceAll('\\]', "").trim().split(',') }else{params.parentModels=""}
 
         //Microsoft Excel files
         //Microsoft Excel 2007 files
-        def okContentTypes = ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-        def confType=file.getContentType();
+        def okContentTypes = ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+        def confType=file.getContentType()
         if (okContentTypes.contains(confType) && file.size > 0){
             try {
                 ExcelLoader parser = new ExcelLoader(file.inputStream)
@@ -47,8 +60,7 @@ class DataImportController {
                 headersMap.measurementUnitNameRow = "Measurement Unit"
                 headersMap.metadataRow = "Metadata"
 
-                dataImportService.importData(headers, rows, "NHIC : CAN", "NHIC CAN conceptual domain for cancer", ["NHIC Datasets", "CAN", "CAN_CUH"], headersMap)
-
+                dataImportService.importData(headers, rows, conceptualDomainName, conceptualDomainDescription, parentModels , headersMap)
 
                 def models = Model.list()
 

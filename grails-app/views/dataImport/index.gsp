@@ -7,7 +7,10 @@
 <body>
 <div id="main">
 
-    <g:form action="upload" controller="dataImport"  enctype="multipart/form-data" encoding="multipart/form-data">
+    <g:form method="post" action="upload" controller="dataImport"  enctype="multipart/form-data" encoding="multipart/form-data">
+        <p> ConceptualDomain: <g:field type="text" name="conceptualDomainName" min="5" max="10" required="true"/> </p>
+        <p> ConceptualDomain Description: <input type="text" id="conceptualDomainDescription" name="conceptualDomainDescription"/> </p>
+        <p> Parent Models: <input type="text" id="parentModels" name="parentModels"/> (i.e. COSD, CORE)</p>
         <h5>Please select files:</h5>
         <p>
             <input type="file" id="excelFile" name="excelFile" multiple="false" />
