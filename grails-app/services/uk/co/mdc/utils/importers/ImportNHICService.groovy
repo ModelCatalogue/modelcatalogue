@@ -81,6 +81,10 @@ class ImportNHICService {
             errors.put("model exists", "model already exists for ${modelName}")
         }
 
+        sessionFactory.currentSession.flush()
+        sessionFactory.currentSession.clear()
+
+        newImporter.actionPendingModels()
         return errors
     }
 
@@ -93,13 +97,13 @@ class ImportNHICService {
                             importRow.dataElementName = tokens[3]
                             importRow.dataType = tokens[5]
                             importRow.dataElementDescription = tokens[4]
-                            importRow.conceptualDomainName = "NHIC : CAN_CUH"
+                            importRow.conceptualDomainName = "NHIC Ovarian Cancer : CAN_CUH"
                             importRow.conceptualDomainDescription = "NHIC : CAN_CUH"
                             importRow.metadata = [
                                     "NHIC_Identifier"             : tokens[0],
                                     "Link_to_existing_definition": tokens[6],
-                                    "Notes_from_GD_JCIS:"         : tokens[7],
-                                    "[Optional]_Local_Identifier:": tokens[8],
+                                    "Notes_from_GD_JCIS"         : tokens[7],
+                                    "Optional_Local_Identifier": tokens[8],
                                     "A"                           : tokens[9],
                                     "B"                           : tokens[10],
                                     "C"                           : tokens[11],
@@ -110,292 +114,284 @@ class ImportNHICService {
                                     "H"                           : tokens[16],
                                     "E2"                          : tokens[17],
                             ]
-                            importRow.parentModels = ["NHIC Datasets", "Ovarian Cancer", "CAN_CUH"]
 
+                            newImporter.parentModels = ["NHIC Datasets", "Ovarian Cancer", "CAN_CUH"]
                             newImporter.ingestRow(importRow)
-                        //importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
 
-                        //println "importing: " + tokens[0] + "CAN_CUH"
                     },
 
             '/CAN/CAN_GSTT.csv':
                     { tokens ->
 
-
-                        def section = tokens[1]
-                        def subsection = tokens[2]
-                        def name = tokens[3]
-                        def valueDomainInfo = tokens[5]
-                        def description = tokens[4]
-                        def conceptualDomain = "NHIC : Ovarian Cancer"
-                        def conceptualDomainDescription  = "NHIC : Ovarian Cancer"
-                        def metadataColumns = [
+                        ImportRow importRow = new ImportRow()
+                        importRow.parentModelName = tokens[1]
+                        importRow.containingModelName = tokens[2]
+                        importRow.dataElementName = tokens[3]
+                        importRow.dataType = tokens[5]
+                        importRow.dataElementDescription = tokens[4]
+                        importRow.conceptualDomainName = "NHIC Ovarian Cancer : CAN_GSTT"
+                        importRow.conceptualDomainDescription = "NHIC : Ovarian Cancer"
+                        importRow.metadata = [
                                 "NHIC_Identifier":tokens[0],
                                 "Link_to_existing_definition":tokens[6],
-                                "Notes_from_GD_JCIS:":tokens[7],
-                                "[Optional]_Local_Identifier:":tokens[8],
+                                "Notes_from_GD_JCIS":tokens[7],
+                                "Optional_Local_Identifier":tokens[8],
                                 "A":tokens[9],
                                 "B":tokens[10],
                                 "C":tokens[11],
                                 "D":tokens[12],
                                 "E":tokens[13]
                         ]
-                        def categories = ["NHIC Datasets", "Ovarian Cancer", "CAN_GSTT", "Round 1", section, subsection]
-                        importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
-                        //println "importing: " + tokens[0] + "CAN_GSTT"
+
+                        newImporter.parentModels = ["NHIC Datasets", "Ovarian Cancer", "CAN_GSTT"]
+                        newImporter.ingestRow(importRow)
+
                     },
 
             '/CAN/CAN_IMP.csv':
                     { tokens ->
-                        def section = tokens[1]
-                        def subsection = tokens[2]
-                        def name = tokens[3]
-                        def valueDomainInfo = tokens[5]
-                        def description = tokens[4]
-                        def conceptualDomain = "NHIC : Ovarian Cancer"
-                        def conceptualDomainDescription  = "NHIC : Ovarian Cancer"
-                        def metadataColumns = [
+
+                        ImportRow importRow = new ImportRow()
+                        importRow.parentModelName = tokens[1]
+                        importRow.containingModelName = tokens[2]
+                        importRow.dataElementName = tokens[3]
+                        importRow.dataType = tokens[5]
+                        importRow.dataElementDescription = tokens[4]
+                        importRow.conceptualDomainName = "NHIC Ovarian Cancer : CAN_IMP"
+                        importRow.conceptualDomainDescription = "NHIC : Ovarian Cancer"
+                        importRow.metadata = [
                                 "NHIC_Identifier":tokens[0],
                                 "Link_to_existing_definition":tokens[6],
-                                "Notes_from_GD_JCIS:":tokens[7],
-                                "[Optional]_Local_Identifier:":tokens[8],
+                                "Notes_from_GD_JCIS":tokens[7],
+                                "Optional_Local_Identifier":tokens[8],
                                 "A":tokens[9],
                                 "B":tokens[10],
                                 "C":tokens[11],
                                 "D":tokens[12],
                                 "E":tokens[13]
                         ]
-                        def categories = ["NHIC Datasets", "Ovarian Cancer", "CAN_IMP", "Round 1", section, subsection]
-                        importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+
+                        newImporter.parentModels = ["NHIC Datasets", "Ovarian Cancer", "CAN_IMP"]
+                        newImporter.ingestRow(importRow)
+
                         //println "importing: " + tokens[0] + "CAN_IMP"
                    },
 
                 '/CAN/CAN_UCL.csv':
                         { tokens ->
-                            def section = tokens[1]
-                            def subsection = tokens[2]
-                            def name = tokens[3]
-                            def valueDomainInfo = tokens[6]
-                            def description = tokens[5]
-                            def conceptualDomain = "NHIC : Ovarian Cancer"
-                            def conceptualDomainDescription  = "NHIC : Ovarian Cancer"
-                            def metadataColumns = [
+                            ImportRow importRow = new ImportRow()
+                            importRow.parentModelName = tokens[1]
+                            importRow.containingModelName = tokens[2]
+                            importRow.dataElementName = tokens[3]
+                            importRow.dataType = tokens[6]
+                            importRow.dataElementDescription = tokens[5]
+                            importRow.conceptualDomainName = "NHIC Ovarian Cancer : CAN_UCL"
+                            importRow.conceptualDomainDescription = "NHIC : Ovarian Cancer"
+                            importRow.metadata = [
                                     "NHIC_Identifier":tokens[0],
-                                    "Link_to_existing_definition":tokens[6],
-                                    "Notes_from_GD_JCIS:":tokens[7],
-                                    "[Optional]_Local_Identifier:":tokens[8],
-                                    "A":tokens[9],
-                                    "B":tokens[10],
-                                    "C":tokens[11],
-                                    "D":tokens[12],
-                                    "E":tokens[13],
+                                    "Link_to_existing_definition":tokens[7],
+                                    "Notes_from_GD_JCIS":tokens[8],
+                                    "Optional_Local_Identifier":tokens[9],
+                                    "A":tokens[10],
+                                    "B":tokens[11],
+                                    "C":tokens[12],
+                                    "D":tokens[13],
+                                    "E":tokens[14],
                                     "System": tokens[4]
                             ]
-                            def categories = ["NHIC Datasets", "Ovarian Cancer", "CAN_UCL", "Round 1", section, subsection]
-                            importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
-                            //println "importing: " + tokens[0] + "CAN_UCL"
+
+                            newImporter.parentModels = ["NHIC Datasets", "Ovarian Cancer", "CAN_UCL"]
+                            newImporter.ingestRow(importRow)
                         },
 
                 '/ACS/ACS_UCL.csv':
                         { tokens ->
-                            def section = tokens[1]
-                            def subsection = tokens[2]
-                            def name = tokens[3]
-                            def valueDomainInfo = tokens[5]
-                            def description = tokens[4]
-                            def conceptualDomain = "NHIC : Acute Coronary Syndrome"
-                            def conceptualDomainDescription  = "NHIC : Acute Coronary Syndrome"
-                            def metadataColumns = [
+                            ImportRow importRow = new ImportRow()
+                            importRow.parentModelName = tokens[1]
+                            importRow.containingModelName = tokens[2]
+                            importRow.dataElementName = tokens[3]
+                            importRow.dataType = tokens[5]
+                            importRow.dataElementDescription = tokens[4]
+                            importRow.conceptualDomainName = "NHIC : Acute Coronary Syndrome : ACS_UCL"
+                            importRow.conceptualDomainDescription = "NHIC : Acute Coronary Syndrome"
+                            importRow.metadata = [
                                     "NHIC_Identifier":tokens[0],
                                     "Link_to_existing_definition":tokens[6],
-                                    "[Optional]_Local_Identifier:":tokens[7],
+                                    "Optional_Local_Identifier":tokens[7],
                                     "A":tokens[8],
                                     "B":tokens[9],
                                     "C":tokens[10],
                                     "D":tokens[11],
                                     "E":tokens[12]
                             ]
-                            def categories = ["NHIC Datasets", "Acute Coronary Syndrome", "ACS_UCL", "Round 1", section, subsection]
-                            importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
-                            //println "importing: " + tokens[0] + "ACS_UCL"
+
+                            newImporter.parentModels = ["NHIC Datasets", "Acute Coronary Syndrome", "ACS_UCL"]
+                            newImporter.ingestRow(importRow)
                         },
 
             '/ACS/ACS_OUH.csv':
                     { tokens ->
-                        def section = tokens[1]
-                        def subsection = tokens[2]
-                        def name = tokens[3]
-                        def valueDomainInfo = tokens[5]
-                        def description = tokens[4]
-                        def conceptualDomain = "NHIC : Acute Coronary Syndrome"
-                        def conceptualDomainDescription  = "NHIC : Acute Coronary Syndrome"
-                        def metadataColumns = [
+                        ImportRow importRow = new ImportRow()
+                        importRow.parentModelName = tokens[1]
+                        importRow.containingModelName = tokens[2]
+                        importRow.dataElementName = tokens[3]
+                        importRow.dataType = tokens[5]
+                        importRow.dataElementDescription = tokens[4]
+                        importRow.conceptualDomainName = "NHIC : Acute Coronary Syndrome : ACS_OUH"
+                        importRow.conceptualDomainDescription = "NHIC : Acute Coronary Syndrome"
+                        importRow.metadata = [
                                 "NHIC_Identifier":tokens[0],
                                 "Link_to_existing_definition":tokens[6],
-                                "[Optional]_Local_Identifier:":tokens[7],
+                                "Optional_Local_Identifier":tokens[7],
                                 "A":tokens[8],
                                 "B":tokens[9],
                                 "C":tokens[10],
                                 "D":tokens[11],
                                 "E":tokens[12]
                         ]
-                        def categories = ["NHIC Datasets", "Acute Coronary Syndrome", "ACS_OUH", "Round 1", section, subsection]
-                        importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
-                        //println "importing: " + tokens[0] + "ASC_OUH"
+
+                        newImporter.parentModels = ["NHIC Datasets", "Acute Coronary Syndrome", "ACS_OUH"]
+                        newImporter.ingestRow(importRow)
                     },
 
             '/ACS/ACS_GSTT.csv':
                     { tokens ->
-                        def section = tokens[1]
-                        def subsection = tokens[2]
-                        def name = tokens[3]
-                        def valueDomainInfo = tokens[5]
-                        def description = tokens[4]
-                        def conceptualDomain = "NHIC : Acute Coronary Syndrome"
-                        def conceptualDomainDescription  = "NHIC : Acute Coronary Syndrome"
-                        def metadataColumns = [
+                        ImportRow importRow = new ImportRow()
+                        importRow.parentModelName = tokens[1]
+                        importRow.containingModelName = tokens[2]
+                        importRow.dataElementName = tokens[3]
+                        importRow.dataType = tokens[5]
+                        importRow.dataElementDescription = tokens[4]
+                        importRow.conceptualDomainName = "NHIC : Acute Coronary Syndrome : ACS_GSTT"
+                        importRow.conceptualDomainDescription = "NHIC : Acute Coronary Syndrome"
+                        importRow.metadata = [
                                 "NHIC_Identifier":tokens[0],
                                 "Link_to_existing_definition":tokens[6],
-                                "[Optional]_Local_Identifier:":tokens[7],
+                                "Optional_Local_Identifier":tokens[7],
                                 "A":tokens[8],
                                 "B":tokens[9],
                                 "C":tokens[10],
                                 "D":tokens[11],
                                 "E":tokens[12]
                         ]
-                        def categories = ["NHIC Datasets", "Acute Coronary Syndrome", "ACS_GSTT", "Round 1", section, subsection]
-                        importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
-                        //println "importing: " + tokens[0] + "ACS_GSTT"
-                    },
 
+                        newImporter.parentModels = ["NHIC Datasets", "Acute Coronary Syndrome", "ACS_GSTT"]
+                        newImporter.ingestRow(importRow)
+                    },
 
             '/HEP/HEP_OUH.csv':
                     { tokens ->
-
-                        def section = tokens[1]
-                        def subsection = tokens[2]
-                        def name = tokens[3]
-                        def valueDomainInfo = tokens[5]
-                        def description = tokens[4]
-                        def conceptualDomain = "NHIC : Hepatitus"
-                        def conceptualDomainDescription  = "NHIC : Hepatitus"
-                        def metadataColumns = [
+                        ImportRow importRow = new ImportRow()
+                        importRow.parentModelName = tokens[1]
+                        importRow.containingModelName = tokens[2]
+                        importRow.dataElementName = tokens[3]
+                        importRow.dataType = tokens[5]
+                        importRow.dataElementDescription = tokens[4]
+                        importRow.conceptualDomainName = "NHIC Hepatitis : HEP_OUH"
+                        importRow.conceptualDomainDescription = "NHIC : Hepatitis"
+                        importRow.metadata = [
                                 "NHIC_Identifier":tokens[0],
                                 "Link_to_existing_definition":tokens[7],
-                                "[Optional]_Local_Identifier:":tokens[8],
+                                "Optional_Local_Identifier":tokens[8],
                                 "A":tokens[9],
                                 "B":tokens[10],
                                 "C":tokens[11],
                                 "D":tokens[12],
                                 "E":tokens[13]
                         ]
-                        def categories = ["NHIC Datasets", "Hepatitus", "HEP_OUH", "Round 1", section, subsection]
-                        importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
 
+                        newImporter.parentModels = ["NHIC Datasets", "Hepatitis", "HEP_OUH"]
+                        newImporter.ingestRow(importRow)
                     },
 
             '/HEP/HEP_UCL.csv':
                     { tokens ->
-                            def section = tokens[1]
-                            def subsection = tokens[2]
-                            def name = tokens[3]
-                            def valueDomainInfo = tokens[5]
-                            def description = tokens[4]
-                            def conceptualDomain = "NHIC : Hepatitus"
-                            def conceptualDomainDescription = "NHIC : Hepatitus"
-                            def metadataColumns = [
-                                    "NHIC_Identifier"             : tokens[0],
-                                    "Link_to_existing_definition": tokens[7],
-                                    "[Optional]_Local_Identifier:": tokens[8],
-                                    "A"                           : tokens[9],
-                                    "B"                           : tokens[10],
-                                    "C"                           : tokens[11],
-                                    "D"                           : tokens[12],
-                                    "E"                           : tokens[13]
-                            ]
-                            def categories = ["NHIC Datasets", "Hepatitus", "HEP_UCL", "Round 1", section, subsection]
-                            importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
+                        ImportRow importRow = new ImportRow()
+                        importRow.parentModelName = tokens[1]
+                        importRow.containingModelName = tokens[2]
+                        importRow.dataElementName = tokens[3]
+                        importRow.dataType = tokens[5]
+                        importRow.dataElementDescription = tokens[4]
+                        importRow.conceptualDomainName = "NHIC Hepatitis : HEP_UCL"
+                        importRow.conceptualDomainDescription = "NHIC : Hepatitis"
+                        importRow.metadata = [
+                                "NHIC_Identifier":tokens[0],
+                                "Link_to_existing_definition":tokens[7],
+                                "Optional_Local_Identifier":tokens[8],
+                                "A":tokens[9],
+                                "B":tokens[10],
+                                "C":tokens[11],
+                                "D":tokens[12],
+                                "E":tokens[13]
+                        ]
+                        newImporter.parentModels = ["NHIC Datasets", "Hepatitus", "HEP_UCL"]
+                        newImporter.ingestRow(importRow)
                     },
 
                 '/TRA/TRA_CUH.csv':
                         { tokens ->
-                                def section = tokens[1]
-                                def subsection = tokens[2]
-                                def name = tokens[3]
-                                def valueDomainInfo = tokens[5]
-                                def description = tokens[4]
-                                def conceptualDomain = "NHIC : TRA"
-                                def conceptualDomainDescription  = "NHIC : TRA"
-                                def metadataColumns = [
+                            ImportRow importRow = new ImportRow()
+                            importRow.parentModelName = tokens[1]
+                            importRow.containingModelName = tokens[2]
+                            importRow.dataElementName = tokens[3]
+                            importRow.dataType = tokens[5]
+                            importRow.dataElementDescription = tokens[4]
+                            importRow.conceptualDomainName = "NHIC Renal Transplantation : TRA_CUH"
+                            importRow.conceptualDomainDescription = "NHIC : Renal Transplantation"
+                            importRow.metadata = [
+                                    "NHIC_Identifier":tokens[0],
+                                    "Link_to_existing_definition":tokens[6],
+                                    "Optional_Local_Identifier":tokens[7],
+                                    "A":tokens[8],
+                                    "B":tokens[9],
+                                    "C":tokens[10],
+                                    "D":tokens[11],
+                                    "E":tokens[12],
+                                    "F":tokens[13],
+                                    "G":tokens[14],
+                                    "H":tokens[15]
+                            ]
+                            newImporter.parentModels = ["NHIC Datasets", "TRA", "TRA_CUH"]
+                            newImporter.ingestRow(importRow)
+                        },
+
+                    '/TRA/TRA_GSTT.csv':
+                            { tokens ->
+
+                                ImportRow importRow = new ImportRow()
+                                importRow.parentModelName = tokens[1]
+                                importRow.containingModelName = tokens[2]
+                                importRow.dataElementName = tokens[3]
+                                importRow.dataType = tokens[5]
+                                importRow.dataElementDescription = tokens[4]
+                                importRow.conceptualDomainName = "NHIC Renal Transplantation : TRA_GSTT"
+                                importRow.conceptualDomainDescription = "NHIC : Renal Transplantation"
+                                importRow.metadata = [
                                         "NHIC_Identifier":tokens[0],
                                         "Link_to_existing_definition":tokens[6],
-                                        "[Optional]_Local_Identifier:":tokens[7],
+                                        "Optional_Local_Identifier":tokens[7],
                                         "A":tokens[8],
                                         "B":tokens[9],
                                         "C":tokens[10],
                                         "D":tokens[11],
                                         "E":tokens[12],
-                                        "F":tokens[13],
-                                        "G":tokens[14],
-                                        "H":tokens[15]
                                 ]
-                                def categories = ["NHIC Datasets", "TRA", "TRA_CUH", "Round 1", section, subsection]
-                                importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
-                        },
+                                newImporter.parentModels = ["NHIC Datasets", "TRA", "TRA_GSTT"]
+                                newImporter.ingestRow(importRow)
 
-                    '/TRA/TRA_GSTT.csv':
-                            { tokens ->
-                                    def section = tokens[1]
-                                    def subsection = tokens[2]
-                                    def name = tokens[3]
-                                    def valueDomainInfo = tokens[5]
-                                    def description = tokens[4]
-                                    def conceptualDomain = "NHIC : TRA"
-                                    def conceptualDomainDescription  = "NHIC : TRA"
-                                    def metadataColumns = [
-                                            "NHIC_Identifier":tokens[0],
-                                            "Link_to_existing_definition:":tokens[6],
-                                            "[Optional]_Local_Identifier:":tokens[7],
-                                            "A":tokens[8],
-                                            "B":tokens[9],
-                                            "C":tokens[10],
-                                            "D":tokens[11],
-                                            "E":tokens[12]
-                                    ]
-                                    def categories = ["NHIC Datasets", "TRA", "TRA_GSTT", "Round 1", section, subsection]
-                                    importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
                             },
 
                     '/TRA/TRA_OUH.csv':
                             { tokens ->
-                                    def section = tokens[1]
-                                    def subsection = null
-                                    def name = tokens[2]
-                                    def valueDomainInfo = null
-                                    def description = tokens[3]
-                                    def conceptualDomain = "NHIC : TRA"
-                                    def conceptualDomainDescription  = "NHIC : TRA"
-                                    def metadataColumns = [
-                                            "NHIC_Identifier":tokens[0],
-                                            "A":tokens[4],
-                                            "B":tokens[5],
-                                            "C":tokens[6],
-                                            "D":tokens[7],
-                                            "E":tokens[8],
-                                            "Comments":tokens[9]
-                                    ]
-                                    def categories = ["NHIC Datasets", "TRA", "TRA_OUH", "Round 1", section, subsection]
-                                    importLine(conceptualDomain, conceptualDomainDescription, categories, name, valueDomainInfo, description, metadataColumns)
-
-
+                                println(tokens[2])
                                 ImportRow importRow = new ImportRow()
-                                importRow.parentModelName = tokens[1]
-                                importRow.containingModelName = null
+                                importRow.parentModelName = null
+                                importRow.containingModelName = tokens[1]
                                 importRow.dataElementName = tokens[2]
                                 importRow.dataType = null
                                 importRow.dataElementDescription = tokens[3]
-                                importRow.conceptualDomainName = "NHIC : TRA"
-                                importRow.conceptualDomainDescription = "NHIC : TRA"
+                                importRow.conceptualDomainName = "NHIC Renal Transplantation : TRA_OUH"
+                                importRow.conceptualDomainDescription = "NHIC : Renal Transplantation"
                                 importRow.metadata = [
                                         "NHIC_Identifier":tokens[0],
                                         "A":tokens[4],
@@ -405,10 +401,8 @@ class ImportNHICService {
                                         "E":tokens[8],
                                         "Comments":tokens[9]
                                 ]
-
-                                importRow.parentModels = ["NHIC Datasets", "TRA", "TRA_OUH", "Round 1"]
+                                newImporter.parentModels = ["NHIC Datasets", "TRA", "TRA_OUH"]
                                 newImporter.ingestRow(importRow)
-
                             }
     ]
 

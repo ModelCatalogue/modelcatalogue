@@ -1,29 +1,26 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta name="layout" content="main">
-    <title>Import data</title>
-  </head>
-  <body>
-    <div id="main">
-      <div>
-        <ul>
-          <li><g:link controller="dataImport" action="importDataSet" params="[dataset: 'nhic']">Import NHIC dataset</g:link></li>
-            <ul>
-                <g:each in="${nhicFiles}" var="file">
-                    <li><g:link controller="dataImport" action="importDataSet" params="[dataset: 'nhic', nhicFile: file]">Only ${file}</g:link></li>
-                </g:each>
-            </ul>
-        </ul>
-      </div>
+    <title>Import Data</title>
+</head>
+<body>
+<div id="main">
 
-    </div>
-    <g:if test="${flash.error}">
-        <div class="alert alert-error"><g:message code="${flash.message}" args="${flash.args}" default="${flash.default}"/></div>
-    </g:if>
-    <g:if test="${flash.message}">
-        <div class="message" style="display: block">${flash.message}</div>
-    </g:if>
+    <g:form action="upload" controller="dataImport"  enctype="multipart/form-data" encoding="multipart/form-data">
+        <h5>Please select files:</h5>
+        <p>
+            <input type="file" id="excelFile" name="excelFile" multiple="false" />
+            <button id='btnUpload' type="submit" class="btn btn-primary">Upload</button>
+        </p>
+    </g:form>
+</div>
+<g:if test="${flash.error}">
+    <div class="alert alert-error"><g:message code="${flash.message}" args="${flash.args}" default="${flash.default}"/></div>
+</g:if>
+<g:if test="${flash.message}">
+    <div class="message" style="display: block">${flash.message}</div>
+</g:if>
 
-  </body>
+</body>
 </html>
