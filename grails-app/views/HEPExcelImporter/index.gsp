@@ -20,6 +20,15 @@
             border: 1px solid #000000;
             padding: 3px 5px;
         }
+
+        th {
+            background-color: #aaaaaa;
+        }
+
+        .required {
+            background-color: #ff0000;
+            color: #ffffff;
+        }
     </style>
 </head>
 
@@ -35,6 +44,7 @@
     </g:form>
 
     <g:if test="${diList}">
+        <h3>Entries with Errors (missing name or data type)</h3>
         <table>
             <thead>
             <tr>
@@ -51,14 +61,14 @@
             <tbody>
             <g:each in="${diList}" var="item" status="i">
                 <tr>
-                    <td style="text-align: right">${i}</td>
-                    <td>${item.itemNumber}</td>
-                    <td>${item.section}</td>
-                    <td>${item.subSection}</td>
-                    <td>${item.pathway}</td>
-                    <td>${item.name}</td>
-                    <td>${item.description}</td>
-                    <td>${item.dataType}</td>
+                    <td style="text-align: right">${item.index}</td>
+                    <td>${item.entry.itemNumber}</td>
+                    <td>${item.entry.section}</td>
+                    <td>${item.entry.subSection}</td>
+                    <td>${item.entry.pathway}</td>
+                    <td class="required">${item.entry.name}</td>
+                    <td>${item.entry.description}</td>
+                    <td class="required">${item.entry.dataType}</td>
                 </tr>
             </g:each>
             </tbody>

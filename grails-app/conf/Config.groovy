@@ -269,6 +269,9 @@ coffeescript.modules = {
     }
 }
 
+//Non persisting class with validation
+grails.validateable.classes = [uk.co.mdc.utils.importers.HEPDataItem]
+
 
 
 // Uncomment and edit the following lines to start using Grails encoding & escaping improvements

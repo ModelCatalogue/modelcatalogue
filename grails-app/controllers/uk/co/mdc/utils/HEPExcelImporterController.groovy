@@ -26,19 +26,15 @@ class HEPExcelImporterController {
         def confType=file.getContentType();
         if (okContentTypes.contains(confType) && file.size > 0){
             try {
-                def diList = HEPExcelImporterService.loadDataElementFromExcel(file.inputStream)
+                //def diList = HEPExcelImporterService.loadDataElementFromExcel(file.inputStream)
+                def diList = HEPExcelImporterService.importDataElementFromExcel(file.inputStream, "HEP")
+                println diList
                 render view: 'index', model: [diList:diList]
 
-//                def dataElements= ICUExcelImporterService.GetICUDataElementNames(file.inputStream);
-//                def result=ICUExcelImporterService.SaveICUDataElement(dataElements);
-//                if(result)
-//                    flash.message = "Pathway and DataElements are created.\n"+
-//                            dataElements.size()+" records in input file are processed."
             }
             catch(Exception ex)
             {
-                println('sada   ')
-                //log.error("Exception in handling excel file " + ex.message)
+                log.error("Exception in handling excel file " + ex.message)
                 flash.message ="Error in importing the excel file.";
                 render view: 'index'
             }
