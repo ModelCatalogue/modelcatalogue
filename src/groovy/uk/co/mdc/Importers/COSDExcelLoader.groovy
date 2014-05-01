@@ -141,10 +141,9 @@ class COSDExcelLoader extends ExcelLoader {
         // List content => Has the National Code and National Code Definition formatted as a list in the following format:
         // [national code]=[national code definition] separated by new line: \r\n
         // Question? => is Data Item Number the Unique Code field?
-        def COSDHeaders = ["Unique Code",
-                           "Data Item Name","Data Item Description",
-                           "Parent Section", "Template",
-                           "List content", "Metadata","Data Dictionary Element",
+        def cosdHeaders = ["Data Item Name","Data Item Description",
+                           "Parent Model",
+                           "List content", "Metadata","Data item No.", "Format", "Data Dictionary Element",
                            "Current Collection", "Schema Specification"]
 
         def cosdRows =[];
@@ -170,15 +169,17 @@ class COSDExcelLoader extends ExcelLoader {
         def dataItemSchemaSpecificationIndex = headers.indexOf("Schema Specification")
 
 
-        def cosdUniqueCodeIndex = COSDHeaders.indexOf("Unique Code")
-        def cosdDataItemNameIndex = COSDHeaders.indexOf("Data Item Name")
-        def cosdDataItemDescriptionIndex = COSDHeaders.indexOf("Data Item Description")
-        def cosdParentSection = COSDHeaders.indexOf("Parent Section")
-        def cosdTemplateIndex = COSDHeaders.indexOf("Template")
-        def cosdListContentIndex = COSDHeaders.indexOf("List content")
-        def cosdDataDictionaryElementIndex = COSDHeaders.indexOf("Data Dictionary Element")
-        def cosdCurrentCollectionIndex= COSDHeaders.indexOf("Current Collection")
-        def cosdSchemaSpecificationIndex = COSDHeaders.indexOf("Schema Specification")
+        def cosdDataItemNameIndex = cosdHeaders.indexOf("Data Item Name")
+        def cosdDataItemDescriptionIndex = cosdHeaders.indexOf("Data Item Description")
+        def cosdParentModel = cosdHeaders.indexOf("Parent Model")
+        def cosdListContentIndex = cosdHeaders.indexOf("List content")
+        def cosdMetadata = cosdHeaders.indexOf("Metadata")
+        def cosdDataItemNumberIndex = cosdHeaders.indexOf("Data item No.")
+        def cosdFormatIndex = cosdHeaders.indexOf("Format")
+        def cosdDataDictionaryElementIndex = cosdHeaders.indexOf("Data Dictionary Element")
+        def cosdCurrentCollectionIndex= cosdHeaders.indexOf("Current Collection")
+        def cosdSchemaSpecificationIndex = cosdHeaders.indexOf("Schema Specification")
+
 
         def dataElements = []
 
@@ -214,15 +215,16 @@ class COSDExcelLoader extends ExcelLoader {
                 dataItemNationalCodeDefinition = rows[cont][dataItemNationalCodeDefinitionIndex].toString();
                 if (dataElements.count { it == dataItemNumber } == 0) {
                     dataElements.add(dataItemNumber)
-                    cosdRow[cosdUniqueCodeIndex] = rows[cont][dataItemNumberIndex]
+                    cosdRow[cosdDataItemNumberIndex] = rows[cont][dataItemNumberIndex]
                     cosdRow[cosdDataItemNameIndex] = dataItemName
                     cosdRow[cosdDataItemDescriptionIndex] = dataItemDescription
-                    cosdRow[cosdParentSection] = dataItemSection
-                    cosdRow[cosdTemplateIndex] = dataItemFormat
+                    cosdRow[cosdParentModel] = dataItemSection
+                    cosdRow[cosdFormatIndex] = dataItemFormat
                     cosdRow[cosdListContentIndex] = ""
                     cosdRow[cosdDataDictionaryElementIndex] = rows[cont][dataItemDataDictionaryElementIndex]
                     cosdRow[cosdCurrentCollectionIndex] = rows[cont][dataItemCurrentCollectionIndex]
                     cosdRow[cosdSchemaSpecificationIndex] = rows[cont][dataItemSchemaSpecificationIndex]
+                    cosdRow[cosdMetadata]= ""
 
 
                     //Create the sectionDataElement if this doesn't exist
@@ -280,7 +282,7 @@ class COSDExcelLoader extends ExcelLoader {
             }
         }
 
-        return [COSDHeaders, cosdRows, logMessage]
+        return [cosdHeaders, cosdRows, logMessage]
     }
 
 

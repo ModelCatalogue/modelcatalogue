@@ -1,5 +1,6 @@
 package uk.co.mdc.utils
 
+import org.modelcatalogue.core.Model
 import org.modelcatalogue.core.dataarchitect.HeadersMap
 
 /**
@@ -54,20 +55,19 @@ class COSDImporterController {
                     }
 
                     HeadersMap headersMap = new HeadersMap()
-                    headersMap.dataElementCodeRow = "Data Item Unique Code"
+                    headersMap.dataElementCodeRow = ""
                     headersMap.dataElementNameRow = "Data Item Name"
                     headersMap.dataElementDescriptionRow = "Data Item Description"
-                    headersMap.dataTypeRow = "Data type"
+                    headersMap.dataTypeRow = "List content"
                     headersMap.parentModelNameRow = "Parent Model"
-                    headersMap.parentModelCodeRow = "Parent Model Unique Code"
-                    headersMap.containingModelNameRow = "Model"
-                    headersMap.containingModelCodeRow = "Model Unique Code"
-                    headersMap.measurementUnitNameRow = "Measurement Unit"
+                    headersMap.parentModelCodeRow = ""
+                    headersMap.containingModelNameRow = ""
+                    headersMap.containingModelCodeRow = ""
+                    headersMap.measurementUnitNameRow = ""
                     headersMap.metadataRow = "Metadata"
-
-                    dataImportService.importData(headers, rows, "COSD", "Cancer Outcomes and Services Dataset", ["COSD", sheetName], headersMap)
-
-
+                    dataImportService.importData(headersCOSDSheet, rowsCOSDSheet, "COSD", "Cancer Outcomes and Services Dataset", ["COSD", sheetName], headersMap)
+                    def models = Model.list()
+                    flash.message = "DataElements have been created.\n"
                 }
                 excelCOSDSheets
 
