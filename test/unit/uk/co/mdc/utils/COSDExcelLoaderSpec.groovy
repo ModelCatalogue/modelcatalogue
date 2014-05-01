@@ -32,7 +32,7 @@ class COSDExcelLoaderSpec extends Specification {
             "Upper GI", "Urology", "Reference - Other Sources"
     ];
 
-    String[] headerNamesToImport = [
+    def headerNamesToImport = [
             "Data item No.", "Data Item Section", "Data Item Name",
             "Format", "National Code", "National code definition", "Data Dictionary Element",
             "Current Collection", "Schema Specification"
@@ -42,16 +42,16 @@ class COSDExcelLoaderSpec extends Specification {
             "Breast", "CNS", "Colorectal", "CTYA ", "Gynaecology",
             "Haematology", "Head & Neck", "Lung", "Sarcoma", "Skin",
             "Upper GI", "Urology", "Reference - Other Sources"
-    ];
+    ]
 
 
+    Workbook wbErrorCoreSheetEmpty
     Workbook wbErrorDuplicatedRow
-    Workbook wbErrorSheetMissing;
-    Workbook wb;
-    def rows = [["CR0010", "CORE - PATIENT IDENTITY DETAILS","NHS NUMBER*",
-                     "*For linkage purposes NHS NUMBER",  "n10", "", "", "NHS NUMBER"],
-                    ["CR0020", "CORE - PATIENT IDENTITY DETAILS", "LOCAL PATIENT IDENTIFIER*", "*For linkage purposes NHS NUMBER", "an10", "","","LOCAL PATIENT IDENTIFIER"]
-                    ["CR1350", "CORE - PATIENT IDENTITY DETAILS", "NHS NUMBER STATUS INDICATOR CODE", "The NHS NUMBER STATUS  INDICATOR CODE", "an2", "1", "Number present and verified", "NHS NUMBER STATUS INDICATOR CODE"]
+    Workbook wbErrorSheetMissing
+    Workbook wb
+    def rows = [["CR0010", "CORE - PATIENT IDENTITY DETAILS","NHS NUMBER*", "*For linkage purposes NHS NUMBER",  "n10", "", "", "NHS NUMBER"],
+                    ["CR0020", "CORE - PATIENT IDENTITY DETAILS", "LOCAL PATIENT IDENTIFIER*", "*For linkage purposes NHS NUMBER", "an10", "","","LOCAL PATIENT IDENTIFIER"],
+                    ["CR1350", "CORE - PATIENT IDENTITY DETAILS", "NHS NUMBER STATUS INDICATOR CODE", "The NHS NUMBER STATUS  INDICATOR CODE", "an2", "1", "Number present and verified", "NHS NUMBER STATUS INDICATOR CODE"],
                             ["", "", "", "", "", "2", "Number present but not traced", ""],
                     ["", "", "", "", "", "3", "Trace required", ""],
                     ["", "", "", "", "", "4", "Trace attempted - No match or multiple match found", ""],
@@ -61,8 +61,7 @@ class COSDExcelLoaderSpec extends Specification {
                     ["", "", "", "", "", "8", "Trace postponed (baby under six weeks old)", ""]]
 
 
-    def rowsDuplicated = [
-                ["CR0020", "CORE - PATIENT IDENTITY DETAILS", "LOCAL PATIENT IDENTIFIER*", "*For linkage purposes NHS NUMBER", "an10", "","","LOCAL PATIENT IDENTIFIER"]
+    def rowsDuplicated = [ ["CR0020", "CORE - PATIENT IDENTITY DETAILS", "LOCAL PATIENT IDENTIFIER*", "*For linkage purposes NHS NUMBER", "an10", "","","LOCAL PATIENT IDENTIFIER"],
                 ["CR0020", "CORE - PATIENT IDENTITY DETAILS", "LOCAL PATIENT IDENTIFIER*", "*For linkage purposes NHS NUMBER", "an10", "","","LOCAL PATIENT IDENTIFIER"]]
 
     def setup(){
@@ -71,10 +70,10 @@ class COSDExcelLoaderSpec extends Specification {
         def contSheetRow=0
         sheetNamesToImport.eachWithIndex{ String sheetName, int contSheet ->
             Sheet sheet = wb.createSheet(sheetName)
-            Row row = sheet.createRow(contSheetRow)
+            Row rowHeader = sheet.createRow(contSheetRow)
             contSheetRow++
             headerNamesToImport.eachWithIndex{ String headerName, int headerCont ->
-                Cell cell = row.createCell(headerCont)
+                Cell cell = rowHeader.createCell(headerCont)
                 cell.setCellValue(headerName)
             }
             rows.eachWithIndex{ List<String> rowIt, int contRow ->
@@ -103,10 +102,10 @@ class COSDExcelLoaderSpec extends Specification {
         contSheetRow=0
         sheetNamesToImport.eachWithIndex{ String sheetName, int contSheet ->
             Sheet sheet = wbErrorDuplicatedRow.createSheet(sheetName)
-            Row row = sheet.createRow(contSheetRow)
+            Row rowHeader = sheet.createRow(contSheetRow)
             contSheetRow++
             headerNamesToImport.eachWithIndex{ String headerName, int headerCont ->
-                Cell cell = row.createCell(headerCont)
+                Cell cell = rowHeader.createCell(headerCont)
                 cell.setCellValue(headerName)
             }
             rowsDuplicated.eachWithIndex{ List<String> rowIt, int contRow ->
@@ -120,6 +119,18 @@ class COSDExcelLoaderSpec extends Specification {
         }
 
 
+        //Create a Errorworkbook Core sheet empty
+        wbErrorCoreSheetEmpty = new HSSFWorkbook();
+        sheetNamesToImport.eachWithIndex{ String sheetName, int contSheet ->
+            Sheet sheet = wbErrorCoreSheetEmpty.createSheet(sheetName)
+            Row row = sheet.createRow(0)
+            headerNamesToImport.eachWithIndex{ String headerName, int headerCont ->
+                Cell cell = row.createCell(headerCont)
+                cell.setCellValue(headerName)
+            }
+        }
+
+
     }
 
     void "Test that an Excel file is loaded properly"() {
@@ -128,19 +139,23 @@ class COSDExcelLoaderSpec extends Specification {
         def cosdImporter = new COSDExcelLoader(fileName)
         ExcelSheet[] excelSheets  = cosdImporter.parse()
         then: "File content is loaded"
-        assert excelSheets.size() !=0
+        def headersOK= 0
+        def rowsOK=0
         excelSheets.eachWithIndex{ ExcelSheet sheet, int contSheet ->
-            assert sheet.headers.size()!=0
-            assert sheet.rows.size()!=0
+            if (sheet.headers.size()==0) headersOK++
+            if (sheet.rows.size()==0) rowsOK++
         }
+        assert excelSheets.size() !=0
+        assert !headersOK
+        assert !rowsOK
     }
 
     void "Test if parse() can load byte content"()
     {
         when:"Passing an inputstream to COSDExcelLoader"
         InputStream inputStream = new FileInputStream(fileName)
-        def cosdImporter = new COSDExcelLoader()
-        ExcelSheet[] excelSheets  = cosdImporter.parse(inputStream)
+        def cosdImporter = new COSDExcelLoader(inputStream)
+        ExcelSheet[] excelSheets  = cosdImporter.parse()
         then: "File content is loaded"
         assert excelSheets.size() !=0
         excelSheets.eachWithIndex{ ExcelSheet sheet, int contSheet ->
@@ -158,10 +173,11 @@ class COSDExcelLoaderSpec extends Specification {
                 "Current Collection", "Schema Specification"]
 
         when: "checkHeaders is called with a Data item No. header missing"
-        def cosdImporter = new COSDExcelLoader()
+        def cosdImporter = new COSDExcelLoader(fileName)
         def msg = cosdImporter.checkHeaders(headerNames)
 
-        the: "the message returned should not be empty and contain the message of this header missing"
+
+        then: "the message returned should not be empty and contain the message of this header missing"
         assert  msg == "\r\n Data item No."
 
 
@@ -175,15 +191,15 @@ class COSDExcelLoaderSpec extends Specification {
                 "Current Collection", "Schema Specification"]
 
         when: "checkHeaders is called with a Data ITEM No."
-        def cosdImporter = new COSDExcelLoader()
+        def cosdImporter = new COSDExcelLoader(fileName)
         def msg = cosdImporter.checkHeaders(headerNames)
 
-        the: "The headers array is correct and the message return is empty"
+        then: "The headers array is correct and the message return is empty"
         assert  msg == ""
 
     }
 
-    void "Test that checkHeaders successfully detects 'Data ITEM No' with spaces in between"()
+    void "Test that checkHeaders successfully detects 'Data item No.' with spaces in between"()
     {
         def headerNames = [
                 "   Data    item  No.   ", "Data Item Section", "Data Item Name",
@@ -191,10 +207,10 @@ class COSDExcelLoaderSpec extends Specification {
                 "Current Collection", "Schema Specification"]
 
         when: "checkHeaders is called with a Data ITEM No."
-        def cosdImporter = new COSDExcelLoader()
+        def cosdImporter = new COSDExcelLoader(fileName)
         def msg = cosdImporter.checkHeaders(headerNames)
 
-        the: "The headers array is correct and the message return is empty"
+        then: "The headers array is correct and the message return is empty"
         assert  msg == ""
 
     }
@@ -202,7 +218,7 @@ class COSDExcelLoaderSpec extends Specification {
     void "Test that checkSheetNames successfully detects all the sheets to be imported"()
     {
         when:"the checkSheetNames is called with a workbook with the correct headers"
-        def cosdImporter = new COSDExcelLoader()
+        def cosdImporter = new COSDExcelLoader(fileName)
         def msg = cosdImporter.checkSheetNames(wb)
 
         then:"The message returned must be empty"
@@ -212,7 +228,7 @@ class COSDExcelLoaderSpec extends Specification {
     void "Test that checkSheetNames successfully detects 'Core' sheet missing in Workbook"()
     {
         when:"the checkSheetNames is called with a workbook with the 'Core' header missing"
-        def cosdImporter = new COSDExcelLoader()
+        def cosdImporter = new COSDExcelLoader(fileName)
         def msg = cosdImporter.checkSheetNames(wbErrorSheetMissing)
 
         then:"The message returned should include the associated info"
@@ -223,15 +239,16 @@ class COSDExcelLoaderSpec extends Specification {
     {
 
         when:"the getValue function is called to retrieve an integer"
-        def cosdImporter = new COSDExcelLoader()
+        def cosdImporter = new COSDExcelLoader(fileName)
 
         def data = []
         Sheet sheet = wb.getSheetAt(0)
-        Row row = sheet.getRow(2)
+        Row row = sheet.getRow(3)
 
         for (Cell cell : row) {
             cosdImporter.getValue(row, cell, data)
         }
+        then: "The value should be equal to 1 and not to 1.0"
         assert data[5]=="1"
     }
 
@@ -242,8 +259,8 @@ class COSDExcelLoaderSpec extends Specification {
 
         try {
 
-            def cosdImporter = new COSDExcelLoader()
-            cosdImporter.wb = wb;
+            def cosdImporter = new COSDExcelLoader(fileName)
+            cosdImporter.wb = wbErrorCoreSheetEmpty;
             cosdImporter.parse()
 
         }
@@ -261,20 +278,11 @@ class COSDExcelLoaderSpec extends Specification {
     void "Test that generateCOSDInfoArray detects duplicated data elements" ()
     {
         when:"file is loaded and parsed"
-        def exception
-
-        try {
-            def cosdImporter = new COSDExcelLoader(fileNameError)
-            cosdImporter.parse()
-
-        }
-        catch (Exception ex)
-        {
-            exception = ex;
-        }
+        def cosdImporter = new COSDExcelLoader(fileName)
+        def (COSDHeaders, cosdRows, logMessage) = cosdImporter.generateCOSDInfoArray( "Core", headerNamesToImport,rowsDuplicated)
 
         then:"It should send an exception to indicate the there is a duplicate data element in the file"
-        exception.message == "Data Item Number:'CR0010' in Sheet:'Core' is duplicated"
+        logMessage == "Data Item Number:'CR0020' in Sheet:'Core' is duplicated \r\n"
 
     }
 

@@ -1,5 +1,7 @@
 package uk.co.mdc.utils
 
+import org.modelcatalogue.core.dataarchitect.HeadersMap
+
 /**
  * Created by sus_avi on 26/03/2014.
  */
@@ -13,6 +15,8 @@ import uk.co.mdc.Importers.ExcelSheet
 class COSDImporterController {
 
     //DEF SERVICE!!!
+
+    def dataImportService
 
     def index() {}
 
@@ -45,8 +49,25 @@ class COSDImporterController {
                     def (headersCOSDSheet, rowsCOSDSheet, logMessage) = parser.generateCOSDInfoArray(sheetName, headers, rows)
                     excelCOSDSheets[contSheet] = new ExcelSheet(sheetName:sheetName, headers:headersCOSDSheet, rows:rowsCOSDSheet)
                     //call  SERVICE!!!
-                    if (logMessage!="")
+                    if (logMessage!="") {
                         flash.message = logMessage
+                    }
+
+                    HeadersMap headersMap = new HeadersMap()
+                    headersMap.dataElementCodeRow = "Data Item Unique Code"
+                    headersMap.dataElementNameRow = "Data Item Name"
+                    headersMap.dataElementDescriptionRow = "Data Item Description"
+                    headersMap.dataTypeRow = "Data type"
+                    headersMap.parentModelNameRow = "Parent Model"
+                    headersMap.parentModelCodeRow = "Parent Model Unique Code"
+                    headersMap.containingModelNameRow = "Model"
+                    headersMap.containingModelCodeRow = "Model Unique Code"
+                    headersMap.measurementUnitNameRow = "Measurement Unit"
+                    headersMap.metadataRow = "Metadata"
+
+                    dataImportService.importData(headers, rows, "COSD", "Cancer Outcomes and Services Dataset", ["COSD", sheetName], headersMap)
+
+
                 }
                 excelCOSDSheets
 

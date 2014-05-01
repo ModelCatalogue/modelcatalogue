@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.*
 
 class COSDExcelLoader extends ExcelLoader {
 
-    public static final String[] sheetNamesToImport = [
+    public static final def sheetNamesToImport = [
             "Core",
             "Breast", "CNS", "Colorectal", "CTYA ", "Gynaecology",
             "Haematology", "Head & Neck", "Lung", "Sarcoma", "Skin",
@@ -19,26 +19,29 @@ class COSDExcelLoader extends ExcelLoader {
     // b) The columns name 'Description is also used.
     // therefore this would be considered as optional.
 
-    public static final String[] headerNamesToImport = [
+    public static final def headerNamesToImport = [
             "Data item No.", "Data Item Section", "Data Item Name",
             "Format", "National Code", "National code definition", "Data Dictionary Element",
             "Current Collection", "Schema Specification"
     ]
 
-    private static fileInputStream
+    //private static fileInputStream
     Workbook wb
 
     public COSDExcelLoader(String path)
     {
         super(path)
+      //  fileInputStream = InputStream
+        wb = WorkbookFactory.create(fileInputStream);
     }
 
     public COSDExcelLoader(InputStream inputStream)
     {
         super(inputStream)
-        fileInputStream=inputStream
+        //fileInputStream=inputStream
         wb = WorkbookFactory.create(fileInputStream);
     }
+
 
     def checkSheetNames(Workbook wb){
         def indexSheet
@@ -62,7 +65,7 @@ class COSDExcelLoader extends ExcelLoader {
         def headerIndex
         for (int i=0; i< headerNamesToImport.size(); i++)
         {
-            headerIndex = headers.findIndexOf {it.toLowerCase().trim() == headerNamesToImport[i].toLowerCase().trim()}
+            headerIndex = headers.findIndexOf {it.toLowerCase().replaceAll(" ", "") == headerNamesToImport[i].toLowerCase().replaceAll(" ", "")}
             if (headerIndex == -1 ) {
                 message += ("\r\n " + headerNamesToImport[i])
             }
@@ -144,8 +147,6 @@ class COSDExcelLoader extends ExcelLoader {
                            "List content", "Metadata","Data Dictionary Element",
                            "Current Collection", "Schema Specification"]
 
-
-
         def cosdRows =[];
         def nextDataItemNumber;
         def activeSectionDataElementConceptIndex=-1;
@@ -156,12 +157,7 @@ class COSDExcelLoader extends ExcelLoader {
         def dataItemFormat
         def dataItemNationalCode
         def dataItemNationalCodeDefinition
-
-
         ArrayList itemSectionArray = new ArrayList()
-
-
-
         def dataItemNumberIndex = headers.indexOf("Data item No.")
         def dataItemNameIndex = headers.indexOf("Data Item Name")
         def dataItemDescriptionIndex = headers.indexOf("Data Item Description")
