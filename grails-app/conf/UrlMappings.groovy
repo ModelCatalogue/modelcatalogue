@@ -25,6 +25,7 @@ class UrlMappings {
         name importData: "/admin/importData"(controller: "dataImport")
 		name importICU: "/admin/importICU"(controller: "excelImporter")
         name importCOSD: "/admin/importCOSD"(controller:"COSDImporter")
+        name importRelationships: "/admin/importRelationships"(controller:"relationshipImport")
 
         "/"(view:"/index")
 
