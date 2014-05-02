@@ -164,9 +164,9 @@ metadataCurator.config(($urlRouterProvider)->
 
 metadataCurator.controller('metadataCurator.searchCtrl', ['catalogueElementResource', 'modelCatalogueSearch','modelCatalogueDataArchitect', '$scope', '$log', '$q', '$state','$modal', 'names', (catalogueElementResource, modelCatalogueSearch, modelCatalogueDataArchitect, $scope, $log, $q, $state,$modal, names)->
   $scope.search = () ->
-    unless (typeof $scope.searchSelect == 'string')
-#      $state.go('search', {searchString: $scope.searchSelect })
-#    else
+    if (typeof $scope.searchSelect == 'string')
+      $state.go('mc.search', {searchString: $scope.searchSelect })
+    else
       $state.go('mc.resource.show', {resource: names.getPropertyNameFromType($scope.searchSelect.elementType) , id: $scope.searchSelect.id})
 
 ])
