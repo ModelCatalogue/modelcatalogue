@@ -1,6 +1,5 @@
 package uk.co.mdc.utils
 
-import grails.test.mixin.TestFor
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.*
 import spock.lang.Specification
@@ -14,16 +13,7 @@ import uk.co.mdc.Importers.ExcelSheet
 
 class COSDExcelLoaderSpec extends Specification {
 
-    // List the things I want to test.
-    // File exists
-
     def fileName= "test/unit/resources/COSD/COSD.xls"
-    // COSD_Error has:
-    //                  * no CORE sheet.
-    //                  * Breast sheet has different headers title names. i.e. Data Item Name => Data Item Names.
-
-    def fileNameError="test/unit/resources/COSD/COSD_Error.xls"
-    def fileNameErrorEmptySheet="test/unit/resources/COSD/COSDErrorEmptySheet.xls"
 
     String[] sheetNamesToImport = [
             "Core",
@@ -86,7 +76,7 @@ class COSDExcelLoaderSpec extends Specification {
             }
         }
 
-        //Create a Errorworkbook
+        //Create an Errorworkbook
         wbErrorSheetMissing = new HSSFWorkbook();
         sheetNamesToImportError.eachWithIndex{ String sheetName, int contSheet ->
             Sheet sheet = wbErrorSheetMissing.createSheet(sheetName)
@@ -129,8 +119,6 @@ class COSDExcelLoaderSpec extends Specification {
                 cell.setCellValue(headerName)
             }
         }
-
-
     }
 
     void "Test that an Excel file is loaded properly"() {
@@ -176,11 +164,8 @@ class COSDExcelLoaderSpec extends Specification {
         def cosdImporter = new COSDExcelLoader(fileName)
         def msg = cosdImporter.checkHeaders(headerNames)
 
-
         then: "the message returned should not be empty and contain the message of this header missing"
         assert  msg == "\r\n Data item No."
-
-
     }
 
     void "Test that checkHeaders successfully detects 'Data ITEM No' with capital letters"()
@@ -212,7 +197,6 @@ class COSDExcelLoaderSpec extends Specification {
 
         then: "The headers array is correct and the message return is empty"
         assert  msg == ""
-
     }
 
     void "Test that checkSheetNames successfully detects all the sheets to be imported"()
@@ -256,13 +240,11 @@ class COSDExcelLoaderSpec extends Specification {
     {
         when:"file is loaded and parsed"
         def exception
-
         try {
 
             def cosdImporter = new COSDExcelLoader(fileName)
             cosdImporter.wb = wbErrorCoreSheetEmpty;
             cosdImporter.parse()
-
         }
         catch (Exception ex)
         {
@@ -283,12 +265,5 @@ class COSDExcelLoaderSpec extends Specification {
         logMessage == "Data Item Number:'CR0020' in Sheet:'Core' is duplicated \r\n"
 
     }
-
-    //Test that generateCOSDInfoArray generates the correct arralist format
-
-
-
-
-
 }
 
