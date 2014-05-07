@@ -27,9 +27,7 @@ class DataElementMarshaller extends ExtendibleElementMarshallers {
                 }
             }
         }else{
-            xml.build {
-                dataType dt?.name
-            }
+            xml.build { dataType dt?.name }
         }
     }
 
