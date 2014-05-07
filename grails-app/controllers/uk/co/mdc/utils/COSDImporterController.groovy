@@ -1,5 +1,8 @@
 package uk.co.mdc.utils
 
+import org.modelcatalogue.core.Model
+import org.modelcatalogue.core.dataarchitect.HeadersMap
+
 /**
  * Created by sus_avi on 26/03/2014.
  */
@@ -12,7 +15,7 @@ import uk.co.mdc.Importers.ExcelSheet
 @Secured(['ROLE_ADMIN'])
 class COSDImporterController {
 
-    //DEF SERVICE!!!
+    def dataImportService
 
     def index() {}
 
@@ -44,12 +47,25 @@ class COSDImporterController {
                     def rows = excelSheets[contSheet].rows
                     def (headersCOSDSheet, rowsCOSDSheet, logMessage) = parser.generateCOSDInfoArray(sheetName, headers, rows)
                     excelCOSDSheets[contSheet] = new ExcelSheet(sheetName:sheetName, headers:headersCOSDSheet, rows:rowsCOSDSheet)
-                    //call  SERVICE!!!
-                    if (logMessage!="")
+                    if (logMessage!="") {
                         flash.message = logMessage
+                    }
+
+                    HeadersMap headersMap = new HeadersMap()
+                    headersMap.dataElementCodeRow = ""
+                    headersMap.dataElementNameRow = "Data Item Name"
+                    headersMap.dataElementDescriptionRow = "Data Item Description"
+                    headersMap.dataTypeRow = "List content"
+                    headersMap.parentModelNameRow = "Parent Model"
+                    headersMap.parentModelCodeRow = ""
+                    headersMap.containingModelNameRow = ""
+                    headersMap.containingModelCodeRow = ""
+                    headersMap.measurementUnitNameRow = ""
+                    headersMap.metadataRow = "Metadata"
+                    dataImportService.importData(headersCOSDSheet, rowsCOSDSheet, "COSD", "Cancer Outcomes and Services Dataset", ["COSD", sheetName], headersMap)
                 }
                 excelCOSDSheets
-
+                flash.message = "DataElements have been created.\n"
             }
             catch(Exception ex)
             {

@@ -5,22 +5,22 @@ import org.apache.poi.ss.usermodel.*
 
 class ExcelLoader {
 
-    private static InputStream
+    protected static fileInputStream
 
 
     public ExcelLoader(String path)
     {
-        InputStream = new FileInputStream(path)
+        fileInputStream = new FileInputStream(path)
     }
 
     public ExcelLoader(InputStream inputStream)
     {
-        InputStream  = inputStream
+        fileInputStream  = inputStream
     }
 
 
 	def parse(path) {
-		Workbook wb = WorkbookFactory.create(InputStream);
+		Workbook wb = WorkbookFactory.create(fileInputStream);
         if(!wb)
             return [[],[]]
 		Sheet sheet = wb.getSheetAt(0);
