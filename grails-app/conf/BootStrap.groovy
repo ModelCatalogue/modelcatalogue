@@ -26,61 +26,16 @@ import org.springframework.security.acls.domain.BasePermission
 
 class BootStrap {
 
-	def aclService, aclUtilService, sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService
+	def aclService, aclUtilService, sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService, dataArchitectService
 
     XLSXListRenderer xlsxListRenderer
-
-
-    def getContainingModel(DataElement dataElement){
-        if(dataElement.containedIn) {
-            return dataElement.containedIn.first()
-        }
-        return null
-    }
-
-    def getParentModel(DataElement dataElement){
-        Model containingModel = getContainingModel(dataElement)
-        if(containingModel.childOf) {
-            return containingModel.childOf.first()
-        }
-        return null
-    }
-
-    def getValueDomain(DataElement dataElement){
-        if(dataElement.instantiatedBy) {
-            return dataElement.instantiatedBy.first()
-        }
-        return null
-    }
-
-    def getDataType(DataElement dataElement){
-        ValueDomain valueDomain = getValueDomain(dataElement)
-        if(valueDomain) {
-            DataType dataType = valueDomain.dataType
-            if (dataType instanceof EnumeratedType) {
-                return dataType.enumAsString
-            }
-            return dataType.name
-        }
-        return null
-    }
-
-    def getUnitOfMeasure(DataElement dataElement){
-        ValueDomain valueDomain = getValueDomain(dataElement)
-        if(valueDomain) {
-            MeasurementUnit unitOfMeasure = valueDomain?.unitOfMeasure
-            return unitOfMeasure?.name
-        }
-        return null
-    }
-
 
 	def init = { servletContext ->
 
 		def springContext = WebApplicationContextUtils.getWebApplicationContext( servletContext )
 		
 		//register custom json Marshallers
-		//registerJSONMarshallers(springContext)
+		registerJSONMarshallers(springContext)
 
         initCatalogueService.initDefaultDataTypes()
         initCatalogueService.initDefaultRelationshipTypes()
@@ -91,7 +46,7 @@ class BootStrap {
             when { ListWrapper container, RenderContext context ->
                 context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements'] && DataElement.isAssignableFrom(container.itemType)
             } then { DataElement element ->
-                [[getParentModel(element)?.modelCatalogueId, getParentModel(element)?.name, getContainingModel(element)?.modelCatalogueId, getContainingModel(element)?.name, element.modelCatalogueId, element.name, element.description, getUnitOfMeasure(element), getDataType(element), "-", element.ext.NHIC_Identifier, element.ext.Link_to_existing_definition, element.ext.Notes_from_GD_JCIS , element.ext.Optional_Local_Identifier, element.ext.A, element.ext.B, element.ext.C , element.ext.D , element.ext.E , element.ext.F , element.ext.G, element.ext.H, element.ext.E2, element.ext.System, element.ext.Comments]]
+                [[dataArchitectService.getParentModel(element)?.modelCatalogueId, dataArchitectService.getParentModel(element)?.name, dataArchitectService.getContainingModel(element)?.modelCatalogueId, dataArchitectService.getContainingModel(element)?.name, element.modelCatalogueId, element.name, element.description, dataArchitectService.getUnitOfMeasure(element), dataArchitectService.getDataType(element), "-", element.ext.NHIC_Identifier, element.ext.Link_to_existing_definition, element.ext.Notes_from_GD_JCIS , element.ext.Optional_Local_Identifier, element.ext.A, element.ext.B, element.ext.C , element.ext.D , element.ext.E , element.ext.F , element.ext.G, element.ext.H, element.ext.E2, element.ext.System, element.ext.Comments]]
             }
         }
 
@@ -152,6 +107,7 @@ class BootStrap {
         //only permit admin user registrationCode
         new Requestmap(url: '/bootstrap-data/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/dataImport/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/relationshipImport/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/oldDataImport/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/excelImporter/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/admin', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()

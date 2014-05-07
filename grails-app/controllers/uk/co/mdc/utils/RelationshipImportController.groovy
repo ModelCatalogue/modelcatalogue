@@ -8,9 +8,9 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 
 @Secured(['ROLE_ADMIN'])
-class DataImportController {
+class RelationshipImportController {
 
-    def dataImportService
+    def relationshipImporterService
 
     def index() {}
 
@@ -22,22 +22,8 @@ class DataImportController {
             render view:"index"
             return
         }
-
-        ArrayList parentModels
-        String conceptualDomainName, conceptualDomainDescription
-
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)request
         MultipartFile  file = multiRequest.getFile("excelFile")
-        def params = multiRequest.multipartParameters
-        if(!params.conceptualDomainName){
-            flash.error="No Conceptual Domain Name"
-            render view:"index"
-            return
-        }else{
-            conceptualDomainName = params.conceptualDomainName.toString().replaceAll('\\[', "").replaceAll('\\]', "").trim()
-        }
-        if(params.conceptualDomainDescription){conceptualDomainDescription = params.conceptualDomainDescription.toString().replaceAll('\\[', "").replaceAll('\\]', "").trim()}else{conceptualDomainDescription=""}
-        if(params.parentModels){parentModels  = params.parentModels.toString().replaceAll('\\[', "").replaceAll('\\]', "").trim().split(',') }else{params.parentModels=""}
 
         //Microsoft Excel files
         //Microsoft Excel 2007 files
@@ -48,22 +34,9 @@ class DataImportController {
                 ExcelLoader parser = new ExcelLoader(file.inputStream)
                 def (headers, rows) = parser.parse()
 
-                HeadersMap headersMap = new HeadersMap()
-                headersMap.dataElementCodeRow = "Data Item Unique Code"
-                headersMap.dataElementNameRow = "Data Item Name"
-                headersMap.dataElementDescriptionRow = "Data Item Description"
-                headersMap.dataTypeRow = "Data type"
-                headersMap.parentModelNameRow = "Parent Model"
-                headersMap.parentModelCodeRow = "Parent Model Unique Code"
-                headersMap.containingModelNameRow = "Model"
-                headersMap.containingModelCodeRow = "Model Unique Code"
-                headersMap.measurementUnitNameRow = "Measurement Unit"
-                headersMap.metadataRow = "Metadata"
-
-                dataImportService.importData(headers, rows, conceptualDomainName, conceptualDomainDescription, parentModels , headersMap)
-
+                def errors = relationshipImporterService.importRelationships(headers, rows)
                 //if (result) {
-                flash.message = "DataElements have been created.\n"
+                flash.message = "DataElements have been created.\n with {$errors.size()} errors ( ${errors.toString()} )"
                 //}
             }
             catch(Exception ex)

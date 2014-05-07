@@ -61,7 +61,7 @@
 <sec:ifLoggedIn>
                         <li><a href="${createLink(uri: '/dashboard/')}">Dashboard</a></li>
                         <!-- Metadata curation menu -->
-                        <li><a href="${createLink(uri: '/metadataCurator')}">Data model</a></li>
+                        <li><a href="${createLink(uri: '/metadataCurator')}">Data Curator</a></li>
 
                         <!-- Pathways menu -->
                         <li class="dropdown">
@@ -97,15 +97,10 @@
                                 <li><g:link controller="role" action='listPendingUsers'>Activate pending users</g:link></li>
                                 <li class="divider"></li>
                                 <li class="dropdown-header">Import/Export</li>
-                                <li><g:link mapping="importData">Import data</g:link></li>
+                                <li><g:link mapping="importData">Import Data</g:link></li>
+                                <li><g:link mapping="importRelationships">Import Relationships</g:link></li>
                                 <li><g:link mapping="importICU">Import ICU Excel</g:link></li>
                                 <li><g:link mapping="importCOSD">Import COSD Excel</g:link></li>
-                                <li class="divider"></li>
-                                <li class="dropdown-header">Data Architect</li>
-                                <li><a href = "/model_catalogue/metadataCurator#/dataArchitect/uninstantiatedDataElements">Uninstantiated Data Elements</a></li>
-                                <li><a href = "/model_catalogue/metadataCurator#/dataArchitect/metadataKeyCheck/NHIC_Identifier">Search for metadata</a></li>
-                                <li><a href="/model_catalogue/api/modelCatalogue/core/dataElement?format=xlsx">Export Data Elements</a></li>
-
                             </ul>
                         </li>
                     </ul>

@@ -2,9 +2,7 @@
 
 <!-- BEGIN MAIN CONTENT -->
 <div class="fullwidth-container">
-
             <g:layoutBody />
-
 </div>
 <!-- END CONTENT -->
   </div>
