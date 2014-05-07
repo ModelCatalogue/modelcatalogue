@@ -127,7 +127,7 @@ class COSDExcelLoader extends ExcelLoader {
 
             //add the excelSheet to the excelSheets collection
             if (headers.size()!=0 & rows.size()!=0) {
-                excelSheets[cont] = new ExcelSheet(sheetName: sheetName, headers: headers, rows: rows);
+                excelSheets[cont] = new ExcelSheet(sheetName: sheetName.trim(), headers: headers, rows: rows);
             }
             else {
                 throw new Exception("'" + sheetName + "' sheet is empty")
@@ -255,7 +255,7 @@ class COSDExcelLoader extends ExcelLoader {
                     if (dataItemNationalCode.toString().trim() != "" || dataItemNationalCodeDefinition.toString().trim() != "") {
                         def key = rows[cont][dataItemNationalCodeIndex].toString();
                         def value = rows[cont][dataItemNationalCodeDefinitionIndex].toString().size() <= 255 ? rows[cont][dataItemNationalCodeDefinitionIndex].toString() : rows[cont][dataItemNationalCodeDefinitionIndex].toString().substring(0, 254);
-                        cosdRow[cosdListContentIndex] = (key + "=" + value + "\r\n")
+                        cosdRow[cosdListContentIndex] = (key + ":" + value + "\r\n")
 
                         if (cont + 1 < rows.size()) {
                             nextDataItemNumber = rows[cont + 1][dataItemNumberIndex];
@@ -264,7 +264,7 @@ class COSDExcelLoader extends ExcelLoader {
                                 cont++
                                 key = rows[cont][dataItemNationalCodeIndex].toString();
                                 value = rows[cont][dataItemNationalCodeDefinitionIndex].toString().size() <= 255 ? rows[cont][dataItemNationalCodeDefinitionIndex].toString() : rows[cont][dataItemNationalCodeDefinitionIndex].toString().substring(0, 254);
-                                cosdRow[cosdListContentIndex] += (key + "=" + value + "\r\n")
+                                cosdRow[cosdListContentIndex] += (key + ":" + value + "\r\n")
                                 if (cont + 1 < rows.size()) {
                                     nextDataItemNumber = rows[cont + 1][dataItemNumberIndex];
                                 }

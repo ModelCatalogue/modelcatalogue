@@ -272,9 +272,7 @@ class COSDExcelLoaderSpec extends Specification {
         then:"It should send an exception to indicate the headers not present in a given sheet"
         exception.message == "'Core' sheet is empty"
     }
-    // Duplicate data elements
-    // Check if the dataElements are added to the collection
-    // Check that the value domains are correct
+
     void "Test that generateCOSDInfoArray detects duplicated data elements" ()
     {
         when:"file is loaded and parsed"
@@ -285,6 +283,10 @@ class COSDExcelLoaderSpec extends Specification {
         logMessage == "Data Item Number:'CR0020' in Sheet:'Core' is duplicated \r\n"
 
     }
+
+    //Test that generateCOSDInfoArray generates the correct arralist format
+
+
 
 
 

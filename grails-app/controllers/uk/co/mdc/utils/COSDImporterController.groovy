@@ -15,8 +15,6 @@ import uk.co.mdc.Importers.ExcelSheet
 @Secured(['ROLE_ADMIN'])
 class COSDImporterController {
 
-    //DEF SERVICE!!!
-
     def dataImportService
 
     def index() {}
@@ -49,7 +47,6 @@ class COSDImporterController {
                     def rows = excelSheets[contSheet].rows
                     def (headersCOSDSheet, rowsCOSDSheet, logMessage) = parser.generateCOSDInfoArray(sheetName, headers, rows)
                     excelCOSDSheets[contSheet] = new ExcelSheet(sheetName:sheetName, headers:headersCOSDSheet, rows:rowsCOSDSheet)
-                    //call  SERVICE!!!
                     if (logMessage!="") {
                         flash.message = logMessage
                     }
@@ -66,11 +63,9 @@ class COSDImporterController {
                     headersMap.measurementUnitNameRow = ""
                     headersMap.metadataRow = "Metadata"
                     dataImportService.importData(headersCOSDSheet, rowsCOSDSheet, "COSD", "Cancer Outcomes and Services Dataset", ["COSD", sheetName], headersMap)
-                    def models = Model.list()
-                    flash.message = "DataElements have been created.\n"
                 }
                 excelCOSDSheets
-
+                flash.message = "DataElements have been created.\n"
             }
             catch(Exception ex)
             {
