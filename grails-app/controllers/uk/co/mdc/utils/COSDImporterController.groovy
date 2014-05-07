@@ -36,7 +36,7 @@ class COSDImporterController {
             try {
 
                 COSDExcelLoader parser = new COSDExcelLoader(file.inputStream)
-                ExcelSheet[] excelSheets = parser.parseCOSD();
+                ExcelSheet[] excelSheets = parser.parse();
                 ExcelSheet[] excelCOSDSheets = new ExcelSheet[excelSheets.size()]
                 excelSheets.eachWithIndex{ ExcelSheet sheet, int contSheet ->
                     def headers = excelSheets[contSheet].headers

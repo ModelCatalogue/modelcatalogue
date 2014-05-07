@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.*
 
 class COSDExcelLoader extends ExcelLoader {
 
-    private static final String[] sheetNamesToImport = [
+    public static final String[] sheetNamesToImport = [
             "Core",
             "Breast", "CNS", "Colorectal", "CTYA ", "Gynaecology",
             "Haematology", "Head & Neck", "Lung", "Sarcoma", "Skin",
@@ -19,13 +19,14 @@ class COSDExcelLoader extends ExcelLoader {
     // b) The columns name 'Description is also used.
     // therefore this would be considered as optional.
 
-    private static final String[] headerNamesToImport = [
+    public static final String[] headerNamesToImport = [
             "Data item No.", "Data Item Section", "Data Item Name",
             "Format", "National Code", "National code definition", "Data Dictionary Element",
             "Current Collection", "Schema Specification"
     ]
 
     private static fileInputStream
+    Workbook wb
 
     public COSDExcelLoader(String path)
     {
@@ -36,6 +37,7 @@ class COSDExcelLoader extends ExcelLoader {
     {
         super(inputStream)
         fileInputStream=inputStream
+        wb = WorkbookFactory.create(fileInputStream);
     }
 
     def checkSheetNames(Workbook wb){
@@ -45,7 +47,7 @@ class COSDExcelLoader extends ExcelLoader {
             indexSheet = wb.getSheetIndex(sheetName)
             //checks the sheet is defined in the excel file.
             if (indexSheet == -1)
-                message += ("\r\n" + sheetName)
+                message += ("\r\n " + sheetName)
         }
         return message
     }
@@ -61,27 +63,28 @@ class COSDExcelLoader extends ExcelLoader {
         for (int i=0; i< headerNamesToImport.size(); i++)
         {
             headerIndex = headers.findIndexOf {it.toLowerCase().trim() == headerNamesToImport[i].toLowerCase().trim()}
-            if (headerIndex == -1 )
-                    message += ("\r\n " + headerNamesToImport[i])
+            if (headerIndex == -1 ) {
+                message += ("\r\n " + headerNamesToImport[i])
+            }
         }
         return message
     }
 
-    def parseCOSD() {
-        Workbook wb = WorkbookFactory.create(fileInputStream);
+    def parse() {
+
         ExcelSheet[] excelSheets = new ExcelSheet[sheetNamesToImport.size()];
         def indexSheet
-        def sheetName
-        def message= checkSheetNames(wb)
-        if (message!="")
-            throw new Exception ("COSD File does not have the following sheets: " + message)
 
-        for (def cont=0; cont<sheetNamesToImport.size();cont++) {
-            sheetName = sheetNamesToImport[cont];
+        def message= checkSheetNames(wb)
+        if (message!="") {
+            throw new Exception("COSD File does not have the following sheets: " + message)
+        }
+        sheetNamesToImport.eachWithIndex{ String sheetName, int cont ->
             indexSheet = wb.getSheetIndex(sheetName)
             //checks the sheet is defined in the excel file.
-            if (indexSheet == -1)
+            if (indexSheet == -1) {
                 throw new Exception("Sheet: '" + sheetName + "' does not exist in the excel file")
+            }
             Sheet sheet = wb.getSheetAt(indexSheet);
 
             Iterator<Row> rowIt = sheet.rowIterator()
@@ -98,9 +101,9 @@ class COSDExcelLoader extends ExcelLoader {
                 headers = getRowData(row);
 
                 message = checkHeaders(headers)
-                if (message != "")
+                if (message != "") {
                     throw new Exception("Sheet: '" + sheetName + "' does not have the following headers:" + message)
-
+                }
                 def dataItemNumberIndex = headers.indexOf("Data item No.")
                 def dataItemNationalCodeIndex = headers.indexOf("National Code")
                 def dataItemNationalCodeDefinitionIndex = headers.indexOf("National code definition")
@@ -113,16 +116,19 @@ class COSDExcelLoader extends ExcelLoader {
 
                     def rowData = getRowData(row)
                     def text = rowData[dataItemNumberIndex];
-                    if ((text ==~ regularExpression) || (rowData[dataItemNumberIndex] == "" && (rowData[dataItemNationalCodeIndex].toString() != "" || rowData[dataItemNationalCodeDefinitionIndex].toString() != "")))
+                    if ((text ==~ regularExpression) || (rowData[dataItemNumberIndex] == "" && (rowData[dataItemNationalCodeIndex].toString() != "" || rowData[dataItemNationalCodeDefinitionIndex].toString() != ""))) {
                         rows << getRowData(row);
+                    }
                 }
             }
 
             //add the excelSheet to the excelSheets collection
-            if (headers.size()!=0 & rows.size()!=0)
-                excelSheets[cont] =  new ExcelSheet(sheetName: sheetName, headers: headers, rows: rows);
-            else
+            if (headers.size()!=0 & rows.size()!=0) {
+                excelSheets[cont] = new ExcelSheet(sheetName: sheetName, headers: headers, rows: rows);
+            }
+            else {
                 throw new Exception("'" + sheetName + "' sheet is empty")
+            }
         }
         return excelSheets
     }
@@ -182,9 +188,9 @@ class COSDExcelLoader extends ExcelLoader {
 
         String logMessage = ""
         //Check the Data Item Name column exists
-        if (dataItemNameIndex == -1)
+        if (dataItemNameIndex == -1) {
             throw new Exception("Cannot find 'Data Item Name' column")
-
+        }
 
         for (int cont = 0; cont < rows.size(); cont++) {
 
@@ -197,10 +203,12 @@ class COSDExcelLoader extends ExcelLoader {
                 dataItemName = rows[cont][dataItemNameIndex];
                 if (dataItemDescriptionIndex == -1) {
                     dataItemDescriptionIndex = headers.indexOf("Description")
-                    if (dataItemDescriptionIndex == -1)
+                    if (dataItemDescriptionIndex == -1){
                         dataItemDescription = ""
-                    else
+                    }
+                    else {
                         dataItemDescription = rows[cont][dataItemDescriptionIndex]
+                    }
                 } else {
                     dataItemDescription = rows[cont][dataItemDescriptionIndex];
                 }
@@ -230,15 +238,16 @@ class COSDExcelLoader extends ExcelLoader {
                         itemSectionArray[index] = dataItemSection
                         activeSectionDataElementConceptIndex = index;
 
-                    } else //Check is the sectionDataElement-DataElementConcept already exists
-                    if (itemSectionArray[activeSectionDataElementConceptIndex].toString().replaceAll(" ", "") != dataItemSection.toString().replaceAll(" ", "")) {
-                        def indexAtSectionDataElementConcepts = itemSectionArray.indexOf {
-                            it.replaceAll(" ", "") == dataSectionNameNoSpaces
-                        }
+                    } else { //Check is the sectionDataElement-DataElementConcept already exists
+                        if (itemSectionArray[activeSectionDataElementConceptIndex].toString().replaceAll(" ", "") != dataItemSection.toString().replaceAll(" ", "")) {
+                            def indexAtSectionDataElementConcepts = itemSectionArray.indexOf {
+                                it.replaceAll(" ", "") == dataSectionNameNoSpaces
+                            }
 
-                        if (indexAtSectionDataElementConcepts != -1) {
-                            //sectionDataElementConcept = sectionDataElementConcepts[indexAtSectionDataElementConcepts]
-                            activeSectionDataElementConceptIndex = indexAtSectionDataElementConcepts;
+                            if (indexAtSectionDataElementConcepts != -1) {
+                                //sectionDataElementConcept = sectionDataElementConcepts[indexAtSectionDataElementConcepts]
+                                activeSectionDataElementConceptIndex = indexAtSectionDataElementConcepts;
+                            }
                         }
                     }
                     //Look for any additional value domain
@@ -258,10 +267,12 @@ class COSDExcelLoader extends ExcelLoader {
                                 key = rows[cont][dataItemNationalCodeIndex].toString();
                                 value = rows[cont][dataItemNationalCodeDefinitionIndex].toString().size() <= 255 ? rows[cont][dataItemNationalCodeDefinitionIndex].toString() : rows[cont][dataItemNationalCodeDefinitionIndex].toString().substring(0, 254);
                                 cosdRow[cosdListContentIndex] += (key + "=" + value + "\r\n")
-                                if (cont + 1 < rows.size())
+                                if (cont + 1 < rows.size()) {
                                     nextDataItemNumber = rows[cont + 1][dataItemNumberIndex];
-                                else
+                                }
+                                else {
                                     break;
+                                }
                             }
                         }
                     }

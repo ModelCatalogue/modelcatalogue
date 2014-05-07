@@ -1,42 +1,30 @@
 package uk.co.mdc.utils
+import grails.test.mixin.TestFor;
+import spock.lang.Specification;
 
-import grails.test.mixin.Mock
+import java.io.FileInputStream;
 
 /**
- * Created by sus_avi on 11/04/2014.
+ * Created by sus_avi on 28/04/2014.
  */
 
-import grails.test.mixin.TestFor
-import org.grails.plugins.springsecurity.service.acl.AclUtilService
-import spock.lang.Specification
-import uk.co.mdc.model.ConceptualDomain
-import uk.co.mdc.model.DataElement
-import uk.co.mdc.model.DataElementConcept
-import uk.co.mdc.model.DataElementValueDomain
-import uk.co.mdc.model.DataType
-import uk.co.mdc.model.ValueDomain
-import uk.co.mdc.utils.importers.COSDImporterService
-
-@TestFor(COSDImporterService)
-@Mock([DataElement, DataElementConcept, ValueDomain, ConceptualDomain, DataType, DataElementValueDomain])
-class COSDImporterServiceSpec extends Specification {
-
+@TestFor(COSDImporterController)
+class COSDImporterControllerSpec extends Specification {
     // List the things I want to test.
     // File exists
 
-    def fileName= "test/unit/resources/COSD.xls"
+    def fileName= "test/unit/resources/COSD/COSD.xls"
     // COSD_Error has:
     //                  * no CORE sheet.
     //                  * Breast sheet has different headers title names. i.e. Data Item Name => Data Item Names.
 
-    def fileNameError="test/unit/resources/COSD_Error.xls"
-    def fileNameErrorSheetName="test/unit/resources/COSD_Error_SheetName.xls"
-    def fileNameErrorHeaders="test/unit/resources/COSD_Error_Header.xls"
-    def fileNameErrorEmptySheet="test/unit/resources/COSDErrorEmptySheet.xls"
+    def fileNameError="test/unit/resources/COSD/COSD_Error.xls"
+    def fileNameErrorSheetName="test/unit/resources/COSD/COSD_Error_SheetName.xls"
+    def fileNameErrorHeaders="test/unit/resources/COSD/COSD_Error_Header.xls"
+    def fileNameErrorEmptySheet="test/unit/resources/COSD/COSDErrorEmptySheet.xls"
 
     def setup (){
-        service.aclUtilService = Mock(AclUtilService)
-        service.aclUtilService.addPermission() >> true
+
     }
 
     void "Test that the file contains the sheets to be imported"()
@@ -119,5 +107,10 @@ class COSDImporterServiceSpec extends Specification {
         exception.message == "Data Item Number:'CR0010' in Sheet:'Core' is duplicated"
 
     }
+
+}
+
+
+
 
 }
