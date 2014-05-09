@@ -132,8 +132,8 @@ class BootStrap {
 
         new Requestmap(url: '/api/modelCatalogue/core/**', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
  //       new Requestmap(url: '/api/modelCatalogue/core/*/search', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
- //       new Requestmap(url: '/api/modelCatalogue/core/**/outgoing', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
- //       new Requestmap(url: '/api/modelCatalogue/core/**/incoming', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/*/outgoing/**', configAttribute: 'ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/*/incoming/**', configAttribute: 'ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
         new Requestmap(url: '/api/modelCatalogue/core/search/**', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
         new Requestmap(url: '/api/modelCatalogue/core/*/create', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
         new Requestmap(url: '/api/modelCatalogue/core/*/edit', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
