@@ -26,7 +26,7 @@ class OldDataImportController {
     }
     def importDataSet() { 
 		def dataset = params.dataset
-        def errors
+        def errors = [:]
 
 		if(dataset == "nhic"){
             if(params.nhicFile){
@@ -47,21 +47,6 @@ class OldDataImportController {
             flash.message = "dataimport.paramError"
             flash.default = "Error: invalid dataset"
         }
-
-
-        elasticSearchService.index(DataElement)
-        elasticSearchService.index(ValueDomain)
-        elasticSearchService.index(Model)
-        elasticSearchService.index(ConceptualDomain)
-        elasticSearchService.index(DataType)
-        elasticSearchService.index(EnumeratedType)
-        elasticSearchService.index(MeasurementUnit)
-        elasticSearchService.index(ExtendibleElement)
-        elasticSearchService.index(ExtensionValue)
-        elasticSearchService.index(Relationship)
-        elasticSearchService.index(RelationshipType)
-        elasticSearchService.index(CatalogueElement)
-        elasticSearchAdminService.refresh()
 
         flash.args = [dataset]
 		render(view:"/oldDataImport/index")

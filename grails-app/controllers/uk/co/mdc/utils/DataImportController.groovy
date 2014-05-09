@@ -37,7 +37,11 @@ class DataImportController {
             conceptualDomainName = params.conceptualDomainName.toString().replaceAll('\\[', "").replaceAll('\\]', "").trim()
         }
         if(params.conceptualDomainDescription){conceptualDomainDescription = params.conceptualDomainDescription.toString().replaceAll('\\[', "").replaceAll('\\]', "").trim()}else{conceptualDomainDescription=""}
-        if(params.parentModels){parentModels  = params.parentModels.toString().replaceAll('\\[', "").replaceAll('\\]', "").trim().split(',') }else{params.parentModels=""}
+        if(params.parentModels && params.parentModels.toString()!="[]"){
+            parentModels  = params.parentModels.toString().replaceAll('\\[', "").replaceAll('\\]', "").trim().split(',')
+        }else{
+            params.parentModels=[]
+        }
 
         //Microsoft Excel files
         //Microsoft Excel 2007 files
@@ -70,7 +74,9 @@ class DataImportController {
             {
                 //log.error("Exception in handling excel file: "+ ex.message)
                 log.error("Exception in handling excel file")
-                flash.message ="Error in importing the excel file.";
+                println(ex)
+                flash.message ="Error importing the excel file."
+
             }
          }
         else

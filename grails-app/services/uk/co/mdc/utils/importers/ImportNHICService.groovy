@@ -20,8 +20,8 @@ class ImportNHICService {
 
     static transactional = true
 
-    def grailsApplication, sessionFactory
-    def errors = new HashMap()
+    def grailsApplication, sessionFactory, dataArchitectService
+    def errors = [:]
     Importer newImporter
 
         private static final QUOTED_CHARS = [
@@ -32,7 +32,6 @@ class ImportNHICService {
     ]
 
     def importData() {
-        errors = new HashMap()
         getNhicFiles().each {
             filename -> singleImport(filename)
         }
@@ -85,6 +84,9 @@ class ImportNHICService {
         sessionFactory.currentSession.clear()
 
         newImporter.actionPendingModels()
+
+        dataArchitectService.indexAll()
+
         return errors
     }
 
