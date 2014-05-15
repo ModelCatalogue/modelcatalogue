@@ -18,10 +18,10 @@ class PathwayAddRemoveLinkSpec extends GebReportingSpec{
         at DashboardPage
 
         nav.goToPathwayListPage()
-        at PathwayListPage
+        waitFor { at PathwayListPage }
 
         goToPathwayInList(0)
-        at PathwayShowPage
+		waitFor {at PathwayShowPage}
     }
 
 
@@ -124,25 +124,27 @@ class PathwayAddRemoveLinkSpec extends GebReportingSpec{
 
     def "Check when deleting a link, it will be removed from pathway"()
     {
-        setup: "In a pathway and clicking on a link and deleting it"
+        given: "A link"
         at PathwayShowPage
+		def nodeA= createNode()
+		def nodeB= createNode()
+		int preCreationLinkCount = getLocalLinkIds().size();
+		def link = createLink(nodeA,'down',nodeB,'up')
 
-        expect:"a link to be available"
-        link4
+		expect:
+		getLocalLinkIds().size() == preCreationLinkCount + 1
 
         when:"deleting a link"
-        //link4.click()
+
         interact {
-            click(link4)
+            click(link)
         }
         deleteSelectedElementButton.click()
 
         then: "the link should be removed"
-        !link4
         waitFor {
-            getLocalLinkIds().size() == 0
+            getLocalLinkIds().size() == preCreationLinkCount
         }
-
     }
 
     def "Check when we are in a subPathway and deleting a link, it will be removed from pathway"()
