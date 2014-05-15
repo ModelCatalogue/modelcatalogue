@@ -12,9 +12,9 @@ import org.springframework.mock.web.MockMultipartHttpServletRequest
  */
 
 class COSDImporterControllerSpec extends IntegrationSpec {
-    def dataImportService
 
     def fileName= "test/unit/resources/COSD/COSD.xls"
+
     def "Test the dataImportService in the COSDImporterController"()
     {
         when: "The dataImportSercive is called"
@@ -24,11 +24,12 @@ class COSDImporterControllerSpec extends IntegrationSpec {
         cosdImporterController.metaClass.request = new MockMultipartHttpServletRequest()
         InputStream inputStream = new FileInputStream(fileName)
         cosdImporterController.request.addFile(new MockMultipartFile('excelFile', fileName,"application/octet-stream" , inputStream))
-        cosdImporterController.dataImportService = dataImportService
         cosdImporterController.upload()
 
         then: "The number of Elements must be greater"
         def numElementsAfter = DataElement.count()
         assert  numElements<numElementsAfter
     }
+
+
 }
