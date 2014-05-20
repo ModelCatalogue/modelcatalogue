@@ -18,10 +18,6 @@ grails.project.fork = [
         console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
 
-
-grails.plugin.location.'ModelCatalogueCorePlugin' = "../ModelCataloguePlugin/ModelCatalogueCorePlugin"
-grails.plugin.location.'ModelCatalogueElasticSearchPlugin' = "../ModelCataloguePlugin/ModelCatalogueElasticSearchPlugin"
-
 // Grails 2.3 uses Aether by default
 grails.project.dependency.resolver = "maven"
 grails.project.dependency.resolution = {
@@ -57,8 +53,7 @@ grails.project.dependency.resolution = {
         mavenRepo "http://repo.grails.org/grails/core"
         mavenRepo 'http://repo.spring.io/milestone'
 
-      //  mavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueCorePlugin/'
-      //  mavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueElasticSearchPlugin/'
+        mavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueCorePlugin/'
 
 		// Used for Vlad's fixtures plugin
 		mavenRepo 'http://dl.bintray.com/metadata/model-catalogue'
@@ -106,8 +101,7 @@ grails.project.dependency.resolution = {
         compile ":jquery-ui:1.10.3"
         compile ":famfamfam:1.0.1"
 
-       // compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.1"
-       // compile "org.modelcatalogue.plugins:grails-model-catalogue-elastic-search-plugin:0.1"
+       compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.2"
 
         compile ':cache:1.0.1'
         compile ':mail:1.0.1', {
