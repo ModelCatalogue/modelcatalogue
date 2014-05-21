@@ -17,6 +17,7 @@
     %{--</script>--}%
 
     <asset:stylesheet href="metaDataCurator.css"/>
+    <asset:javascript src="angular/metaDataCurator.js"/>
     <script type="text/javascript">
         angular.module('demo.config', ['mc.core.modelCatalogueApiRoot']).value('modelCatalogueApiRoot', '${request.contextPath ?: ''}/api/modelCatalogue/core')
     </script>
@@ -81,6 +82,6 @@
         </div>
     </div>
 </div>
-<asset:javascript src="angular/metaDataCurator.js"/>
+
 </body>
 </html>
