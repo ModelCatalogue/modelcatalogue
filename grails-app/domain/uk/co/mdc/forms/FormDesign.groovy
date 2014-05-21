@@ -21,21 +21,6 @@ class FormDesign {
 
 	static mapping = {
 		description type: 'text'
-		formDesignElements sort: 'designOrder'
 	}
-	
-//	def getQuestions(){
-//		Set elements = this.formDesignElements
-//		Set questions =  [];
-//		elements.each{ formDesignElement ->
-//
-//			if(formDesignElement instanceof QuestionElement){
-//				questions.add(formDesignElement)
-//			}
-//		}
-//
-//		return questions
-//
-//	}
-	
+
 }

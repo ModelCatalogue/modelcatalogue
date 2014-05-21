@@ -1,10 +1,10 @@
-package grails.plugin.springsecurity.acl
+package org.codehaus.groovy.grails.plugins.springsecurity.acl
 
 class AclEntry {
 
-	AclObjectIdentity aclObjectIdentity
+	org.codehaus.groovy.grails.plugins.springsecurity.acl.AclObjectIdentity aclObjectIdentity
 	int aceOrder
-	AclSid sid
+	org.codehaus.groovy.grails.plugins.springsecurity.acl.AclSid sid
 	int mask
 	boolean granting
 	boolean auditSuccess

@@ -1,4 +1,4 @@
-package grails.plugin.springsecurity.acl
+package org.codehaus.groovy.grails.plugins.springsecurity.acl
 
 class AclSid {
 

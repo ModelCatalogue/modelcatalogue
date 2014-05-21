@@ -15,19 +15,14 @@ class UrlMappings {
 		}
 
         "/pathways"(resources: "pathway")
-
-        // API endpoints
-//        "/api/forms"(version:'1.0', resources:"form", namespace:'v1')
-//       "/api/dataelements"(version:'1.0', resources:"dataElement", namespace:'v1')
-
 		name pendingUsers: "/role/pendingUsers"( controller: "role", action: "listPendingUsers" )
-		name importDataOld: "/admin/oldImportData"(controller: "oldDataImport")
         name importData: "/admin/importData"(controller: "dataImport")
-		name importICU: "/admin/importICU"(controller: "excelImporter")
         name importCOSD: "/admin/importCOSD"(controller:"COSDImporter")
         name importRelationships: "/admin/importRelationships"(controller:"relationshipImport")
 
         "/"(view:"/index")
+
+        "/metadataCurator"(view: "metadataCurator/index")
 
 		"403"(controller: "errors", action: "error403") 
 		"404"(controller: "errors", action: "error404") 
