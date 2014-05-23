@@ -3,6 +3,7 @@ package uk.co.mdc.utils
 import org.modelcatalogue.core.Model
 import org.modelcatalogue.core.dataarchitect.ExcelLoader
 import org.modelcatalogue.core.dataarchitect.HeadersMap
+import org.modelcatalogue.core.dataarchitect.Importer
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
@@ -23,7 +24,6 @@ class DataImportController {
             return
         }
 
-        ArrayList parentModels
         String conceptualDomainName, conceptualDomainDescription
 
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)request
@@ -37,11 +37,6 @@ class DataImportController {
             conceptualDomainName = params.conceptualDomainName.toString().replaceAll('\\[', "").replaceAll('\\]', "").trim()
         }
         if(params.conceptualDomainDescription){conceptualDomainDescription = params.conceptualDomainDescription.toString().replaceAll('\\[', "").replaceAll('\\]', "").trim()}else{conceptualDomainDescription=""}
-        if(params.parentModels && params.parentModels.toString()!="[]"){
-            parentModels  = params.parentModels.toString().replaceAll('\\[', "").replaceAll('\\]', "").trim().split(',')
-        }else{
-            params.parentModels=[]
-        }
 
         //Microsoft Excel files
         //Microsoft Excel 2007 files
@@ -64,11 +59,12 @@ class DataImportController {
                 headersMap.measurementUnitNameRow = "Measurement Unit"
                 headersMap.metadataRow = "Metadata"
 
-                dataImportService.importData(headers, rows, conceptualDomainName, conceptualDomainDescription, parentModels , headersMap)
+                Importer importer = dataImportService.importData(headers, rows, conceptualDomainName, conceptualDomainDescription, headersMap)
 
                 //if (result) {
                 flash.message = "DataElements have been created.\n"
                 //}
+                render view: 'showImport', model: [importer: importer]
             }
             catch(Exception ex)
             {
@@ -87,7 +83,14 @@ class DataImportController {
             else if (file.size<=0)
                 flash.message ="The uploaded file is empty!"
         }
+           render view: 'index'
 
-        render view: 'index'
     }
+
+    def showImport(){
+
+
+    }
+
+
 }

@@ -17,10 +17,6 @@
             <input type="text" id="conceptualDomainDescription" name="conceptualDomainDescription"/>
         </div>
         <div class="form-group">
-            <label for="parentModels">Parent Models</label></br>
-            <input type="text" id="parentModels" name="parentModels"/> (i.e. COSD, CORE)
-        </div>
-        <div class="form-group">
             <label for="excelFile">Please select files</label></br>
             <input type="file" id="excelFile" name="excelFile" multiple="false" />
         </div>

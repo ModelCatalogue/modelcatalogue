@@ -227,9 +227,6 @@ coffeescript.modules = {
 elasticSearch.client.mode = 'local'
 elasticSearch.index.store.type = 'memory' // store local node in memory and not on disk
 elasticSearch.datastoreImpl = 'hibernateDatastore'
-elasticSearch.disableAutoIndex = true
-
-
 
 // Uncomment and edit the following lines to start using Grails encoding & escaping improvements
 
