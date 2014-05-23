@@ -130,8 +130,8 @@ grails{
         includes = ["/application.less"]
         less.compiler='less4j' // faster than the default
     }
-	plugin{
-		springsecurity{
+    plugins{
+        springsecurity{
 
             // redirection page for success (including successful registration
             successHandler.defaultTargetUrl = '/dashboard/'
