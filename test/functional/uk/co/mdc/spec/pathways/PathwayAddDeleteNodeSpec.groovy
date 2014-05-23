@@ -92,7 +92,6 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 
         when:"I  add a new node"
         def node = createNode()
-        def selectedNode = getSelectedNode()
 
         then:"The New node should be selected automatically"
         node.attr("id") == selectedNode.attr("id")
@@ -104,17 +103,12 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 
         when: "I create a node"
         def node1 = createNode();
-        def selectedNode = getSelectedNode()
-
 
         then:"It should be added and selected"
         node1.attr("id") == selectedNode.attr("id")
 
-
         when: "I create another node"
         def node2  = createNode();
-        selectedNode = getSelectedNode()
-
 
         then:"the second node should be selected"
         node2.attr("id") == selectedNode.attr("id")
@@ -152,8 +146,7 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 
         and: "the new node is selected"
         postCreationNodeIds[0]
-        getSelectedNode()
-        postCreationNodeIds[0] == getSelectedNode().attr("id")
+        postCreationNodeIds[0] == selectedNode.attr("id")
 
     }
 
@@ -167,13 +160,14 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
         allNodes[0]
 
         when: "click on a node"
-        def selectedNode=allNodes[0]
-        selectedNode.click()
+		def testNode = allNodes[0]
 
+		testNode[0].click()
 
         then:"the node should be selected"
-        selectedNode.attr("id") == getSelectedNode().attr("id")
-
+        waitFor {
+			selectedNode.attr("id") == testNode.attr("id")
+		}
 
         when:"click on a blank space on Container"
         pathwayCanvas.click()
@@ -181,9 +175,9 @@ class PathwayAddDeleteNodeSpec extends GebReportingSpec {
 
         then: "the selected node should be unSelected and no node is selected"
         waitFor{
-            getSelectedNode().size()==0
+            !selectedNode.present
         }
-        !selectedNode.classes().contains('selectedItem')
+        !testNode.classes().contains('selectedItem')
     }
 
 
