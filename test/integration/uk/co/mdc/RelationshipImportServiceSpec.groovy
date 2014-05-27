@@ -9,7 +9,7 @@ import org.modelcatalogue.core.dataarchitect.HeadersMap
 class RelationshipImportServiceSpec extends IntegrationSpec {
 
     def fileName= "test/unit/resources/DataTemplate.xlsx"
-    def fileName2= "test/unit/resources/relationshipImport.xlsx"
+    def fileName2= "test/unit/resources/relationshipImport.xls"
     def dataImportService, initCatalogueService, relationshipImporterService
 
     def setup(){
@@ -37,7 +37,7 @@ class RelationshipImportServiceSpec extends IntegrationSpec {
         headersMap.measurementUnitNameRow = "Measurement Unit"
         headersMap.metadataRow = "Metadata"
 
-        dataImportService.importData(headers, rows, "NHIC : TRA", "NHIC TRA conceptual domain for renal transplantation", ["NHIC Datasets", "TRA", "TRA_OUH", "Round 1"], headersMap)
+        dataImportService.importData(headers, rows, "NHIC : TRA", "NHIC TRA conceptual domain for renal transplantation", headersMap)
         DataElement de1 = DataElement.findByModelCatalogueId("MC_037e6162-3b6f-4ae2-a171-2470b64dff10_1")
         DataElement de2 = DataElement.findByModelCatalogueId("MC_065e6162-3b6f-4ae2-a171-2470b64dff10_1")
         DataElement de3 = DataElement.findByModelCatalogueId("MC_067e6162-3b4f-4ae2-a171-2470b64dff10_1")
@@ -52,7 +52,6 @@ class RelationshipImportServiceSpec extends IntegrationSpec {
         Model admissions = Model.findByModelCatalogueId("MC_067e6162-3b6f-4ae2-a171-2470b63dff00_1")
         Model unit = Model.findByModelCatalogueId("MC_067e6162-3b6f-4ae2-a171-2470b64dff19_1")
         Model demographics = Model.findByModelCatalogueId("MC_067e6162-3b6f-4ae2-a171-2470b63dff01_1")
-
 
         then:"the dataElement should have name"
         de1
