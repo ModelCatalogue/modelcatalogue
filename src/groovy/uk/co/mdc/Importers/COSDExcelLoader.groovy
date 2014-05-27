@@ -142,7 +142,7 @@ class COSDExcelLoader extends ExcelLoader {
         // [national code]=[national code definition] separated by new line: \r\n
         // Question? => is Data Item Number the Unique Code field?
         def cosdHeaders = ["Data Item Name","Data Item Description",
-                           "Parent Model",
+                           "Parent Model", "Containing Model",
                            "List content", "Metadata","Data item No.", "Format", "Data Dictionary Element",
                            "Current Collection", "Schema Specification"]
 
@@ -172,6 +172,7 @@ class COSDExcelLoader extends ExcelLoader {
         def cosdDataItemNameIndex = cosdHeaders.indexOf("Data Item Name")
         def cosdDataItemDescriptionIndex = cosdHeaders.indexOf("Data Item Description")
         def cosdParentModel = cosdHeaders.indexOf("Parent Model")
+        def cosdContainingModel = cosdHeaders.indexOf("Containing Model")
         def cosdListContentIndex = cosdHeaders.indexOf("List content")
         def cosdMetadata = cosdHeaders.indexOf("Metadata")
         def cosdDataItemNumberIndex = cosdHeaders.indexOf("Data item No.")
@@ -218,7 +219,8 @@ class COSDExcelLoader extends ExcelLoader {
                     cosdRow[cosdDataItemNumberIndex] = rows[cont][dataItemNumberIndex]
                     cosdRow[cosdDataItemNameIndex] = dataItemName
                     cosdRow[cosdDataItemDescriptionIndex] = dataItemDescription
-                    cosdRow[cosdParentModel] = dataItemSection
+                    cosdRow[cosdParentModel] = sheetName
+                    cosdRow[cosdContainingModel] = dataItemSection
                     cosdRow[cosdFormatIndex] = dataItemFormat
                     cosdRow[cosdListContentIndex] = ""
                     cosdRow[cosdDataDictionaryElementIndex] = rows[cont][dataItemDataDictionaryElementIndex]
