@@ -54,9 +54,8 @@
                         <ul class="dropdown-menu">
                             <li ui-sref-active="active" ><a id="relationshipTypeLink" ui-sref="mc.resource.list({resource: 'relationshipType'})">Relationship Types</a></li>
                             <li ui-sref-active="active"><a id="uninstantiatedElements" ui-sref="mc.dataArchitect.uninstantiatedDataElements">Uninstantiated Data Elements</a></li>
+                            <li ui-sref-active="active"><a id="createCOSDSynonymRelationships" ui-sref="mc.dataArchitect.createCOSDSynonymRelationships">Create COSD Synonym Data Element Relationships</a></li>
                             <li ui-sref-active="active"><a id="metadataKeyCheck" ui-sref="mc.dataArchitect.metadataKey">Data Elements without Metadata Key</a></li>
-                            <li><a href="../model_catalogue/api/modelCatalogue/core/dataElement?format=xlsx&report=NHIC">Export All Data Elements NHIC report</a></li>
-                            <li><a href="../model_catalogue/api/modelCatalogue/core/dataElement?format=xlsx&report=COSD">Export All Data Elements COSD report</a></li>
                             <li><a href="../model_catalogue/api/modelCatalogue/core/dataArchitect/uninstantiatedDataElements?format=xlsx&report=NHIC">Export Uninstantiated Elements</a></li>
                         </ul>
                     </li>
