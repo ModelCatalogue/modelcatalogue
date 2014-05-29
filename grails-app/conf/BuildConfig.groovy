@@ -58,7 +58,7 @@ grails.project.dependency.resolution = {
         mavenRepo 'http://repo.spring.io/milestone'
 
         mavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueCorePlugin/'
-       // mavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueElasticSearchPlugin/'
+        mavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueElasticSearchPlugin/'
 
 		// Used for Vlad's fixtures plugin
 		mavenRepo 'http://dl.bintray.com/metadata/model-catalogue'
@@ -90,9 +90,7 @@ grails.project.dependency.resolution = {
             exclude 'xml-apis'
         }
 
-
         runtime 'mysql:mysql-connector-java:5.1.22'
-
 		test "org.modelcatalogue:simple-fixtures:0.1.2"
     }
 
@@ -106,8 +104,8 @@ grails.project.dependency.resolution = {
         compile ":jquery-ui:1.10.3"
         compile ":famfamfam:1.0.1"
 
-        compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.3"
-       // compile "org.modelcatalogue.plugins:grails-model-catalogue-elastic-search-plugin:0.1"
+        compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.3.1"
+        compile "org.modelcatalogue.plugins:grails-model-catalogue-elastic-search-plugin:0.2"
 
         compile ':cache:1.0.1'
         compile ':mail:1.0.1', {
@@ -131,8 +129,8 @@ grails.project.dependency.resolution = {
         runtime ":jquery:1.8.3"
         runtime ":resources:1.1.6"
 
-        compile ":asset-pipeline:1.7.6"
-        compile ":coffee-asset-pipeline:1.7.0"
+        compile ":asset-pipeline:1.8.8"
+        compile ":coffee-asset-pipeline:1.8.0"
         compile ":less-asset-pipeline:1.7.0"
 
         // The following are dead, we shouldn't use them!

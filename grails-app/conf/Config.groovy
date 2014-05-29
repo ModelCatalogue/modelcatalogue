@@ -129,6 +129,9 @@ grails{
         excludes = ["**/*.less"]
         includes = ["/application.less"]
         less.compiler='less4j' // faster than the default
+        minifyJs=false
+        minifyCss =false
+        bundle=false
     }
     plugins{
         springsecurity{
@@ -208,6 +211,7 @@ auditLog {
 }
 
 coffeescript.modules = {
+    minifyJs=false
     angularApp {
         String src = 'src/coffee/angular'
         files "${src}/services", "${src}/filters", "${src}/controllers", "${src}/app.coffee"
