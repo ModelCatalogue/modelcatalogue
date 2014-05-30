@@ -25,7 +25,7 @@ class LoginPage extends Page{
 		forgottenPasswordLink 	{ $("a", id: "forgottenPasswordLink") }
 		registerLink 			{ $("a", id: "registerLink") }
 		
-		errors(required:false) { $(".login_message p") }
+		errors(required:false) { $(".alert") }
 
 		invalidUsernameOrPasswordError(required:false) {
 			errors.filter(text:contains("Sorry, we were not able to find a user with that username and password."))

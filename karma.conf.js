@@ -1,42 +1,50 @@
 // an example karma.conf.js
 module.exports = function(config) {
 	config.set({
-		basePath: '',
+		basePath: '.',
 		frameworks: ['jasmine'],
-		browsers: ['Chrome', 'Firefox'],
-		//browsers: ['Chrome', 'Firefox', 'Safari'],
-		reporters: ['progress', 'junit', 'coverage'],
+
+		browsers: [
+            'Chrome'
+            //'Firefox', // Firefox is slow!
+            //'Safari'
+        ],
+		reporters: ['progress', 'junit', 'coverage', 'osx'],
 		singleRun: false,
-		
-		//preprocessors: {
-		//	'web-app/js/!(lib|vendor)/*.js': 'coverage'
-		//},
+        autoWatch : true,
+
 		coverageReporter: {
 			type: 'lcovonly',
-			dir: 'reports/js/coverage/'
+			dir: 'target/reports/js/coverage/'
 		},
 
 		junitReporter: {
-			outputFile: 'reports/js/karma-test-results.xml'
+			outputFile: 'target/reports/js/karma-test-results.xml',
+            suite: 'unit'
 		},
 		
 		files: [
-			// MOST OF THE FOLLOWING SHOULD BE REMOVED (or at least fixed and put in lib/)
-			'web-app/js/vendor/jquery/*.js',
-			'web-app/js/vendor/jquery-ui.1.10.2.js',
-			'web-app/js/datatable/jquery.dataTables.min.js',
-			'web-app/js/datatable/jquery.dataTables.fnSetFilteringDelay.js',
-			'web-app/js/vendor/bootstrap/*.js',
-			'web-app/js/lib/**/*.js',
-			'web-app/js/vendor/**/*.js',
-			'web-app/js/*/*.js',
-			'test/js/**/*.js'
+            // Required libraries
+            'grails-app/assets/bower_components/jquery/dist/jquery.js',
+            'grails-app/assets/bower_components/angular/angular.js',
+            'grails-app/assets/bower_components/angular-resource/angular-resource.js',
+            'grails-app/assets/bower_components/ng-table/ng-table.js',
+
+            // App under test
+            'grails-app/assets/javascripts/**/!(*Spec).coffee',
+
+            // Mocks
+            'test/js/lib/angular/angular-mocks.js',
+
+            // Templates
+            'grails-app/assets/javascripts/angular/**/*.html',
+
+            // Finally... tests
+            'grails-app/assets/javascripts/**/*Spec.coffee',
+            'test/js/**/*.coffee',
+            'test/js/unit**/*.js'
 		],
 		exclude: [
-			'web-app/js/vendor/bootstrap-editable.js',
-			'web-app/js/vendor/require/require.js',
-			'web-app/js/pathways/main.js',
-			'web-app/js/pathways/AppViewModel.js',
 		],
 
 		plugins: [
@@ -46,6 +54,36 @@ module.exports = function(config) {
 			'karma-firefox-launcher',
 			'karma-safari-launcher',
 			'karma-junit-reporter',
-		]
+            'karma-coffee-preprocessor',
+            'karma-ng-html2js-preprocessor',
+            'karma-osx-reporter'
+		],
+
+        preprocessors: {
+            '**/*.coffee': ['coffee'],
+            '**/*.html': ['ng-html2js']
+        },
+
+        coffeePreprocessor: {
+            // options passed to the coffee compiler
+            options: {
+                bare: true,
+                sourceMap: false
+            },
+            // transforming the filenames
+            transformPath: function(path) {
+                return path.replace(/\.js$/, '.coffee');
+            }
+        },
+
+        /**
+         * Angular template loader.
+         * see http://daginge.com/technology/2013/12/14/testing-angular-templates-with-jasmine-and-karma/
+         */
+        ngHtml2JsPreprocessor: {
+            moduleName: 'templates',
+            stripPrefix: 'grails-app/assets/javascripts/',
+            prependPrefix:'/model_catalogue/assets/'
+        }
 	});
 };

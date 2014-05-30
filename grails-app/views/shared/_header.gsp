@@ -1,7 +1,3 @@
-<%@ page import="org.codehaus.groovy.grails.plugins.PluginManagerHolder"%>
-<%@ page import="org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils"%>
-<%@ page import="grails.plugins.springsecurity.SecurityConfigType"%>
-
 <!DOCTYPE html>
 <!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
 <!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
@@ -25,6 +21,8 @@
 <r:require modules="application"/>
 
 
+
+
 <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
 <!--[if lt IE 9]>
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"/>
@@ -34,10 +32,15 @@
 
 <g:layoutHead />
 <r:layoutResources />
+
+    <asset:stylesheet href="datatables/media/css/jquery.dataTables.css"/>
+
+    <asset:stylesheet href="angular-xeditable/dist/css/xeditable.css"/>
+    <asset:stylesheet href="application.css"/>
 </head>
 <body>
 
-	<g:render template="/pathwaysModel/createPathwayModal" />
+	<g:render template="/pathway/createPathwayModal" />
 	<g:render template="/formDesign/createFormModal" />
     <!-- BEGIN WRAP. We use the wrap to enable a sticky footer element-->
     <div id="wrap">
@@ -51,20 +54,20 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="${createLink(uri: '/')}">MDC</a>
+                    <a class="navbar-brand" href="${createLink(uri: '/')}">Model Catalogue</a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a href="${createLink(uri: '/')}">Home</a></li>
 <sec:ifLoggedIn>
+                        <li><a href="${createLink(uri: '/dashboard/')}">Dashboard</a></li>
                         <!-- Metadata curation menu -->
-                        <li><g:link action="list" controller="ValueDomain"> Data model </g:link></li>
+                        <li><a href="${createLink(uri: '/metadataCurator')}">Data Curator</a></li>
 
                         <!-- Pathways menu -->
                         <li class="dropdown">
                             <a id="nav-pathway-expand" class="dropdown-toggle" data-toggle="dropdown" href="#">Pathways <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li id="nav-pathway-link"><g:link elementId="listPathwaysLink" action="list" controller="PathwaysModel"> List pathways </g:link></li>
+                                <li id="nav-pathway-link"><g:link elementId="listPathwaysLink" action="index" controller="pathway"> List pathways </g:link></li>
                                 <li><a id="createPathwayLink" href="#" data-toggle="modal" data-target="#createPathwayModal"> Create pathway </a></li>
                             </ul>
                         </li>
@@ -94,16 +97,17 @@
                                 <li><g:link controller="role" action='listPendingUsers'>Activate pending users</g:link></li>
                                 <li class="divider"></li>
                                 <li class="dropdown-header">Import/Export</li>
-                                <li><g:link mapping="importData">Import data</g:link></li>
+                                <li><g:link mapping="importData">Import Data</g:link></li>
+                                <li><g:link mapping="importRelationships">Import Relationships</g:link></li>
+                                <li><g:link mapping="importCOSD">Import COSD Excel</g:link></li>
                             </ul>
                         </li>
-    </sec:ifAnyGranted>
-</sec:ifLoggedIn>
                     </ul>
-
+    </sec:ifAnyGranted>
                     <ul class="nav navbar-nav navbar-right">
                         <li><g:link data-placement="bottom" class="btn btn-inverse" data-original-title="Logout" rel="tooltip" controller="logout"> Logout </g:link></li>
                     </ul>
+</sec:ifLoggedIn>
                 </div>
             </div>
         </nav>

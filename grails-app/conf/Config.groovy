@@ -1,5 +1,3 @@
-import grails.plugins.springsecurity.SecurityConfigType
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 // Additional configuration file locations. This is the default, but we need to load the contents of ~/.grails/model_catalogue-config.groovy
 // for the production DB connection/username/passord.
@@ -13,8 +11,8 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 // }
 
 grails.project.groupId = uk.co.mdc // change this to alter the default package name and Maven publishing destination
+grails.mime.use.accept.header = true // required to play nicely with Angular's JSON requests
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
-grails.mime.use.accept.header = false
 grails.mime.types = [
 	all:           '*/*',
 	atom:          'application/atom+xml',
@@ -30,6 +28,7 @@ grails.mime.types = [
 		'application/json',
 		'text/json'
 	],
+    hal:           ['application/hal+json','application/hal+xml'],
 	multipartForm: 'multipart/form-data',
 	rss:           'application/rss+xml',
 	text:          'text/plain',
@@ -43,6 +42,10 @@ grails.mime.types = [
 
 //NEED TO REMOVE IN PRODUCTION - DISABLING JAVASCRIPT BUNDLING
 grails.resources.debug=true
+
+// REQUIRED FIX FOR CVE-2014-0053, see http://cxsecurity.com/issue/WLB-2014020172?utm_source=twitterfeed&utm_medium=twitter&utm_content=bugtraq,+wlb,+cxsecurity
+grails.resources.adhoc.includes = ['/images/**', '/css/**', '/js/**', '/plugins/**']
+grails.resources.adhoc.excludes = ['/WEB-INF/**']
 
 grails.converters.encoding = "UTF-8"
 
@@ -66,7 +69,7 @@ grails.hibernate.cache.queries = false
 
 environments {
 	development {
-		grails.logging.jul.usebridge = true
+        grails.logging.jul.usebridge = true
 		
 		//disable mail send functionality
 		grails.mail.disabled=true
@@ -111,6 +114,7 @@ log4j = {
 	debug 	'grails.app.services.grails.plugin.springsecurity.ui.SpringSecurityUiService'
 	info 	'org.springframework.security'
 	debug  	'uk.co.mdc.mail'		// Dummy mail output for dev
+    info    'uk.co.mdc.pathways'
 }
 
 
@@ -121,17 +125,27 @@ grails.views.javascript.library="jquery"
 
 
 grails{
-	plugins{
-		springsecurity{
+    assets{
+        excludes = ["**/*.less"]
+        includes = ["/application.less"]
+        less.compiler='less4j' // faster than the default
+        minifyJs=false
+        minifyCss =false
+        bundle=false
+    }
+    plugins{
+        springsecurity{
 
-			// page to redirect to if a login attempt fails
-			failureHandler.defaultFailureUrl = '/login/authfail/?login_error=1'
-			
+            // redirection page for success (including successful registration
+            successHandler.defaultTargetUrl = '/dashboard/'
 			
 			// Added by the Spring Security Core plugin:
 			userLookup.userDomainClassName = 'uk.co.mdc.SecUser'
 			userLookup.authorityJoinClassName = 'uk.co.mdc.SecUserSecAuth'
 			authority.className = 'uk.co.mdc.SecAuth'
+            requestMap.className = 'uk.co.mdc.Requestmap'
+            securityConfigType = 'Requestmap'
+            logout.postOnly = false
 
 			//disable to prevent double encryption of passwords
 			ui.encodePassword = false
@@ -145,7 +159,6 @@ grails{
 			ui.password.minLength=8
 			ui.password.maxLength=64
 
-			securityConfigType = SecurityConfigType.InterceptUrlMap
 			useSecurityEventListener = true
 
 			onInteractiveAuthenticationSuccessEvent = { e, appCtx ->
@@ -156,46 +169,6 @@ grails{
 				}
 			}
 
-			securityConfigType = "Annotation"
-			controllerAnnotations.staticRules = [
-                // Bower dependencies
-                '/bower_components/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
-				// Javascript
-				'/js/**':      			['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/js/vendor/**':  		['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/plugins/**/js/**':	['IS_AUTHENTICATED_ANONYMOUSLY'],
-				// CSS
-				'/**/css/**':      		['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/css/**': 				['IS_AUTHENTICATED_ANONYMOUSLY'],
-                '/**/*.less':           ['IS_AUTHENTICATED_ANONYMOUSLY'],
-				// Images
-				'/images/**': 			['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/img/**': 				['IS_AUTHENTICATED_ANONYMOUSLY'],
-				// Anonymously acessible pages, e.g. registration & login
-				'/login/*':    			['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/logout/*':    		['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/register/*':    		['IS_AUTHENTICATED_ANONYMOUSLY'],
-				
-				'/securityInfo/**': 	["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/role':  				["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/role/**':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/user':  				["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/user/**':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclClass':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclClass/**': 	 	["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclSid':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclSid/**':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclEntry':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclEntry/**': 		["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclObjectIdentity':	["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclObjectIdentity/*': ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/conceptualDomain/*':  ["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/valueDomain/*':       ["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/dataElement/*':       ["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/umlModel/*':         	["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/document/*':         	["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/**':         			["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY']
-			]
 		}
 	}
 	
@@ -238,6 +211,7 @@ auditLog {
 }
 
 coffeescript.modules = {
+    minifyJs=false
     angularApp {
         String src = 'src/coffee/angular'
         files "${src}/services", "${src}/filters", "${src}/controllers", "${src}/app.coffee"
@@ -251,3 +225,33 @@ coffeescript.modules = {
         defaultBundle angularTests
     }
 }
+
+//elastic search settings - please see elastic search GORM plugin for more deta
+
+elasticSearch.client.mode = 'local'
+elasticSearch.index.store.type = 'memory' // store local node in memory and not on disk
+elasticSearch.datastoreImpl = 'hibernateDatastore'
+
+// Uncomment and edit the following lines to start using Grails encoding & escaping improvements
+
+/* remove this line 
+// GSP settings
+grails {
+    views {
+        gsp {
+            encoding = 'UTF-8'
+            htmlcodec = 'xml' // use xml escaping instead of HTML4 escaping
+            codecs {
+                expression = 'html' // escapes values inside null
+                scriptlet = 'none' // escapes output from scriptlets in GSPs
+                taglib = 'none' // escapes output from taglibs
+                staticparts = 'none' // escapes output from static template parts
+            }
+        }
+        // escapes all not-encoded output at final stage of outputting
+        filteringCodecForContentType {
+            //'text/html' = 'html'
+        }
+    }
+}
+remove this line */

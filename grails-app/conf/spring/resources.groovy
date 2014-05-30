@@ -1,21 +1,19 @@
-import groovy_metadata_registry.APIAuthenticationFilters
+import grails.rest.render.RenderContext
+import org.modelcatalogue.core.CatalogueElement
+import org.modelcatalogue.core.ModelCatalogueSearchService
+import org.modelcatalogue.core.util.ListWrapper
+import org.modelcatalogue.core.util.marshalling.xlsx.XLSXListRenderer
+import uk.co.mdc.pathways.PathwayMarshaller
 import util.marshalling.CustomObjectMarshallers
-import uk.co.mdc.model.DataElementMarshaller
-import uk.co.mdc.forms.FieldMarshaller
-import uk.co.mdc.forms.QuestionElementMarshaller
-import uk.co.mdc.forms.FormDesignMarshaller
-import uk.co.mdc.forms.SectionElementMarshaller
-import uk.co.mdc.model.ValueDomainMarshaller
-import uk.co.mdc.model.DataElementConceptMarshaller
-import uk.co.mdc.model.ConceptualDomainMarshaller
-import uk.co.mdc.model.CollectionMarshaller
-import uk.co.mdc.pathways.PathwaysModelMarshaller
 import uk.co.mdc.pathways.LinkMarshaller
 import uk.co.mdc.pathways.NodeMarshaller
 import grails.util.Environment
+import util.marshalling.DataElementMarshaller
 
 // Place your Spring DSL code here
 beans = {
+
+    modelCatalogueSearchService(ModelCatalogueSearchService)
 
 	Environment.executeForCurrentEnvironment {
 		// Override mail server for dummy in 'development' mode only.
@@ -23,30 +21,16 @@ beans = {
 			mailService(uk.co.mdc.mail.DummyMailService)
 		}
 	}
-	
-	apiAuthFilter(APIAuthenticationFilters) {
-		authenticationManager = ref("authenticationManager")
-		rememberMeServices = ref("rememberMeServices")
-		springSecurityService = ref("springSecurityService")
-	}
-	
-	
+
 	customObjectMarshallers( CustomObjectMarshallers ) {
 		marshallers = [
-		new DataElementMarshaller(),
-		new FieldMarshaller(),
-		new ValueDomainMarshaller(),
-		new DataElementConceptMarshaller(),
-		new CollectionMarshaller(),
-		new ConceptualDomainMarshaller(),
-		new QuestionElementMarshaller(),
-		new PathwaysModelMarshaller(),
-		new LinkMarshaller(), 
-		new NodeMarshaller(), 
-		new FormDesignMarshaller(), 
-		new SectionElementMarshaller()
+            new PathwayMarshaller(),
+            new LinkMarshaller(),
+            new NodeMarshaller(),
+            new DataElementMarshaller()
 		]
 	}
+
 }
 
 

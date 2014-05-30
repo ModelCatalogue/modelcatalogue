@@ -1,27 +1,19 @@
 package uk.co.mdc.forms
 
-import java.util.Map;
-
-import uk.co.mdc.model.DataType
-
-class InputField {
+abstract class InputField {
 	
 	String defaultValue
 	String placeholder
 	Integer maxCharacters
 	String unitOfMeasure
-	DataType dataType
 	String format
 	
     static constraints = {
-		 defaultValue nullable:true
-		 placeholder nullable:true
+		 defaultValue nullable:true, maxSize: 255
+		 placeholder nullable:true, maxSize: 255
 		 maxCharacters nullable:true
-		 unitOfMeasure nullable:true
-		 dataType nullable:true
+		 unitOfMeasure nullable:true, maxSize: 255
 		 format nullable:true
 		}
 
-	
-	
 }

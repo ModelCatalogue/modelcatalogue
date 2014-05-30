@@ -2,7 +2,7 @@
 
 <!-- BEGIN MAIN CONTENT -->
 <div class="fullwidth-container">
-    <div class="row">
+    <div class="row" >
         <div class="col-xs-12">
             <g:layoutBody />
         </div>

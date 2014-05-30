@@ -6,7 +6,7 @@
   <!-- BEGIN FOOTER -->
     <div id="footer">
         <div class="container">
-            <p class="text-muted">2013 © Model Catalog</p>
+            <p class="text-muted">Model Catalogue &copy; 2014 </p>
         </div>
     </div>
   <!-- END FOOTER -->
@@ -16,13 +16,6 @@
     <g:message code="spinner.alt" default="Loading&hellip;" />
   </div>
 
-  <sec:ifLoggedIn>
-    <r:script>
-            $(function() {
-                dashboard();
-            });
-        </r:script>
-  </sec:ifLoggedIn>
 
   <!-- FIXME this needs to be moved, it doesn't belong in the footer -->
   <!-- Confirm Modal -->
@@ -61,6 +54,16 @@
     </g:if>
     <!-- Add Google Analytics support -->
 
-    <r:layoutResources />
+
+
+  <asset:javascript src="jquery/dist/jquery.js"/>
+  <asset:javascript src="jquery-ui/ui/jquery-ui.js"/>
+  <asset:javascript src="bootstrap/dist/js/bootstrap.js"/>
+  <asset:javascript src="datatables/media/js/jquery.dataTables.js"/>
+  <asset:javascript src="jquery.layout/dist/jquery.layout-latest.js"/>
+
+  <asset:javascript src="angular/app.js"/>
+  <asset:javascript src="angular/list.js"/>
+  <r:layoutResources />
   </body>
 </html>

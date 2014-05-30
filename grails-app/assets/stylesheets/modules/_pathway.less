@@ -1,0 +1,136 @@
+.pathwayEditor {
+  h3 {
+    margin-top: 0;
+  }
+
+  .border-radius(@radius) {
+    .border-top-radius(@radius);
+    .border-bottom-radius(@radius);
+    .border-left-radius(@radius);
+    .border-right-radius(@radius);
+  }
+
+  .node {
+    /*	width: 5em; */
+    padding: 2em;
+    position: absolute;
+    z-index: 4;
+    .border-radius(@border-radius-small);
+    .opacity(0.8);
+    .box-shadow(5px 5px 5px @mc-colour-1-lightest);
+    .transition(background-color 0.15s ease-in);
+    border: 1px solid @mc-colour-1-darker;
+    color: @mc-colour-1-darker;
+    cursor: move;
+    background-color: white;
+    font-size: 11px;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: @mc-colour-2-lightest;
+      border: 1px solid @mc-colour-1;
+      color: black;
+    }
+  }
+
+  .tree-node {
+    outline: none;
+    span:hover {
+      cursor: pointer;
+    }
+  }
+
+  .selectedItem, .selectedItem:hover {
+    background-color: @mc-colour-2-lightest;
+  }
+
+  .ep {
+    display: inline-block;;
+    position: absolute;
+    width: 1em;
+    height: 1em;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 125%;
+    color: @mc-colour-2;
+  }
+
+  .connector {
+    position: absolute;
+  }
+  .right {
+    .connector;
+    right: -0.15em;
+    bottom: 37%;
+
+  }
+  .left {
+    .connector;
+    left: 0;
+    bottom: 37%;
+  }
+  .up {
+    .connector;
+    top: 0;
+    right: 45%;
+  }
+  .down {
+    .connector;
+    bottom: 0;
+    right: 45%;
+  }
+
+  path {
+    cursor: pointer;
+    //  stroke: @mc-colour-1-darker;
+  }
+
+
+  .canvas {
+    position: relative;
+    width: 3000px;
+    height: 3000px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    .graph-paper
+  }
+
+
+  #formDesignCart, #deCollectionCart, #collectionCart {
+    height: 50px;
+    margin-bottom: 10px;
+    padding: 5px;
+    text-align: center;
+    width: 100%;
+  }
+
+  // The palette should float above the scrolling content,
+  // and be fixed to the left-hand side
+  .palette{
+    position: fixed;
+    z-index: 100;
+  }
+
+  .thing-picker{
+    border-top: 1px;
+    border-top-style: dashed;
+    .thing-picker-addMode{
+      margin-bottom: 20px;
+    }
+  }
+
+  /**
+  Thing picker widget
+  **/
+  .pagination{
+    font-size: xx-small;
+  }
+
+  /**
+   Node properties pane
+   **/
+  .fullwidth-table{
+    width: 100%;
+  }
+}

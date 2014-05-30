@@ -3,8 +3,6 @@ package uk.co.mdc.pathways
 
 import grails.test.mixin.*
 
-import uk.co.mdc.model.Collection
-
 /**
  * Simple unit tests for pathway links
  * @author Ryan Brooks (ryan.brooks@ndm.ox.ac.uk)
@@ -21,9 +19,11 @@ class LinkSpec extends spock.lang.Specification {
 		when: 'everything is fine'
 		
 		def link = new Link(name: "Special link")
+        def pathway = new Node()
 		def source = new Node()
 		def target = new Node()
-		
+
+        link.pathway = pathway
 		link.source = source
 		link.target = target
 		
@@ -32,6 +32,7 @@ class LinkSpec extends spock.lang.Specification {
 		then: 'the node should validate and contain the right things'
 		
 		!link.hasErrors()
+        link.pathway == pathway
 		link.source == source
 		link.target == target
 		
