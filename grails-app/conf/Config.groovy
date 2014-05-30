@@ -70,7 +70,7 @@ grails.hibernate.cache.queries = false
 environments {
 	development {
         grails.logging.jul.usebridge = true
-		
+
 		//disable mail send functionality
 		grails.mail.disabled=true
 	}
@@ -127,7 +127,7 @@ grails.views.javascript.library="jquery"
 grails{
     assets{
         excludes = ["**/*.less"]
-        includes = ["/application.less"]
+        includes = ["**/application.less"]
         less.compiler='less4j' // faster than the default
         minifyJs=false
         minifyCss =false
@@ -138,7 +138,7 @@ grails{
 
             // redirection page for success (including successful registration
             successHandler.defaultTargetUrl = '/dashboard/'
-			
+
 			// Added by the Spring Security Core plugin:
 			userLookup.userDomainClassName = 'uk.co.mdc.SecUser'
 			userLookup.authorityJoinClassName = 'uk.co.mdc.SecUserSecAuth'
@@ -171,7 +171,7 @@ grails{
 
 		}
 	}
-	
+
 	views {
 		codec = "html" // none, html, base64
 		gsp {
@@ -234,7 +234,7 @@ elasticSearch.datastoreImpl = 'hibernateDatastore'
 
 // Uncomment and edit the following lines to start using Grails encoding & escaping improvements
 
-/* remove this line 
+/* remove this line
 // GSP settings
 grails {
     views {
