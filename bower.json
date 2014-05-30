@@ -31,7 +31,6 @@
     "angular-ui-router": "~0.2.9"
   },
   "resolutions": {
-    "jquery": ">= 1.9.0",
-    "angular": "~1.x"
+    "jquery": ">= 1.9.0"
   }
 }

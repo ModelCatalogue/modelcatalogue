@@ -12,4 +12,10 @@ $(function() {
         currentDiv = '#dashboard-options';
         $('#dashboard-options').effect("slide", {direction: 'left', mode: 'show'}, 500);
     });
+
+    $('#metadata').click(function(){
+            $('#dashboard-options').effect("slide", {direction: 'left', mode: 'hide'}, 500);
+            window.location.href = '../metadataCurator'
+        }
+    );
 });

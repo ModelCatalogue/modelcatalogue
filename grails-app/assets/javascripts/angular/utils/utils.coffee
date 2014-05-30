@@ -8,7 +8,10 @@ utils = angular.module('utils', ['ngResource', 'utils.thingPicker'])
 #
 utils.service 'Grails', ($resource) ->
 
-	# This is the preferred method for retrieving resources
+	getCatalogueElementResource: (controller, id) ->
+		$resource "/:grailsAppName/api/modelCatalogue/core/:controller/:id", {grailsAppName: grailsAppName || '', controller: controller || '', id: id || ''}, { 'get': { method: 'GET', isArray: false }, 'update': { method: 'PUT'} }
+
+  # This is the preferred method for retrieving resources
 	#
 	# 	controller: the API endpoint, following "api/", e.g. 'pathways'
 	#	id: (optional) the ID of the resource to retrieve.

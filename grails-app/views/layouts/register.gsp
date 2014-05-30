@@ -1,10 +1,3 @@
-<!-- --------------------------------------------------------------- -->
-<!-- ----- Build using the opensource METIS - twitter bootstrap dashboard----------- -->
-<!-- --------------------------------------------------------------- -->
-<%@ page import="org.codehaus.groovy.grails.plugins.PluginManagerHolder"%>
-<%@ page import="org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils"%>
-<%@ page import="grails.plugins.springsecurity.SecurityConfigType"%>
-
 <!DOCTYPE html>
 <!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
 <!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->

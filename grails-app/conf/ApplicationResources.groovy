@@ -1,6 +1,5 @@
 modules = {
 
-
 	// Standard libraries
 	jquery_lib {
 		resource url: "js/vendor/jquery/jquery-ui.1.10.2.js"

@@ -18,7 +18,7 @@ driver = {
  }
 
 waiting {
-	timeout = 10
+	timeout = 15
 	retryInterval = 0.2
 }
 // Default to wraping `at SomePage` declarations in `waitFor` closures
@@ -69,7 +69,7 @@ environments {
         capabillities.setCapability("tunnel-identifier", System.getenv("TRAVIS_JOB_NUMBER"));
         capabillities.setCapability("platform", Platform.LINUX);
         capabillities.setCapability("name", "ModelCatalogue");
-        capabillities.setCapability("selenium-version", "2.39.0");
+        capabillities.setCapability("selenium-version", "2.5.0");
         driver = { new RemoteWebDriver(new URL("http://${username}:${apiKey}@ondemand.saucelabs.com:80/wd/hub"), capabillities) }
     }
 }

@@ -36,9 +36,8 @@ pathwayEditor = angular.module('pathway.controllers', ['pathway.services'])
 
 .controller('NodePropertiesCtrl', ['$scope', 'ItemSelector','NodeService','Currentpathway','Grails',($scope, ItemSelector,NodeService,Currentpathway,Grails) ->
 
-		$scope.allFormsResource = Grails.getRestAPIResource('forms')
-		$scope.allDataElementsResource = Grails.getRestAPIResource('dataelements')
-
+		#$scope.allFormsResource = Grails.getRestAPIResource('forms')
+		$scope.allDataElementsResource = Grails.getCatalogueElementResource('dataElement')
 		$scope.selectedNode = null
 
 		$scope.switchToSubPathway = ->

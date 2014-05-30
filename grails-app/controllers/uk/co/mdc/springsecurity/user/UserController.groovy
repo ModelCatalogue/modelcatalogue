@@ -1,6 +1,5 @@
 package uk.co.mdc.springsecurity.user
 
-import grails.plugins.springsecurity.Secured;
 import org.codehaus.groovy.grails.plugins.springsecurity.NullSaltSource
 import org.codehaus.groovy.grails.plugins.springsecurity.ui.RegistrationCode
 import uk.co.mdc.SecAuth
@@ -52,7 +51,6 @@ class UserController extends grails.plugins.springsecurity.ui.UserController {
 	 * Activate a user in the pending state.
 	 * May only be carried out by admins
 	 */
-	@Secured(['ROLE_ADMIN'])
 	def activate() {
 		// TODO this should validate that the user is in the pending status
 		def user = SecUser.findById(params.id)

@@ -16,13 +16,6 @@
     <g:message code="spinner.alt" default="Loading&hellip;" />
   </div>
 
-  <sec:ifLoggedIn>
-    <r:script>
-            $(function() {
-                dashboard();
-            });
-        </r:script>
-  </sec:ifLoggedIn>
 
   <!-- FIXME this needs to be moved, it doesn't belong in the footer -->
   <!-- Confirm Modal -->

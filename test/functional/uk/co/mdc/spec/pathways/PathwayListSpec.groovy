@@ -32,7 +32,9 @@ class PathwayListSpec extends GebReportingSpec{
 
 
         and: "the pathways list contains a known top-level pathway"
-        getPathwayLink("Transplanting and Monitoring Pathway").displayed
+        waitFor {
+            getPathwayLink("Transplanting and Monitoring Pathway").displayed
+        }
 
         and: "the pathways list does not contain a known subpathway"
         !getPathwayLink("Guarding Patient on recovery and transfer to nursing ward").displayed

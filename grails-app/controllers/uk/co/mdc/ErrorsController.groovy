@@ -1,9 +1,5 @@
 package uk.co.mdc
 
-import grails.plugins.springsecurity.Secured
-
-@Secured(['permitAll']) 
-
 class ErrorsController {
 
 def error403 = {}
