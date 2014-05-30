@@ -45,7 +45,7 @@ class NodePropertiesSpec extends GebReportingSpec{
 
         then:
         waitFor {
-            node.text() == oldName
+			getNode( getNodeIds()[0]).text() == oldName
         }
     }
 
@@ -62,7 +62,7 @@ class NodePropertiesSpec extends GebReportingSpec{
 
         then:
         waitFor {
-            node.text() == newName
+			getNode( getNodeIds()[0]).text() == newName
         }
     }
 
@@ -79,7 +79,7 @@ class NodePropertiesSpec extends GebReportingSpec{
 
         then:
         waitFor {
-            node.text() == newName
+			getNode( getNodeIds()[0]).text() == newName
         }
     }
 }

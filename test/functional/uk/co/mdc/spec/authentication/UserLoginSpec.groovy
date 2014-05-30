@@ -143,7 +143,7 @@ class UserLoginSpec extends GebReportingSpec {
 //		
 //		then: "I am taken to the data model page"
 //		waitFor{
-//			at ModelListPage
+//			at MetadataListPage
 //		}
 //		
 //		when: "I click on the pathways link in the navigation bar"

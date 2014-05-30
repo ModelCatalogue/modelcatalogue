@@ -3,15 +3,12 @@ package uk.co.mdc.pathways
 
 import grails.test.mixin.*
 
-import uk.co.mdc.model.Collection
-
 /**
  * Simple unit tests for pathway nodes
  * @author Ryan Brooks (ryan.brooks@ndm.ox.ac.uk)
  *
  */
 @TestFor(Node)
-@Mock(Collection)
 class NodeSpec extends spock.lang.Specification {
 
 	def "Nodes are simple objects with getters and setters"(){

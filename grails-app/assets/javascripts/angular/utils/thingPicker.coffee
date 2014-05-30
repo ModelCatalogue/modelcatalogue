@@ -29,7 +29,7 @@ module.controller('ThingPickerCtrl',['$scope', 'ngTableParams', ($scope, ngTable
 	$scope.confirm = ->
 		# Replace the selectedThings without changing the reference
 		$scope.selectedThings.length = 0
-		Array.prototype.push.apply($scope.selectedThings,$scope.tempSelectedThings);
+		Array.prototype.push.apply($scope.selectedThings,$scope.tempSelectedThings)
 		clearTempThings()
 
 	$scope.cancel = ->
@@ -55,7 +55,7 @@ module.controller('ThingPickerCtrl',['$scope', 'ngTableParams', ($scope, ngTable
 				# update table params
 				params.total(data.total)
 				# set new data
-				$defer.resolve(data.objects)
+				$defer.resolve(data.list)
 			)
 	}
 

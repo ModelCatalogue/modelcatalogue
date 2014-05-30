@@ -1,12 +1,9 @@
 package uk.co.mdc.pathways
 
 import grails.rest.RestfulController
-
-import grails.plugins.springsecurity.Secured
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.access.AccessDeniedException
 
-@Secured(['ROLE_USER'])
 class PathwayController extends RestfulController<Pathway>{
 
     def pathwayService

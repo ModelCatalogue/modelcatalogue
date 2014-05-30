@@ -1,0 +1,33 @@
+/*
+ *= require bootstrap/dist/css/bootstrap
+ *= require modelcatalogue/core/ui/bs/directives
+ */
+
+.navbar-input-group {
+  font-size: 0px; /*removes whitespace between button and input*/
+
+  input {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    &:focus {
+      width: 400px;
+    }
+  }
+
+  .btn {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-left: 0px;
+    width: 45px;
+}
+
+  ul {
+    width: 445px;
+
+    li a {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
