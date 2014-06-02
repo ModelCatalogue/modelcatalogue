@@ -98,8 +98,8 @@
                                 <li class="divider"></li>
                                 <li class="dropdown-header">Import/Export</li>
                                 <li><g:link mapping="importData">Import Data</g:link></li>
-                                <li><g:link mapping="importRelationships">Import Relationships</g:link></li>
-                                <li><g:link mapping="importCOSD">Import COSD Excel</g:link></li>
+                                %{--<li><g:link mapping="importRelationships">Import Relationships</g:link></li>--}%
+                                %{--<li><g:link mapping="importCOSD">Import COSD Excel</g:link></li>--}%
                             </ul>
                         </li>
                     </ul>
