@@ -80,12 +80,15 @@ environments {
 			logging.jul.usebridge = false
 			// TODO: serverURL = "http://www.changeme.com"
 			mail {
-			  host = "smtp.gmail.com"
-			  port = 465
-			  props = ["mail.smtp.auth":"true",
-					   "mail.smtp.socketFactory.port":"465",
-					   "mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
-					   "mail.smtp.socketFactory.fallback":"false"]
+				host = System.env.MC_MAIL_HOST ?: 'smtp.gmail.com'
+				port = System.env.MC_MAIL_PORT ?: 587
+				username = System.env.MC_MAIL_USER ?: ''
+				password = System.env.MC_MAIL_PASS ?: ''
+
+			  	props = ["mail.smtp.auth":"true",
+					"mail.smtp.socketFactory.port":"465",
+					"mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
+					"mail.smtp.socketFactory.fallback":"false"]
 			}
 		 }
 	}
