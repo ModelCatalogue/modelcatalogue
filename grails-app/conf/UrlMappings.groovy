@@ -18,6 +18,7 @@ class UrlMappings {
 		name pendingUsers: "/role/pendingUsers"( controller: "role", action: "listPendingUsers" )
         name importData: "/admin/importData"(controller: "dataImport")
         name importCOSD: "/admin/importCOSD"(controller:"COSDImporter")
+        name importSACT: "/admin/importCOSD"(controller:"SACTImporter")
         name importRelationships: "/admin/importRelationships"(controller:"relationshipImport")
 
         "/"(view:"/index")
