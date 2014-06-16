@@ -1,11 +1,7 @@
 package uk.co.mdc.utils.importers
 
-import org.modelcatalogue.core.CatalogueElement
-import org.modelcatalogue.core.Model
 import org.modelcatalogue.core.PublishedElement
 import org.modelcatalogue.core.RelationshipType
-import org.modelcatalogue.core.dataarchitect.ImportRow
-import org.modelcatalogue.core.dataarchitect.Importer
 
 class RelationshipImporterService {
 

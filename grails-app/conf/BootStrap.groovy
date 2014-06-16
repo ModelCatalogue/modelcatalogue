@@ -17,7 +17,7 @@ import uk.co.mdc.Requestmap
 import uk.co.mdc.SecAuth
 import uk.co.mdc.SecUser
 import uk.co.mdc.SecUserSecAuth
-import uk.co.mdc.forms.*
+import org.modelcatalogue.core.reports.ReportsRegistry
 import uk.co.mdc.pathways.Link
 import uk.co.mdc.pathways.Node
 import uk.co.mdc.pathways.Pathway
@@ -29,6 +29,7 @@ class BootStrap {
 	def aclService, aclUtilService, sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService, dataArchitectService
 
     XLSXListRenderer xlsxListRenderer
+    ReportsRegistry reportsRegistry
 
 	def init = { servletContext ->
 
@@ -42,22 +43,37 @@ class BootStrap {
         initCatalogueService.initDefaultMeasurementUnits()
 
         xlsxListRenderer.registerRowWriter('COSD') {
+            title 'Export All to COSD'
             headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata", "Data item No.","Schema Specification","Data Dictionary Element", "Current Collection", "Format"
             when { ListWrapper container, RenderContext context ->
-                context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && DataElement.isAssignableFrom(container.itemType)
+                context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && container.itemType && DataElement.isAssignableFrom(container.itemType)
             } then { DataElement element ->
                 [[getParentModel(element)?.modelCatalogueId, getParentModel(element)?.name, getContainingModel(element)?.modelCatalogueId, getContainingModel(element)?.name, element.modelCatalogueId, element.name, element.description, getUnitOfMeasure(element), getDataType(element), "-", element.ext.get("Data item No."), element.ext.get("Schema Specification"), element.ext.get("Data Dictionary Element"), element.ext.get("Current Collection"), element.ext.get("Format") ]]
             }
         }
 
         xlsxListRenderer.registerRowWriter('NHIC') {
+            title "Export All to NHIC"
             headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata", "NHIC_Identifier","Link_to_existing_definition", "Notes_from_GD_JCIS" ,"Optional_Local_Identifier","A" ,"B","C" ,"D" ,"E" ,"F" ,"G","H","E2", "System", "Comments", "Group"
             when { ListWrapper container, RenderContext context ->
-                context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && DataElement.isAssignableFrom(container.itemType)
+                context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && container.itemType && DataElement.isAssignableFrom(container.itemType)
             } then { DataElement element ->
                 [[getParentModel(element)?.modelCatalogueId, getParentModel(element)?.name, getContainingModel(element)?.modelCatalogueId, getContainingModel(element)?.name, element.modelCatalogueId, element.name, element.description, getUnitOfMeasure(element), getDataType(element), "-", element.ext.NHIC_Identifier, element.ext.Link_to_existing_definition, element.ext.Notes_from_GD_JCIS , element.ext.Optional_Local_Identifier, element.ext.A, element.ext.B, element.ext.C , element.ext.D , element.ext.E , element.ext.F , element.ext.G, element.ext.H, element.ext.E2, element.ext.System, element.ext.Comments, element.ext.Group]]
             }
         }
+
+        reportsRegistry.register {
+            title 'Export All to COSD'
+            type Model
+            link controller: 'dataArchitect', action: 'getSubModelElements', params: [format: 'xlsx', report: 'COSD'], id: true
+        }
+
+        reportsRegistry.register {
+            title 'Export All to NHIC'
+            type Model
+            link controller: 'dataArchitect', action: 'getSubModelElements', params: [format: 'xlsx', report: 'NHIC'], id: true
+        }
+
 
 
 		environments {

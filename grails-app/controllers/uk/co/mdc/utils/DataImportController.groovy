@@ -3,7 +3,7 @@ package uk.co.mdc.utils
 import org.modelcatalogue.core.Model
 import org.modelcatalogue.core.dataarchitect.ExcelLoader
 import org.modelcatalogue.core.dataarchitect.HeadersMap
-import org.modelcatalogue.core.dataarchitect.Importer
+import org.modelcatalogue.core.dataarchitect.DataImport
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
@@ -59,7 +59,7 @@ class DataImportController {
                 headersMap.measurementUnitNameRow = "Measurement Unit"
                 headersMap.metadataRow = "Metadata"
 
-                Importer importer = dataImportService.importData(headers, rows, conceptualDomainName, conceptualDomainDescription, headersMap)
+                DataImport importer = dataImportService.importData(headers, rows, conceptualDomainName, conceptualDomainDescription, headersMap)
 
                 //if (result) {
                 flash.message = "DataElements have been created.\n"
