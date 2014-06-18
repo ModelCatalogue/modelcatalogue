@@ -42,11 +42,13 @@
                     <li class="dropdown" ui-sref-active="active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Catalogue Elements<b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li ui-sref-active="active"><a id="modelLink" ui-sref="mc.resource.list({resource: 'model', page:'1'})">Models</a></li>
-                            <li ui-sref-active="active"><a id="dataElementLink" ui-sref="mc.resource.list({resource: 'dataElement', page:'1'})">Data Elements</a></li>
-                            <li ui-sref-active="active"><a id="valueDomainLink" ui-sref="mc.resource.list({resource: 'valueDomain', page:'1'})">Value Domains</a></li>
-                            <li ui-sref-active="active"><a id="conceptualDomainLink" ui-sref="mc.resource.list({resource: 'conceptualDomain', page:'1'})">Conceptual Domains</a></li>
-                            <li ui-sref-active="active"><a id="dataTypeLink" ui-sref="mc.resource.list({resource: 'dataType', page:'1'})">Data Types</a></li>
+                                    <li ui-sref-active="active"><a id="assetLink" ui-sref="mc.resource.list({resource: 'asset'})" ui-sref-opts="{inherit: false}">Assets</a></li>
+                                    <li ui-sref-active="active"><a id="modelLink" ui-sref="mc.resource.list({resource: 'model'})" ui-sref-opts="{inherit: false}">Models</a></li>
+                                    <li ui-sref-active="active"><a id="dataElementLink" ui-sref="mc.resource.list({resource: 'dataElement'})" ui-sref-opts="{inherit: false}">Data Elements</a></li>
+                                    <li ui-sref-active="active"><a id="valueDomainLink" ui-sref="mc.resource.list({resource: 'valueDomain'})" ui-sref-opts="{inherit: false}">Value Domains</a></li>
+                                    <li ui-sref-active="active"><a id="conceptualDomainLink" ui-sref="mc.resource.list({resource: 'conceptualDomain'})" ui-sref-opts="{inherit: false}">Conceptual Domains</a></li>
+                                    <li ui-sref-active="active"><a id="dataTypeLink" ui-sref="mc.resource.list({resource: 'dataType'})" ui-sref-opts="{inherit: false}">Data Types</a></li>
+                                    <li ui-sref-active="active"><a id="measurementUnitLink" ui-sref="mc.resource.list({resource: 'measurementUnit'})" ui-sref-opts="{inherit: false}">Measurement Unit</a></li>
                         </ul>
                     </li>
                     <li class="dropdown" ui-sref-active="active">

@@ -1,6 +1,7 @@
 import grails.rest.render.RenderContext
 import org.modelcatalogue.core.CatalogueElement
 import org.modelcatalogue.core.ModelCatalogueSearchService
+import org.modelcatalogue.core.reports.ReportsRegistry
 import org.modelcatalogue.core.util.ListWrapper
 import org.modelcatalogue.core.util.marshalling.xlsx.XLSXListRenderer
 import uk.co.mdc.pathways.PathwayMarshaller
@@ -14,6 +15,8 @@ import util.marshalling.DataElementMarshaller
 beans = {
 
     modelCatalogueSearchService(ModelCatalogueSearchService)
+
+    reportsRegistry(ReportsRegistry)
 
 	Environment.executeForCurrentEnvironment {
 		// Override mail server for dummy in 'development' mode only.

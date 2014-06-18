@@ -1,15 +1,21 @@
 package util.marshalling
 
 import grails.converters.XML
+import org.modelcatalogue.core.CatalogueElement
 import org.modelcatalogue.core.DataElement
 import org.modelcatalogue.core.DataType
 import org.modelcatalogue.core.EnumeratedType
 import org.modelcatalogue.core.MeasurementUnit
 import org.modelcatalogue.core.Model
 import org.modelcatalogue.core.ValueDomain
+import org.modelcatalogue.core.reports.ReportDescriptor
+import org.modelcatalogue.core.reports.ReportsRegistry
 import org.modelcatalogue.core.util.marshalling.ExtendibleElementMarshallers
+import org.springframework.beans.factory.annotation.Autowired
 
 class DataElementMarshaller extends ExtendibleElementMarshallers {
+
+    @Autowired ReportsRegistry reportsRegistry
 
     DataElementMarshaller() {
         super(DataElement)
@@ -29,6 +35,17 @@ class DataElementMarshaller extends ExtendibleElementMarshallers {
         }else{
             xml.build { dataType dt?.name }
         }
+    }
+
+    @Override
+    protected getAvailableReports(CatalogueElement el) {
+        def reports = []
+
+        for (ReportDescriptor descriptor in reportsRegistry.getAvailableReports(el)) {
+            reports << [title: descriptor.title, url: descriptor.getLink(el)]
+        }
+
+        reports
     }
 
 
