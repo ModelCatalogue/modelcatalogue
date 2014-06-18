@@ -1,3 +1,14 @@
+import grails.rest.render.RenderContext
+import org.modelcatalogue.core.CatalogueElement
+import org.modelcatalogue.core.DataElement
+import org.modelcatalogue.core.DataType
+import org.modelcatalogue.core.EnumeratedType
+import org.modelcatalogue.core.MeasurementUnit
+import org.modelcatalogue.core.Model
+import org.modelcatalogue.core.RelationshipType
+import org.modelcatalogue.core.ValueDomain
+import org.modelcatalogue.core.util.ListWrapper
+import org.modelcatalogue.core.util.marshalling.xlsx.XLSXListRenderer
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder as SCH
@@ -14,12 +25,10 @@ import org.springframework.security.acls.domain.BasePermission
 
 
 class BootStrap {
-	def aclService
-	def aclUtilService
-	def sessionFactory
-	def springSecurityService
-	def grailsApplication
-    def domainModellerService
+
+	def aclService, aclUtilService, sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService, dataArchitectService
+
+    XLSXListRenderer xlsxListRenderer
 
 	def init = { servletContext ->
 
@@ -27,7 +36,30 @@ class BootStrap {
 		
 		//register custom json Marshallers
 		registerJSONMarshallers(springContext)
-		
+
+        initCatalogueService.initDefaultDataTypes()
+        initCatalogueService.initDefaultRelationshipTypes()
+        initCatalogueService.initDefaultMeasurementUnits()
+
+        xlsxListRenderer.registerRowWriter('COSD') {
+            headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata", "Data item No.","Schema Specification","Data Dictionary Element", "Current Collection", "Format"
+            when { ListWrapper container, RenderContext context ->
+                context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && DataElement.isAssignableFrom(container.itemType)
+            } then { DataElement element ->
+                [[getParentModel(element)?.modelCatalogueId, getParentModel(element)?.name, getContainingModel(element)?.modelCatalogueId, getContainingModel(element)?.name, element.modelCatalogueId, element.name, element.description, getUnitOfMeasure(element), getDataType(element), "-", element.ext.get("Data item No."), element.ext.get("Schema Specification"), element.ext.get("Data Dictionary Element"), element.ext.get("Current Collection"), element.ext.get("Format") ]]
+            }
+        }
+
+        xlsxListRenderer.registerRowWriter('NHIC') {
+            headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata", "NHIC_Identifier","Link_to_existing_definition", "Notes_from_GD_JCIS" ,"Optional_Local_Identifier","A" ,"B","C" ,"D" ,"E" ,"F" ,"G","H","E2", "System", "Comments", "Group"
+            when { ListWrapper container, RenderContext context ->
+                context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && DataElement.isAssignableFrom(container.itemType)
+            } then { DataElement element ->
+                [[getParentModel(element)?.modelCatalogueId, getParentModel(element)?.name, getContainingModel(element)?.modelCatalogueId, getContainingModel(element)?.name, element.modelCatalogueId, element.name, element.description, getUnitOfMeasure(element), getDataType(element), "-", element.ext.NHIC_Identifier, element.ext.Link_to_existing_definition, element.ext.Notes_from_GD_JCIS , element.ext.Optional_Local_Identifier, element.ext.A, element.ext.B, element.ext.C , element.ext.D , element.ext.E , element.ext.F , element.ext.G, element.ext.H, element.ext.E2, element.ext.System, element.ext.Comments, element.ext.Group]]
+            }
+        }
+
+
 		environments {
 			production {
                 createBaseRoles()
@@ -38,7 +70,7 @@ class BootStrap {
 			}
 			test{
 				importDevData()
-                domainModellerService.modelDomains()
+                //domainModellerService.modelDomains()
 			}
 			development {
 				importDevData()
@@ -84,6 +116,9 @@ class BootStrap {
         //only permit admin user registrationCode
         new Requestmap(url: '/bootstrap-data/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/dataImport/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/relationshipImport/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/oldDataImport/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/excelImporter/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/admin', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/admin/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/securityInfo/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
@@ -100,13 +135,12 @@ class BootStrap {
         new Requestmap(url: '/aclEntry', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/aclEntry/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/aclObjectIdentity', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/cosdimporter/**', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
 
         //only permit metadatacurator users access to the api
-
         new Requestmap(url: '/api/modelCatalogue/core/**', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
- //       new Requestmap(url: '/api/modelCatalogue/core/*/search', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
- //       new Requestmap(url: '/api/modelCatalogue/core/**/outgoing', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
- //       new Requestmap(url: '/api/modelCatalogue/core/**/incoming', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/*/outgoing/**', configAttribute: 'ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/*/incoming/**', configAttribute: 'ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
         new Requestmap(url: '/api/modelCatalogue/core/search/**', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
         new Requestmap(url: '/api/modelCatalogue/core/*/create', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
         new Requestmap(url: '/api/modelCatalogue/core/*/edit', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
@@ -127,8 +161,11 @@ class BootStrap {
 			//login as admin so you can create the prepopulated data
 			loginAsAdmin()
 
+
 			//populate with some test data....there will be more
 			populateWithTestData()
+
+            sessionFactory.currentSession.flush()
 
 			//grant relevant permissions (i.e. admin user has admin on everything)
 			grantPermissions()
@@ -295,21 +332,11 @@ class BootStrap {
 
 
 	/*
-	 * **********************POPULATE WITH FORMS TEST DATA********************************
+	 * **********************POPULATE WITH PATHWAYS TEST DATA********************************
 	 *
 	 * */
 
 	private populateWithTestData(){
-
-
-		//populate with test data
-		def applicationContext = grailsApplication.mainContext
-		def DEM
-		def string
-		
-		def date
-		
-
 
 		if(!Pathway.count()){
 
@@ -318,7 +345,7 @@ class BootStrap {
                     name: 'Transplanting and Monitoring Pathway',
                     userVersion: '0.2',
                     isDraft: true
-            ).save(failOnError: true)
+            ).save(failOnError: true, flush:true)
 
 
             Node subPathway1 = new Node(
@@ -329,42 +356,42 @@ class BootStrap {
                     x: '325px',
                     y: '330px',
                     parent: pathway1,
-            ).save(failOnError:true)
+            ).save(failOnError:true, flush:true)
 
             Node node1 = new Node(
                     name: 'Guard Patient',
                     x: '250px',
                     y: '0px',
                     description: 'guard patient on recovery',
-            ).save(failOnError: true)
+            ).save(failOnError: true, flush:true)
 
             Node node2 = new Node(
                     name: 'Recovery',
                     x: '150px',
                     y: '100px',
                     description: 'recover',
-            ).save(failOnError: true)
+            ).save(failOnError: true, flush:true)
 
             Node node3 = new Node(
                     name: 'Transfer to nursing ward',
                     x: '250px',
                     y: '300px',
                     description: 'transfer patient to the nursing ward',
-            ).save(failOnError: true)
+            ).save(failOnError: true, flush:true)
 
             def link1 = new Link(
                     name: 'TM1',
                     pathway: subPathway1,
                     source: node1,
                     target: node2,
-            ).save(failOnError:true)
+            ).save(failOnError:true, flush:true)
 
             def link2 = new Link(
                     name: 'TM2',
                     pathway: subPathway1,
                     source: node2,
                     target: node3,
-            ).save(failOnError:true)
+            ).save(failOnError:true, flush:true)
 
             subPathway1.addToNodes(node1)
             subPathway1.addToNodes(node2)
@@ -409,6 +436,50 @@ class BootStrap {
                     .addToLinks(link22)
 		}
 	}
+
+
+    def getContainingModel(DataElement dataElement){
+        if(dataElement.containedIn) {
+            return dataElement.containedIn.first()
+        }
+        return null
+    }
+
+    def getParentModel(DataElement dataElement){
+        Model containingModel = getContainingModel(dataElement)
+        if(containingModel.childOf) {
+            return containingModel.childOf.first()
+        }
+        return null
+    }
+
+    def getValueDomain(DataElement dataElement){
+        if(dataElement.instantiatedBy) {
+            return dataElement.instantiatedBy.first()
+        }
+        return null
+    }
+
+    def getDataType(DataElement dataElement){
+        ValueDomain valueDomain = getValueDomain(dataElement)
+        if(valueDomain) {
+            DataType dataType = valueDomain.dataType
+            if (dataType instanceof EnumeratedType) {
+                return dataType.enumAsString
+            }
+            return dataType.name
+        }
+        return null
+    }
+
+    def getUnitOfMeasure(DataElement dataElement){
+        ValueDomain valueDomain = getValueDomain(dataElement)
+        if(valueDomain) {
+            MeasurementUnit unitOfMeasure = valueDomain?.unitOfMeasure
+            return unitOfMeasure?.name
+        }
+        return null
+    }
 	
 
 

@@ -16,15 +16,15 @@ class MetadataListPage extends Page{
 	static content = {
         metadataApp { $("#metadataCurator") }
         heading { metadataApp.find("h2") }
-        actor {metadataApp.find("table.dl-table td a", text: "actor") }
+        id {metadataApp.find("table.dl-table td a", text: "id") }
         page3 {metadataApp.find("table.dl-table ul.pagination a", text: "3") }
         version {metadataApp.find("table.dl-table td a", text: "version") }
-        enumerations {metadataApp.find("table.dl-table td a", text: "enumerations") }
-        conceptualDomain {metadataApp.find("table.dl-table td a", text: "ConceptualDomain") }
+        status {metadataApp.find("table.dl-table td a", text: "status") }
+        catalogueElement {metadataApp.find("table.dl-table td a", text: "CatalogueElement") }
         next {metadataApp.find("table.dl-table ul.pagination a", text: "Next") }
         previous {metadataApp.find("table.dl-table ul.pagination a", text: "Previous") }
         heading3 { metadataApp.find("h3") }
         containsTab { metadataApp.find("div.tabbable ul.nav-tabs a", text: "Contains") }
-        dataElement {metadataApp.find("div td.dl-table-item-cell a", text: "Data Element: 123") }
+        dataElement {metadataApp.find("div td.dl-table-item-cell a", text: "Data Element: 114") }
 	}
 }

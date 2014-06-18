@@ -1,5 +1,3 @@
-import grails.plugins.springsecurity.SecurityConfigType
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 // Additional configuration file locations. This is the default, but we need to load the contents of ~/.grails/model_catalogue-config.groovy
 // for the production DB connection/username/passord.
@@ -82,12 +80,15 @@ environments {
 			logging.jul.usebridge = false
 			// TODO: serverURL = "http://www.changeme.com"
 			mail {
-			  host = "smtp.gmail.com"
-			  port = 465
-			  props = ["mail.smtp.auth":"true",
-					   "mail.smtp.socketFactory.port":"465",
-					   "mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
-					   "mail.smtp.socketFactory.fallback":"false"]
+				host = System.env.MC_MAIL_HOST ?: 'smtp.gmail.com'
+				port = System.env.MC_MAIL_PORT ?: 587
+				username = System.env.MC_MAIL_USER ?: ''
+				password = System.env.MC_MAIL_PASS ?: ''
+
+			  	props = ["mail.smtp.auth":"true",
+					"mail.smtp.socketFactory.port":"465",
+					"mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
+					"mail.smtp.socketFactory.fallback":"false"]
 			}
 		 }
 	}
@@ -131,12 +132,12 @@ grails{
         excludes = ["**/*.less"]
         includes = ["**/application.less"]
         less.compiler='less4j' // faster than the default
+        minifyJs=false
+        minifyCss =false
+        bundle=false
     }
-	plugins{
-		springsecurity{
-
-			// page to redirect to if a login attempt fails
-			failureHandler.defaultFailureUrl = '/login/authfail/?login_error=1'
+    plugins{
+        springsecurity{
 
             // redirection page for success (including successful registration
             successHandler.defaultTargetUrl = '/dashboard/'
@@ -145,6 +146,9 @@ grails{
 			userLookup.userDomainClassName = 'uk.co.mdc.SecUser'
 			userLookup.authorityJoinClassName = 'uk.co.mdc.SecUserSecAuth'
 			authority.className = 'uk.co.mdc.SecAuth'
+            requestMap.className = 'uk.co.mdc.Requestmap'
+            securityConfigType = 'Requestmap'
+            logout.postOnly = false
 
 			//disable to prevent double encryption of passwords
 			ui.encodePassword = false
@@ -158,7 +162,6 @@ grails{
 			ui.password.minLength=8
 			ui.password.maxLength=64
 
-			securityConfigType = SecurityConfigType.InterceptUrlMap
 			useSecurityEventListener = true
 
 			onInteractiveAuthenticationSuccessEvent = { e, appCtx ->
@@ -169,50 +172,6 @@ grails{
 				}
 			}
 
-			securityConfigType = "Annotation"
-			controllerAnnotations.staticRules = [
-                '/':                            ['IS_AUTHENTICATED_ANONYMOUSLY'],
-
-                // Asset pipeline
-                '/assets/**':       ['IS_AUTHENTICATED_ANONYMOUSLY'],
-
-				// Javascript
-				'/js/**':      			        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/js/vendor/**':  		        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/plugins/**/js/**':	        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-				// CSS
-				'/**/css/**':      		        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/css/**': 				        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-                '/**/*.less':                   ['IS_AUTHENTICATED_ANONYMOUSLY'],
-				// Images
-				'/images/**': 			        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/img/**': 				        ['IS_AUTHENTICATED_ANONYMOUSLY'],
-
-				// Anonymously acessible pages, e.g. registration & login
-				'/login/*':    			['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/logout/*':    		['IS_AUTHENTICATED_ANONYMOUSLY'],
-				'/register/*':    		['IS_AUTHENTICATED_ANONYMOUSLY'],
-
-				'/securityInfo/**': 	["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/role':  				["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/role/**':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/user':  				["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/user/**':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclClass':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclClass/**': 	 	["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclSid':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclSid/**':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclEntry':  			["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclEntry/**': 		["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclObjectIdentity':	["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/aclObjectIdentity/*': ["hasAnyRole('ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/conceptualDomain/*':  ["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/valueDomain/*':       ["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/dataElement/*':       ["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/umlModel/*':         	["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/document/*':         	["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY'],
-				'/**':         			["hasAnyRole('ROLE_USER', 'ROLE_ADMIN')",'IS_AUTHENTICATED_FULLY']
-			]
 		}
 	}
 
@@ -255,6 +214,7 @@ auditLog {
 }
 
 coffeescript.modules = {
+    minifyJs=false
     angularApp {
         String src = 'src/coffee/angular'
         files "${src}/services", "${src}/filters", "${src}/controllers", "${src}/app.coffee"
@@ -269,7 +229,11 @@ coffeescript.modules = {
     }
 }
 
+//elastic search settings - please see elastic search GORM plugin for more deta
 
+elasticSearch.client.mode = 'local'
+elasticSearch.index.store.type = 'memory' // store local node in memory and not on disk
+elasticSearch.datastoreImpl = 'hibernateDatastore'
 
 // Uncomment and edit the following lines to start using Grails encoding & escaping improvements
 
