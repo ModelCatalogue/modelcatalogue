@@ -153,9 +153,9 @@ grails.views.javascript.library="jquery"
 
 grails{
     assets{
-        excludes = ["**/*.less"]
-        includes = ["**/application.less"]
-        less.compiler='less4j' // faster than the default
+		excludes = ["**/*.less","**/*.coffee"]
+	    includes = ["**/application.less","**/metaDataCurator.less","**/app.coffee","**/list.coffee","**/metaDataCurator.coffee"]
+		less.compiler='less4j' // faster than the default
         minifyJs=false
         minifyCss =false
         bundle=false
