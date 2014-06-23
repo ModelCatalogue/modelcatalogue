@@ -6,7 +6,15 @@
   <!-- BEGIN FOOTER -->
     <div id="footer">
         <div class="container">
-            <p class="text-muted">Model Catalogue &copy; 2014 </p>
+            <div class="row">
+                <div class="col-sm-4 nav-left" >
+                    <sec:ifLoggedIn>
+                        <p class="feedback" id="feedback" >Feedback</p>
+                    </sec:ifLoggedIn>
+                </div>
+                <div class="col-sm-4"><p class="text-muted">Model Catalogue &copy; 2014 &nbsp&nbspv<g:meta name="app.version"/></p></div>
+                <div class="col-sm-4"></div>
+            </div>
         </div>
     </div>
   <!-- END FOOTER -->
@@ -64,6 +72,9 @@
 
   <asset:javascript src="angular/app.js"/>
   <asset:javascript src="angular/list.js"/>
+
+  <asset:javascript src="jiraIssueTracker.js"></asset:javascript>
+
   <r:layoutResources />
   </body>
 </html>
