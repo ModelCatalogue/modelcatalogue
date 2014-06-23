@@ -1,4 +1,4 @@
-<g:render template="/shared/header" />
+<g:render template="/shared/readonlyHeader" />
 
 <!-- BEGIN MAIN CONTENT -->
 <div class="fullwidth-container">
