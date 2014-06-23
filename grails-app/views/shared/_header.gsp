@@ -115,6 +115,17 @@
                         </li>
                     </ul>
     </sec:ifAnyGranted>
+
+            <!-- Show if the user is not an ADMIN -->
+            <sec:ifNotGranted roles="ROLE_ADMIN" >
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="accountLink">Account <b  class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li id="changePasswordLink"><g:link controller="register" action='changePassword' >Change Password</g:link></li>
+                    </ul>
+                </li>
+            </sec:ifNotGranted>
+
                     <ul class="nav navbar-nav navbar-right">
                         <li><g:link data-placement="bottom" class="btn btn-inverse" data-original-title="Logout" rel="tooltip" controller="logout"> Logout </g:link></li>
                     </ul>
