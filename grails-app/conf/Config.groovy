@@ -139,10 +139,7 @@ grails{
     plugins{
         springsecurity{
 
-            // redirection page for success (including successful registration
-            successHandler.defaultTargetUrl = '/dashboard/'
-
-			// Added by the Spring Security Core plugin:
+            // Added by the Spring Security Core plugin:
 			userLookup.userDomainClassName = 'uk.co.mdc.SecUser'
 			userLookup.authorityJoinClassName = 'uk.co.mdc.SecUserSecAuth'
 			authority.className = 'uk.co.mdc.SecAuth'
