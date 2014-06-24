@@ -10,8 +10,6 @@ import util.marshalling.DataElementMarshaller
 // Place your Spring DSL code here
 beans = {
 
-    modelCatalogueSearchService(ModelCatalogueSearchService)
-
 	Environment.executeForCurrentEnvironment {
 		// Override mail server for dummy in 'development' mode only.
 		development {

@@ -426,7 +426,7 @@ class BootStrap {
 
 
 
-		importService.importData()
+		//importService.importData()
 		def de = new DataElement(name: "testera", description: "test data architect").save(failOnError: true)
 		de.ext.metadata = "test metadata"
 
@@ -452,7 +452,7 @@ class BootStrap {
 			it.save(failOnError: true)
 		}
 
-		def withHistory = DataElement.findByName("NHS NUMBER STATUS INDICATOR CODE")
+		def withHistory = DataElement.findByName("testera")
 
 		10.times {
 			log.info "Creating archived version #${it}"
