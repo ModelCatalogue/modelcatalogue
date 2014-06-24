@@ -2,7 +2,6 @@ package uk.co.mdc.authentication
 
 import grails.plugins.springsecurity.ui.UserController
 import grails.test.spock.IntegrationSpec
-import uk.co.mdc.UserController
 
 /**
  * Created by soheil on 09/06/2014.

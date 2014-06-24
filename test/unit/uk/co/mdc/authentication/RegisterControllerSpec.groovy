@@ -6,8 +6,6 @@ import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import spock.lang.Specification
-import uk.co.mdc.RegisterController
-import uk.co.mdc.ResetPasswordCommand
 import uk.co.mdc.SecAuth
 import uk.co.mdc.SecUser
 import uk.co.mdc.SecUserSecAuth
