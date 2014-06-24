@@ -5,8 +5,11 @@ import org.modelcatalogue.core.DataType
 import org.modelcatalogue.core.EnumeratedType
 import org.modelcatalogue.core.MeasurementUnit
 import org.modelcatalogue.core.Model
+import org.modelcatalogue.core.PublishedElement
+import org.modelcatalogue.core.PublishedElementStatus
 import org.modelcatalogue.core.RelationshipType
 import org.modelcatalogue.core.ValueDomain
+import org.modelcatalogue.core.reports.ReportsRegistry
 import org.modelcatalogue.core.util.ListWrapper
 import org.modelcatalogue.core.util.marshalling.xlsx.XLSXListRenderer
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -29,6 +32,12 @@ class BootStrap {
 	def aclService, aclUtilService, sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService, dataArchitectService
 
     XLSXListRenderer xlsxListRenderer
+ 
+	def importService
+	def publishedElementService
+
+	ReportsRegistry reportsRegistry
+
 
 	def init = { servletContext ->
 
@@ -41,23 +50,38 @@ class BootStrap {
         initCatalogueService.initDefaultRelationshipTypes()
         initCatalogueService.initDefaultMeasurementUnits()
 
-        xlsxListRenderer.registerRowWriter('COSD') {
-            headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata", "Data item No.","Schema Specification","Data Dictionary Element", "Current Collection", "Format"
-            when { ListWrapper container, RenderContext context ->
-                context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && DataElement.isAssignableFrom(container.itemType)
-            } then { DataElement element ->
-                [[getParentModel(element)?.modelCatalogueId, getParentModel(element)?.name, getContainingModel(element)?.modelCatalogueId, getContainingModel(element)?.name, element.modelCatalogueId, element.name, element.description, getUnitOfMeasure(element), getDataType(element), "-", element.ext.get("Data item No."), element.ext.get("Schema Specification"), element.ext.get("Data Dictionary Element"), element.ext.get("Current Collection"), element.ext.get("Format") ]]
-            }
-        }
+		xlsxListRenderer.registerRowWriter('COSD') {
+			title: "COSD"
+			headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata", "Data item No.","Schema Specification","Data Dictionary Element", "Current Collection", "Format"
+			when { ListWrapper container, RenderContext context ->
+				context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && DataElement.isAssignableFrom(container.itemType)
+			} then { DataElement element ->
+				[[getParentModel(element)?.modelCatalogueId, getParentModel(element)?.name, getContainingModel(element)?.modelCatalogueId, getContainingModel(element)?.name, element.modelCatalogueId, element.name, element.description, getUnitOfMeasure(element), getDataType(element), "-", element.ext.get("Data item No."), element.ext.get("Schema Specification"), element.ext.get("Data Dictionary Element"), element.ext.get("Current Collection"), element.ext.get("Format") ]]
+			}
+		}
 
-        xlsxListRenderer.registerRowWriter('NHIC') {
-            headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata", "NHIC_Identifier","Link_to_existing_definition", "Notes_from_GD_JCIS" ,"Optional_Local_Identifier","A" ,"B","C" ,"D" ,"E" ,"F" ,"G","H","E2", "System", "Comments", "Group"
-            when { ListWrapper container, RenderContext context ->
-                context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && DataElement.isAssignableFrom(container.itemType)
-            } then { DataElement element ->
-                [[getParentModel(element)?.modelCatalogueId, getParentModel(element)?.name, getContainingModel(element)?.modelCatalogueId, getContainingModel(element)?.name, element.modelCatalogueId, element.name, element.description, getUnitOfMeasure(element), getDataType(element), "-", element.ext.NHIC_Identifier, element.ext.Link_to_existing_definition, element.ext.Notes_from_GD_JCIS , element.ext.Optional_Local_Identifier, element.ext.A, element.ext.B, element.ext.C , element.ext.D , element.ext.E , element.ext.F , element.ext.G, element.ext.H, element.ext.E2, element.ext.System, element.ext.Comments, element.ext.Group]]
-            }
-        }
+		xlsxListRenderer.registerRowWriter('NHIC') {
+			title: "NHIC"
+			headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata", "NHIC_Identifier","Link_to_existing_definition", "Notes_from_GD_JCIS" ,"Optional_Local_Identifier","A" ,"B","C" ,"D" ,"E" ,"F" ,"G","H","E2", "System", "Comments", "Group"
+			when { ListWrapper container, RenderContext context ->
+				context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && DataElement.isAssignableFrom(container.itemType)
+			} then { DataElement element ->
+				[[getParentModel(element)?.modelCatalogueId, getParentModel(element)?.name, getContainingModel(element)?.modelCatalogueId, getContainingModel(element)?.name, element.modelCatalogueId, element.name, element.description, getUnitOfMeasure(element), getDataType(element), "-", element.ext.NHIC_Identifier, element.ext.Link_to_existing_definition, element.ext.Notes_from_GD_JCIS , element.ext.Optional_Local_Identifier, element.ext.A, element.ext.B, element.ext.C , element.ext.D , element.ext.E , element.ext.F , element.ext.G, element.ext.H, element.ext.E2, element.ext.System, element.ext.Comments, element.ext.Group]]
+			}
+		}
+
+
+		reportsRegistry.register {
+			title 'Export All to COSD'
+			type Model
+			link controller: 'dataArchitect', action: 'getSubModelElements', params: [format: 'xlsx', report: 'COSD'], id: true
+		}
+
+		reportsRegistry.register {
+			title 'Export All to NHIC'
+			type Model
+			link controller: 'dataArchitect', action: 'getSubModelElements', params: [format: 'xlsx', report: 'NHIC'], id: true
+		}
 
 
 		environments {
@@ -110,8 +134,12 @@ class BootStrap {
         new Requestmap(url: '/pathway', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/pathway/**', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
         new Requestmap(url: '/pathways.json', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
-        new Requestmap(url: '/metadataCurator', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
-        new Requestmap(url: '/metadataCurator/**', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+
+
+		//add ROLE_READONLY_USER for metadataCurator
+        new Requestmap(url: '/metadataCurator', configAttribute: 'ROLE_READONLY_USER,ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+        new Requestmap(url: '/metadataCurator/**', configAttribute: 'ROLE_READONLY_USER,ROLE_ADMIN, ROLE_USER,ROLE_USER, IS_AUTHENTICATED_FULLY').save()
+
 
         //only permit admin user registrationCode
         new Requestmap(url: '/bootstrap-data/**', configAttribute: 'ROLE_ADMIN, IS_AUTHENTICATED_FULLY').save()
@@ -138,15 +166,19 @@ class BootStrap {
         new Requestmap(url: '/cosdimporter/**', configAttribute: 'ROLE_ADMIN, ROLE_USER, IS_AUTHENTICATED_FULLY').save()
 
         //only permit metadatacurator users access to the api
-        new Requestmap(url: '/api/modelCatalogue/core/**', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/*/outgoing/**', configAttribute: 'ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/*/incoming/**', configAttribute: 'ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
-        new Requestmap(url: '/api/modelCatalogue/core/search/**', configAttribute: 'ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/create', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/edit', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/save', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/update', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.PUT).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/delete', configAttribute: 'ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.DELETE).save()
+
+		//add ROLE_READONLY_USER for metadataCurator
+		new Requestmap(url: '/api/modelCatalogue/core/**', configAttribute: 'ROLE_READONLY_USER,ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+		new Requestmap(url: '/api/modelCatalogue/core/*/*/outgoing/**', configAttribute: 'ROLE_READONLY_USER,ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/*/incoming/**', configAttribute: 'ROLE_READONLY_USER,ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
+        new Requestmap(url: '/api/modelCatalogue/core/search/**', configAttribute: 'ROLE_READONLY_USER,ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+
+
+		new Requestmap(url: '/api/modelCatalogue/core/*/create', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/edit', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/save', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/update', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.PUT).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/delete', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.DELETE).save()
 
     }
 
@@ -184,6 +216,7 @@ class BootStrap {
         SecAuth.findByAuthority('ROLE_METADATA_CURATOR') ?: new SecAuth(authority: 'ROLE_METADATA_CURATOR').save(failOnError: true)
         SecAuth.findByAuthority('ROLE_PENDING') ?: new SecAuth(authority: 'ROLE_PENDING').save(failOnError: true)
         SecAuth.findByAuthority('ROLE_USER') ?: new SecAuth(authority: 'ROLE_USER').save(failOnError: true)
+        SecAuth.findByAuthority('ROLE_READONLY_USER') ?: new SecAuth(authority: 'ROLE_READONLY_USER').save(failOnError: true)
     }
 
 	private createAdminAccount(){
@@ -210,66 +243,21 @@ class BootStrap {
 	private void createUsers() {
 
         def roleAdmin = SecAuth.findByAuthority('ROLE_ADMIN') ?: new SecAuth(authority: 'ROLE_ADMIN').save(failOnError: true)
-        def rolePending = SecAuth.findByAuthority('ROLE_PENDING') ?: new SecAuth(authority: 'ROLE_PENDING').save(failOnError: true)
         def roleUser = SecAuth.findByAuthority('ROLE_USER') ?: new SecAuth(authority: 'ROLE_USER').save(failOnError: true)
-        def metadataCurator = SecAuth.findByAuthority('ROLE_METADATA_CURATOR') ?: new SecAuth(authority: 'ROLE_METADATA_CURATOR').save(failOnError: true)
-
-
-		def roleUCL = SecAuth.findByAuthority('ROLE_UCL') ?: new SecAuth(authority: 'ROLE_UCL').save(failOnError: true)
-		def roleOxford = SecAuth.findByAuthority('ROLE_OXFORD') ?: new SecAuth(authority: 'ROLE_OXFORD').save(failOnError: true)
-		def roleCambridge = SecAuth.findByAuthority('ROLE_CAMBRIDGE') ?: new SecAuth(authority: 'ROLE_CAMBRIDGE').save(failOnError: true)
-		def roleImperial = SecAuth.findByAuthority('ROLE_IMPERIAL') ?: new SecAuth(authority: 'ROLE_IMPERIAL').save(failOnError: true)
-		def roleGST = SecAuth.findByAuthority('ROLE_GST') ?: new SecAuth(authority: 'ROLE_GST').save(failOnError: true)
-
+        def roleReadOnlyUser = SecAuth.findByAuthority('ROLE_READONLY_USER') ?: new SecAuth(authority: 'ROLE_READONLY_USER').save(failOnError: true)
 
 
 		if(!SecUser.findByUsername('user1') ){
 			def user = new SecUser(username: "user1", enabled: true, emailAddress: "user1@example.org", password: "password1").save(failOnError: true)
 			SecUserSecAuth.create user, roleUser			
 		}
-		
-		if(!SecUser.findByUsername('ucl1') ){	
-			def user = new SecUser(username: "ucl1", enabled: true, emailAddress: "ucl1@example.org", password: "password1").save(failOnError: true)
-			SecUserSecAuth.create user, roleUser
-			SecUserSecAuth.create user, roleUCL
-			
+
+
+		if(!SecUser.findByUsername('ruser1') ){
+			def readOnlyUser = new SecUser(username: "ruser1", enabled: true, emailAddress: "user1@example.org", password: "rpassword1").save(failOnError: true)
+			SecUserSecAuth.create readOnlyUser, roleReadOnlyUser
 		}
-		
-		if(!SecUser.findByUsername('oxford1') ){
-			def user = new SecUser(username: "oxford1", enabled: true, emailAddress: "oxford1@example.org", password: "password1").save(failOnError: true)
-			SecUserSecAuth.create user, roleUser
-			SecUserSecAuth.create user, roleOxford
-		}
-		
-		if(!SecUser.findByUsername('oxford2') ){
-			def user = new SecUser(username: "oxford2", enabled: true, emailAddress: "oxford2@example.org", password: "password2").save(failOnError: true)
-			SecUserSecAuth.create user, roleUser
-			SecUserSecAuth.create user, roleOxford
-		}
-		
-		if(!SecUser.findByUsername('cambridge1') ){
-			def user = new SecUser(username: "cambridge1", enabled: true, emailAddress: "cambridge1@example.org", password: "password1").save(failOnError: true)
-			SecUserSecAuth.create user, roleUser
-			SecUserSecAuth.create user, roleCambridge
-		}
-		
-		if(!SecUser.findByUsername('cambridge2') ){
-			def user = new SecUser(username: "cambridge2", enabled: true, emailAddress: "cambridge2@example.org", password: "password2").save(failOnError: true)
-			SecUserSecAuth.create user, roleUser
-			SecUserSecAuth.create user, roleCambridge
-		}
-		
-		if(!SecUser.findByUsername('imperial1') ){
-			def user = new SecUser(username: "imperial1", enabled: true, emailAddress: "imperial1@example.org", password: "password1").save(failOnError: true)
-			SecUserSecAuth.create user, roleUser
-			SecUserSecAuth.create user, roleImperial
-		}
-		
-		if(!SecUser.findByUsername('gstUser1') ){
-			def user = new SecUser(username: "gstUser1", enabled: true, emailAddress: "gstUser1@example.org", password: "password1").save(failOnError: true)
-			SecUserSecAuth.create user, roleUser
-			SecUserSecAuth.create user, roleGST
-		}
+
 
 		def admin = SecUser.findByUsername('admin') ?: new SecUser(username: 'admin', emailAddress: "testadmin1@example.org", enabled: true, password: 'admin123').save(failOnError: true)
 
@@ -435,6 +423,45 @@ class BootStrap {
                     .addToLinks(link21)
                     .addToLinks(link22)
 		}
+
+
+
+
+
+		importService.importData()
+		def de = new DataElement(name: "testera", description: "test data architect").save(failOnError: true)
+		de.ext.metadata = "test metadata"
+
+		15.times {
+			new Model(name: "Another root #${String.format('%03d', it)}").save(failOnError: true)
+		}
+
+		def parentModel1 = Model.findByName("Another root #001")
+
+		15.times{
+			def child = new Model(name: "Another root #${String.format('%03d', it)}").save(failOnError: true)
+			parentModel1.addToParentOf(child)
+		}
+
+
+		for (DataElement element in DataElement.list()) {
+			parentModel1.addToContains element
+		}
+
+
+		PublishedElement.list().each {
+			it.status = PublishedElementStatus.FINALIZED
+			it.save(failOnError: true)
+		}
+
+		def withHistory = DataElement.findByName("NHS NUMBER STATUS INDICATOR CODE")
+
+		10.times {
+			log.info "Creating archived version #${it}"
+			publishedElementService.archiveAndIncreaseVersion(withHistory)
+		}
+
+
 	}
 
 
