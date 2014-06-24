@@ -1,5 +1,6 @@
 import grails.rest.render.RenderContext
 import org.modelcatalogue.core.CatalogueElement
+import org.modelcatalogue.core.ConceptualDomain
 import org.modelcatalogue.core.DataElement
 import org.modelcatalogue.core.DataType
 import org.modelcatalogue.core.EnumeratedType
@@ -10,6 +11,8 @@ import org.modelcatalogue.core.PublishedElementStatus
 import org.modelcatalogue.core.RelationshipType
 import org.modelcatalogue.core.ValueDomain
 import org.modelcatalogue.core.reports.ReportsRegistry
+import org.modelcatalogue.core.dataarchitect.ImportRow
+
 import org.modelcatalogue.core.util.ListWrapper
 import org.modelcatalogue.core.util.marshalling.xlsx.XLSXListRenderer
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -425,42 +428,30 @@ class BootStrap {
 		}
 
 
+		def de1  = new DataElement(name: "DE",  modelCatalogueId: "MC_a6ff28a6-d214-4fca-824f-e5c8fc8c6b5d_1").save(failOnError: true)
+		def de2 = new DataElement(name: "DE2", modelCatalogueId: "MC_a7ff77a6-d777-7fca-777f-e7c7fc7c7b7d_1").save(failOnError: true)
+		de1.ext["NHIC_Identifier"] = "123"
+		de1.ext["Multiplicity"]	   = "2"
+		de1.ext["Comment"] 		   = "SimpleComment"
 
 
-
-		importService.importData()
-		def de = new DataElement(name: "testera", description: "test data architect").save(failOnError: true)
-		de.ext.metadata = "test metadata"
-
-		15.times {
-			new Model(name: "Another root #${String.format('%03d', it)}").save(failOnError: true)
-		}
-
-		def parentModel1 = Model.findByName("Another root #001")
-
-		15.times{
-			def child = new Model(name: "Another root #${String.format('%03d', it)}").save(failOnError: true)
-			parentModel1.addToParentOf(child)
-		}
+		def topParentModel = new Model(name: "NHIC Datasets",modelCatalogueId:"MC_a6ff28a6-d214-4fca-811f-e7c8fc8c6b5d_1").save(failOnError: true)
+		def parentModel    = new Model(name: "ParentModel1", modelCatalogueId:"MC_a6ff28a6-d214-4fca-824f-e7c8fc8c6b5d_1").save(failOnError: true)
+		def model          = new Model(name: "Model1",       modelCatalogueId:"MC_a6ff28a6-d216-4fca-824f-e5c8fc8c6b5d_1").save(failOnError: true)
 
 
-		for (DataElement element in DataElement.list()) {
-			parentModel1.addToContains element
-		}
+		topParentModel.addToParentOf(parentModel)
+		parentModel.addToParentOf(model)
 
+		model.addToContains de1
+		model.addToContains de2
+
+		//de1.addToRelatedto de2
 
 		PublishedElement.list().each {
 			it.status = PublishedElementStatus.FINALIZED
 			it.save(failOnError: true)
 		}
-
-		def withHistory = DataElement.findByName("NHS NUMBER STATUS INDICATOR CODE")
-
-		10.times {
-			log.info "Creating archived version #${it}"
-			publishedElementService.archiveAndIncreaseVersion(withHistory)
-		}
-
 
 	}
 
