@@ -139,8 +139,6 @@ grails.project.dependency.resolution = {
         // The following are dead, we shouldn't use them!
         compile ":csv:0.3.1"
 
-        compile ":excel-export:0.2.0"
-
 		// Code quality bits
 		compile ":codenarc:0.20"
 		test ":code-coverage:1.2.7"
