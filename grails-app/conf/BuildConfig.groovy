@@ -19,7 +19,7 @@ grails.project.fork = [
 ]
 
 
-//grails.plugin.location.'ModelCatalogueCorePlugin' = "../ModelCataloguePlugin/ModelCatalogueCorePlugin"
+grails.plugin.location.'ModelCatalogueCorePlugin' = "../ModelCataloguePlugin/ModelCatalogueCorePlugin"
 //grails.plugin.location.'ModelCatalogueElasticSearchPlugin' = "../ModelCataloguePlugin/ModelCatalogueElasticSearchPlugin"
 
 // Grails 2.3 uses Aether by default
@@ -102,12 +102,10 @@ grails.project.dependency.resolution = {
         compile ":spring-security-ui:0.2"
         compile ':spring-security-core:1.2.7.4'
         compile ":spring-security-acl:1.1.1"
-
-        compile ":audit-logging:0.5.5.3"
         compile ":jquery-ui:1.10.3"
         compile ":famfamfam:1.0.1"
 
-        compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.3.1"
+        //compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.3.1"
         //compile "org.modelcatalogue.plugins:grails-model-catalogue-elastic-search-plugin:0.2"
 
         compile ':cache:1.0.1'
@@ -138,8 +136,6 @@ grails.project.dependency.resolution = {
 
         // The following are dead, we shouldn't use them!
         compile ":csv:0.3.1"
-
-        compile ":excel-export:0.2.0"
 
 		// Code quality bits
 		compile ":codenarc:0.20"

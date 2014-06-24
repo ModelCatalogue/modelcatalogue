@@ -15,6 +15,7 @@ import org.modelcatalogue.core.dataarchitect.ImportRow
 
 import org.modelcatalogue.core.util.ListWrapper
 import org.modelcatalogue.core.util.marshalling.xlsx.XLSXListRenderer
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder as SCH
@@ -23,7 +24,6 @@ import uk.co.mdc.Requestmap
 import uk.co.mdc.SecAuth
 import uk.co.mdc.SecUser
 import uk.co.mdc.SecUserSecAuth
-import uk.co.mdc.forms.*
 import uk.co.mdc.pathways.Link
 import uk.co.mdc.pathways.Node
 import uk.co.mdc.pathways.Pathway
@@ -39,7 +39,7 @@ class BootStrap {
 	def importService
 	def publishedElementService
 
-	ReportsRegistry reportsRegistry
+    @Autowired ReportsRegistry reportsRegistry
 
 
 	def init = { servletContext ->
