@@ -1,5 +1,4 @@
 import grails.rest.render.RenderContext
-import org.modelcatalogue.core.CatalogueElement
 import org.modelcatalogue.core.ConceptualDomain
 import org.modelcatalogue.core.DataElement
 import org.modelcatalogue.core.DataType
@@ -8,6 +7,7 @@ import org.modelcatalogue.core.MeasurementUnit
 import org.modelcatalogue.core.Model
 import org.modelcatalogue.core.PublishedElement
 import org.modelcatalogue.core.PublishedElementStatus
+import org.modelcatalogue.core.Relationship
 import org.modelcatalogue.core.RelationshipType
 import org.modelcatalogue.core.ValueDomain
 import org.modelcatalogue.core.reports.ReportsRegistry
@@ -428,7 +428,11 @@ class BootStrap {
 		}
 
 
-		def de1  = new DataElement(name: "DE",  modelCatalogueId: "MC_a6ff28a6-d214-4fca-824f-e5c8fc8c6b5d_1").save(failOnError: true)
+
+		ConceptualDomain conceptualDomain = new ConceptualDomain(name: "NHIC", description: "NHIC").save(failOnError: true)
+
+
+		def de1  = new DataElement(name: "DE1",  modelCatalogueId: "MC_a6ff28a6-d214-4fca-824f-e5c8fc8c6b5d_1").save(failOnError: true)
 		def de2 = new DataElement(name: "DE2", modelCatalogueId: "MC_a7ff77a6-d777-7fca-777f-e7c7fc7c7b7d_1").save(failOnError: true)
 		de1.ext["NHIC_Identifier"] = "123"
 		de1.ext["Multiplicity"]	   = "2"
@@ -440,13 +444,36 @@ class BootStrap {
 		def model          = new Model(name: "Model1",       modelCatalogueId:"MC_a6ff28a6-d216-4fca-824f-e5c8fc8c6b5d_1").save(failOnError: true)
 
 
+		topParentModel.addToHasContextOf(conceptualDomain)
+		parentModel.addToHasContextOf(conceptualDomain)
+		model.addToHasContextOf(conceptualDomain)
+
+
 		topParentModel.addToParentOf(parentModel)
 		parentModel.addToParentOf(model)
 
 		model.addToContains de1
 		model.addToContains de2
 
-		//de1.addToRelatedto de2
+
+		DataType dataType = DataType.findByNameIlike("String")
+		MeasurementUnit measurementUnit = MeasurementUnit.findByNameIlike("celsius")
+
+
+		def vdParams = [name: "TestValueDomain", description: "Test Desc", dataType: dataType, measurementUnit: measurementUnit]
+
+		ValueDomain vd = new ValueDomain(vdParams).save(failOnError: true)
+		vd.addToIncludedIn(conceptualDomain)
+		vd.addToInstantiates(de1)
+		vd.addToInstantiates(de2)
+		vd.save(failOnError: true)
+
+
+
+
+		def relType = RelationshipType.findByName("relatedTo")
+		new Relationship(source: de1, destination: de2, relationshipType: relType).save(failOnError: true)
+
 
 		PublishedElement.list().each {
 			it.status = PublishedElementStatus.FINALIZED
