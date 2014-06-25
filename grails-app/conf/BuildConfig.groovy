@@ -20,7 +20,7 @@ grails.project.fork = [
 
 
 grails.plugin.location.'ModelCatalogueCorePlugin' = "../ModelCataloguePlugin/ModelCatalogueCorePlugin"
-//grails.plugin.location.'ModelCatalogueElasticSearchPlugin' = "../ModelCataloguePlugin/ModelCatalogueElasticSearchPlugin"
+grails.plugin.location.'ModelCatalogueElasticSearchPlugin' = "../ModelCataloguePlugin/ModelCatalogueElasticSearchPlugin"
 
 // Grails 2.3 uses Aether by default
 grails.project.dependency.resolver = "maven"
@@ -62,6 +62,7 @@ grails.project.dependency.resolution = {
 
 		// Used for Vlad's fixtures plugin
 		mavenRepo 'http://dl.bintray.com/metadata/model-catalogue'
+
     }
 
     dependencies {
@@ -94,6 +95,8 @@ grails.project.dependency.resolution = {
 		test "org.modelcatalogue:simple-fixtures:0.1.2"
 
         runtime 'org.springframework:spring-test:3.2.8.RELEASE'
+
+        runtime "org.modelcatalogue:spring-security-ajax-aware:0.1.1"
 
     }
 

@@ -4,7 +4,7 @@
 <head>
 
     <meta name="layout" content="metadata_curation">
-    <title>Metadata Curation </title>
+    <title>Metadata Registry </title>
 
     %{--<!-- example of customization -->--}%
     %{--<script type="text/ng-template" id="modelcatalogue/core/ui/decoratedList.html">--}%
@@ -43,8 +43,8 @@
 </head>
 
 <body>
-<div id="metadataCurator" ng-app="metadataCurator" style="width: 100%">
-    <div class="navbar navbar-default navbar-static-top" role="navigation">
+<div id="metadataCurator" ng-app="metadataCurator">
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -57,7 +57,6 @@
              </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a  href="${createLink(uri: '/metadataCurator')}">Data Curator</a></li>
                     <li class="dropdown" ui-sref-active="active">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" id ="catalogueElementLink">Catalogue Elements<b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -90,7 +89,19 @@
                             </li>
                         </ul>
                     </li>
-                    <li show-for-role="ADMIN" ui-sref-active="active"><a id="relationshipTypeLink"  ui-sref="mc.resource.list({resource: 'relationshipType'})" ui-sref-opts="{inherit: false}">Relationship Types</a>
+
+                    <li show-for-role="ADMIN" class="dropdown" ui-sref-active="active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Data Architect<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+
+                            <li show-for-role="ADMIN" ui-sref-active="active"><a id="relationshipTypeLink"  ui-sref="mc.resource.list({resource: 'relationshipType'})" ui-sref-opts="{inherit: false}">Relationship Types</a></li>         <li ui-sref-active="active" ><a id="importsLink" ui-sref="mc.dataArchitect.imports.list">Imports</a></li>
+                            <li ui-sref-active="active"><a id="uninstantiatedElements" ui-sref="mc.dataArchitect.uninstantiatedDataElements">Uninstantiated Data Elements</a></li>
+                            <li ui-sref-active="active"><a id="findRelationsByMetadataKeys" ui-sref="mc.dataArchitect.findRelationsByMetadataKeys">Create COSD Synonym Data Element Relationships</a></li>
+                            <li ui-sref-active="active"><a id="metadataKeyCheck" ui-sref="mc.dataArchitect.metadataKey">Data Elements without Metadata Key</a></li>
+                            <li><a href="../model_catalogue/api/modelCatalogue/core/dataArchitect/uninstantiatedDataElements?format=xlsx&report=NHIC">Export Uninstantiated Elements</a></li>
+                        </ul>
+                    </li>
+
                     </li>
                     <sec:ifAnyGranted roles="ROLE_READONLY_USER">
                         <li class="dropdown">
@@ -101,16 +112,33 @@
                         </li>
                     </sec:ifAnyGranted>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><g:link data-placement="bottom" class="btn btn-inverse" data-original-title="Logout" rel="tooltip" controller="logout"> Logout </g:link></li>
-                </ul>
+                <form show-if-logged-in class="navbar-form navbar-right" ng-submit="logout()"
+                      ng-controller="metadataCurator.logoutCtrl">
+                    <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-log-out"></i></button>
+                </form>
+
+                <form hide-if-logged-in class="navbar-form navbar-right" ng-submit="login()"
+                      ng-controller="metadataCurator.loginCtrl">
+                    <button class="btn btn-success" type="submit"><i class="glyphicon glyphicon-log-in"></i></button>
+                </form>
+
                 <form class="navbar-form navbar-right navbar-input-group" role="search" autocomplete="off"
                       ng-submit="search()" ng-controller="metadataCurator.searchCtrl">
                     <div class="form-group">
-                        <input ng-model="searchSelect" type="text" name="search-term" id="search-term"
-                               placeholder="Search" catalogue-element-picker typeahead-on-select="search()">
+                        <input
+                                ng-model="searchSelect"
+                                type="text"
+                                name="search-term"
+                                id="search-term"
+                                placeholder="Search"
+                                typeahead="result.term as result.label for result in getResults($viewValue)"
+                                typeahead-on-select="search($item, $model, $label)"
+                                typeahead-template-url="modelcatalogue/core/ui/omnisearchItem.html"
+                                typeahead-wait-ms="300"
+                                class="form-control"
+                        >
                     </div>
-                    <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                    <button class="btn btn-default" ng-click="select(searchSelect)"><i class="glyphicon glyphicon-search"></i></button>
                 </form>
             </div><!--/.nav-collapse -->
         </div>
@@ -125,6 +153,8 @@
                 <ui-view></ui-view>
             </div>
         </div>
+    </div>
+</div>
     </div>
 </div>
 
