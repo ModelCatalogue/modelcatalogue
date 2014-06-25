@@ -8,8 +8,8 @@ package uk.co.mdc.pages.metadataCuration.ListPage
 class ListPage extends  BasePageWithNavReadOnly{
 
 	static String elementsTable = "table[list='list']"
-	static String exportButton = "button#exportBtn"
-	static String exportButtonItems = "div.export.open ul#exportBtnItems"
+	static String exportButton  = "button#exportBtn"
+	static String exportButtonItems = "ul#exportBtnItems"
 
 	static content = {
 		mainLabel{  $("h2.ng-binding") }

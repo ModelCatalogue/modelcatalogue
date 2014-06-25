@@ -1,6 +1,7 @@
 package uk.co.mdc.spec.metadataCuration
 
 import geb.spock.GebReportingSpec
+import spock.lang.Ignore
 import spock.lang.Stepwise
 import uk.co.mdc.pages.authentication.LoginPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ConceptualDomainListPage
@@ -21,56 +22,11 @@ class ExportButtonSpec extends GebReportingSpec {
 		}
 	}
 
-	def gotToConceptualDomainListPage() {
-		to ModelListPage
-		waitFor {
-			at ModelListPage
-		}
-		waitFor {
-			nav.catalogueElementLink.displayed
-		}
-		interact {
-			click(nav.catalogueElementLink)
-		}
-		waitFor {
-			nav.conceptualDomainLink.displayed
-		}
-		interact {
-			click(nav.conceptualDomainLink)
-		}
-		waitFor {
-			ConceptualDomainListPage
-		}
-	}
-
-
-	def gotToConceptualDataElementListPage() {
-		to ModelListPage
-		waitFor {
-			at ModelListPage
-		}
-		waitFor {
-			nav.catalogueElementLink.displayed
-		}
-		interact {
-			click(nav.catalogueElementLink)
-		}
-		waitFor {
-			nav.conceptualDomainLink.displayed
-		}
-		interact {
-			click(nav.dataElementLink)
-		}
-		waitFor {
-			DataElementListPage
-		}
-	}
-
 
 	def "ConceptualDomain list page has exportButton"() {
 
 		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
-		gotToConceptualDomainListPage()
+		to ConceptualDomainListPage
 
 		when: "at conceptualDomainList Page"
 		waitFor {
@@ -87,7 +43,7 @@ class ExportButtonSpec extends GebReportingSpec {
 	def "Clicking on exportButton in conceptualDomain list page will show the list of available reports"() {
 
 		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
-		gotToConceptualDomainListPage()
+		to ConceptualDomainListPage
 
 		when: "at conceptualDomainList Page"
 		waitFor {
@@ -105,10 +61,11 @@ class ExportButtonSpec extends GebReportingSpec {
 	}
 
 
-	def "Clicking on exportButton in dataElement List page will show the list of available reports"() {
+
+	def "ExportButton in dataElement List page contains several default reports"() {
 
 		setup:"Go to dataElement List page as a List page that contains ExportButton"
-		gotToConceptualDataElementListPage()
+		to DataElementListPage
 
 		when: "at DataElementListPage"
 		waitFor {
@@ -120,10 +77,10 @@ class ExportButtonSpec extends GebReportingSpec {
 
 		$(DataElementListPage.exportButton).click()
 
+		then: "list of available reports will be displayed in a menu"
 		waitFor {
 			$(DataElementListPage.exportButtonItems).displayed
 		}
-		then: "list of available reports will be displayed in a menu"
 		waitFor {
 			$(DataElementListPage.exportButtonItems).find("li",0).displayed
 		}
@@ -132,16 +89,15 @@ class ExportButtonSpec extends GebReportingSpec {
 
 		where:
 		index | label
-		0	  | "General"
-		1	  | "NHI C"
-		2	  | "COS D"
+		0	  | "Catalogue Elements to Excel"
+		1	  | "COSD"
+		2	  | "NHIC"
 	}
-
 
 	def "ExportButton in dataElement list page will export dataElement list as an excel file"() {
 
 		setup:"Go to dataElement page as a List page that contains ExportButton"
-		gotToConceptualDataElementListPage()
+		to DataElementListPage
 
 		when: "at dataElementList Page"
 		waitFor {
@@ -165,7 +121,7 @@ class ExportButtonSpec extends GebReportingSpec {
 		//$("div.export.open ul#exportBtnItems").find("li",0).find("a",0).click()
 		//Instead of clicking on the link, we will get the link href and download the file directly
 		//and make sure that the content of the file is not empty
-		def downloadLink = $("div.export.open ul#exportBtnItems").find("li",0).find("a",index)
+		def downloadLink = $(DataElementListPage.exportButtonItems).find("li",0).find("a",index)
 		def bytes = downloadBytes(downloadLink.@href)
 
 		then: "it downloads the excel file"
@@ -175,11 +131,10 @@ class ExportButtonSpec extends GebReportingSpec {
 		index << [0,1,2]
 	}
 
-
 	def "ExportButton in conceptualDomain list page will export conceptualDomain list as an excel file"() {
 
 		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
-		gotToConceptualDomainListPage()
+		to ConceptualDomainListPage
 
 		when: "at conceptualDomainList Page"
 		waitFor {
@@ -199,7 +154,7 @@ class ExportButtonSpec extends GebReportingSpec {
 		//$("div.export.open ul#exportBtnItems").find("li",0).find("a",0).click()
 		//Instead of clicking on the link, we will get the link href and download the file directly
 		//and make sure that the content of the file is not empty
-		def downloadLink = $("div.export.open ul#exportBtnItems").find("li",0).find("a",0)
+		def downloadLink = $(ConceptualDomainListPage.exportButtonItems).find("li",0).find("a",0)
 		def bytes = downloadBytes(downloadLink.@href)
 
 		then: "its download the excel file"

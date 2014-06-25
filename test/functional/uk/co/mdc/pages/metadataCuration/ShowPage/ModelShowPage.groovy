@@ -20,13 +20,13 @@ class ModelShowPage extends BasePageWithNavReadOnly{
 		mainLabel(wait:true) { $("h3.ce-name") }
 
 		propertiesTab {waitFor {$("div.tabbable ul li[heading='Properties']")}}
-		childOfTab{waitFor { $("div.tabbable ul li[heading='Child Of']")}}
+		childOfTab{waitFor { $("div.tabbable ul li[heading='Parent']")}}
 
-		conceptualDomainTab {waitFor { $("div.tabbable ul li[heading='Conceptual Domain']")}}
+		conceptualDomainTab {waitFor { $("div.tabbable ul li[heading='Conceptual Domains']")}}
 		dataElementsTab {waitFor { $("div.tabbable ul li[heading='Data Elements']")}}
 
 		metadataTab {waitFor { $("div.tabbable ul li[heading='Metadata']")}}
-		parentOfTab {waitFor { $("div.tabbable ul li[heading='Parent Of']")}}
+		parentOfTab {waitFor { $("div.tabbable ul li[heading='Children']")}}
 	}
 
 }

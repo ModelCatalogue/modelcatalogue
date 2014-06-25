@@ -2,6 +2,7 @@ package uk.co.mdc.spec.metadataCuration
 
 import geb.spock.GebReportingSpec
 import uk.co.mdc.pages.authentication.LoginPage
+import uk.co.mdc.pages.metadataCuration.ListPage.DataElementListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.DataTypeListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ModelListPage
 import uk.co.mdc.pages.metadataCuration.ShowPage.DataTypeShowPage
@@ -17,19 +18,22 @@ class DataTypeListPageSpec extends GebReportingSpec {
 		waitFor {
 			at ModelListPage
 		}
-		interact {
-			click(nav.catalogueElementLink)
+		waitFor {
+			$(ModelListPage.catalogueElementLink).displayed
+		}
+		$(ModelListPage.catalogueElementLink).click()
 
-		}
+
 		waitFor {
-			nav.conceptualDomainLink.displayed
+			$(ModelListPage.dataTypeLink).displayed
 		}
-		interact {
-			click(nav.dataTypeLink)
-		}
+
+		$(ModelListPage.dataTypeLink).click()
+
 		waitFor {
-			DataTypeListPage
+			at DataTypeListPage
 		}
+
 	}
 
 	def "Clicking on dataType name will lead to its show page"() {
@@ -60,7 +64,7 @@ class DataTypeListPageSpec extends GebReportingSpec {
 			mainLabel.displayed
 			description.displayed
 		}
-		mainLabel.text() == "String (Data Type: 1)"
-		description.text() == "java.lang.String"
+		mainLabel.text() == "Boolean (Data Type: 4)"
+		description.text() == "java.lang.Boolean"
 	}
 }

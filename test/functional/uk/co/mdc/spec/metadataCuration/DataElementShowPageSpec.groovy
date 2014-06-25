@@ -1,6 +1,7 @@
 package uk.co.mdc.spec.metadataCuration
 
 import geb.spock.GebReportingSpec
+import spock.lang.Stepwise
 import uk.co.mdc.pages.authentication.LoginPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ModelListPage
 import uk.co.mdc.pages.metadataCuration.ShowPage.DataElementShowPage
@@ -8,10 +9,11 @@ import uk.co.mdc.pages.metadataCuration.ShowPage.DataElementShowPage
 /**
  * Created by soheil on 15/05/2014.
  */
+@Stepwise
 class DataElementShowPageSpec extends GebReportingSpec {
 
 
-	def setup() {
+	def setupSpec() {
 		to LoginPage
 		loginReadOnlyUser()
 		waitFor {
@@ -23,7 +25,10 @@ class DataElementShowPageSpec extends GebReportingSpec {
 	def "At dataElementShowPage, it shows properties, metadata, values and relations"() {
 
 		when: "Click on a dataElement"
-		at ModelListPage
+		to ModelListPage
+		waitFor {
+			at ModelListPage
+		}
 		waitFor {
 			$(ModelListPage.modelTree).displayed
 		}
@@ -52,8 +57,12 @@ class DataElementShowPageSpec extends GebReportingSpec {
 
 		waitFor {
 			dataElementsTable.displayed
+		}
+
+		waitFor {
 			getDataElementRow(0)["object"].displayed
 		}
+
 		def elementName =  getDataElementRow(0)["name"]
 		waitFor {
 			elementName.displayed
@@ -68,22 +77,33 @@ class DataElementShowPageSpec extends GebReportingSpec {
 			mainLabel.displayed
 		}
 
-		mainLabel.text().contains("DE (Data Element:")
-		description.text() == "Desc"
+		mainLabel.text().contains("DE1 (Data Element:")
+		description.text() == "DE1 Desc"
 		waitFor {
 			propertiesTab.displayed
+		}
+		waitFor {
 			dataTypesTab.displayed
+		}
+		waitFor {
 			metadataTab.displayed
+		}
+		waitFor {
 			modelsTab.displayed
 		}
-//		relatedToTab
+		waitFor {
+			relationshipsTab.displayed
+		}
 	}
 
 
 	def "At dataElementShowPage, clicking on its tabs will show related table"() {
 
 		when: "Click on a dataElement"
-		at ModelListPage
+		to ModelListPage
+		waitFor {
+			at ModelListPage
+		}
 		waitFor {
 			$(ModelListPage.modelTree).displayed
 		}
@@ -156,11 +176,13 @@ class DataElementShowPageSpec extends GebReportingSpec {
 		}
 
 
-//		when:"Clicking on relatedTo Tab"
-//		relatedToTab.find("a").click()
-//
-//		then:"relatedTo Table will be displayed"
-//		relatedToTable.displayed
+		when:"Clicking on relatedTo Tab"
+		relationshipsTab.find("a").click()
+
+		then:"relatedTo Table will be displayed"
+		waitFor {
+			relationshipsTable.displayed
+		}
 	}
 
 }

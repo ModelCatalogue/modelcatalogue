@@ -90,24 +90,24 @@ class UserLoginSpec extends GebReportingSpec {
 	//and I have been redirected to the login screen whilst trying to access another resource
 	//and I am authorised to access that resource
 	//Then I am redirected to the requested resource
-	def "Successful login when attempting to go somewhere else"() {
-		when: 'I go to a restricted page and I am not logged in'
-		go PathwayListPage.url
-		
-		then:'I am redirected to the login screen'
-		waitFor{
-			at LoginPage
-		}
-		
-		when:'I authenticate successfully'
-		username = "user1"
-		password = "password1@"
-		submitButton.click(PathwayListPage)
-
-		then: 'I am redirected to my original destination'
-		waitFor{
-			at PathwayListPage
-		}
-	}
+//	def "Successful login when attempting to go somewhere else"() {
+//		when: 'I go to a restricted page and I am not logged in'
+//		go PathwayListPage.url
+//
+//		then:'I am redirected to the login screen'
+//		waitFor{
+//			at LoginPage
+//		}
+//
+//		when:'I authenticate successfully'
+//		username = "user1"
+//		password = "password1@"
+//		submitButton.click(PathwayListPage)
+//
+//		then: 'I am redirected to my original destination'
+//		waitFor{
+//			at PathwayListPage
+//		}
+//	}
 
 }

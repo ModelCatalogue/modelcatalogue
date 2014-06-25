@@ -7,21 +7,18 @@ class TopNavElementsReadOnlyAdmin extends Module{
 	static String searchTextInput = "input#search-term"
 	static String searchResultUl = "form[role='search'] ul.dropdown-menu"
 
+	static String catalogueElementLink = "a#catalogueElementLink"
+	static String conceptualDomainLink = "a#conceptualDomainLink"
 
 
 	static content = {
 
-		catalogueElementLink(wait:true) {$("li a#catalogueElementLink")}
-
-
-		conceptualDomainLink(wait:true) {$("li a#conceptualDomainLink")}
 
 		dataElementLink(wait:true) {$("li a#dataElementLink")}
 		valueDomainLink(wait:true) {$("li a#valueDomainLink")}
 		dataTypeLink(wait:true) {$("li a#dataTypeLink")}
 		modelLink(wait:true) {$("li a#modelLink")}
 
-		administrationLink(required: false)  {$("li a#administrationLink")}
 		accountLink(required: false)  {$("li a#accountLink")}
 
 

@@ -48,7 +48,7 @@ class SearchSpec  extends GebReportingSpec{
 			$(nav.searchResultUl).displayed
 		}
  		$(nav.searchResultUl).find("li").size() == 10
-		$(nav.searchResultUl).find("li",0).text().trim().contains("candela (Measurement Unit: 34)")
+		$(nav.searchResultUl).find("li",0).text().trim().contains("candela (Measurement Unit:")
 
 	}
 

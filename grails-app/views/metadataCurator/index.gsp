@@ -53,18 +53,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-
                 <a class="navbar-brand"  href="${createLink(uri: '/')}">Model Catalogue</a>
              </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a  href="${createLink(uri: '/metadataCurator')}">Data Curator</a></li>
-
                     <li class="dropdown" ui-sref-active="active">
-
-
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Catalogue Elements<b
-                                class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id ="catalogueElementLink">Catalogue Elements<b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li ui-sref-active="active"><a id="assetLink"
                                                            ui-sref="mc.resource.list({resource: 'asset'})"
@@ -95,12 +90,8 @@
                             </li>
                         </ul>
                     </li>
-                    <li show-for-role="ADMIN" ui-sref-active="active"><a id="relationshipTypeLink"
-                                                                         ui-sref="mc.resource.list({resource: 'relationshipType'})"
-                                                                         ui-sref-opts="{inherit: false}">Relationship Types</a>
+                    <li show-for-role="ADMIN" ui-sref-active="active"><a id="relationshipTypeLink"  ui-sref="mc.resource.list({resource: 'relationshipType'})" ui-sref-opts="{inherit: false}">Relationship Types</a>
                     </li>
-
-
                     <sec:ifAnyGranted roles="ROLE_READONLY_USER">
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="accountLink">Account <b  class="caret"></b></a>
@@ -109,14 +100,10 @@
                             </ul>
                         </li>
                     </sec:ifAnyGranted>
-
                 </ul>
-
-
                 <ul class="nav navbar-nav navbar-right">
                     <li><g:link data-placement="bottom" class="btn btn-inverse" data-original-title="Logout" rel="tooltip" controller="logout"> Logout </g:link></li>
                 </ul>
-
                 <form class="navbar-form navbar-right navbar-input-group" role="search" autocomplete="off"
                       ng-submit="search()" ng-controller="metadataCurator.searchCtrl">
                     <div class="form-group">
@@ -125,8 +112,6 @@
                     </div>
                     <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                 </form>
-
-
             </div><!--/.nav-collapse -->
         </div>
     </div>

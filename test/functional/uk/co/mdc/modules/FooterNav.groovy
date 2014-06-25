@@ -8,6 +8,6 @@ import geb.Module
 class FooterNav extends Module{
 
 	static content = {
-		feedbackLink(wait:true) {$("a.feedback#feedback")}
+		feedbackLink(wait:true) {$("p.feedback#feedback")}
 	}
 }

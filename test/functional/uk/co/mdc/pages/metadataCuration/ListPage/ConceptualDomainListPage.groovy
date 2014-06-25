@@ -4,11 +4,11 @@ package uk.co.mdc.pages.metadataCuration.ListPage
  */
 class ConceptualDomainListPage extends ListPage  {
 
-	static url = "metadataCurator/#/catalogue/conceptualDomain/all"
+	static url = "metadataCurator#/catalogue/conceptualDomain/all"
 
 
 	static at = {
-		url == "metadataCurator/#/catalogue/conceptualDomain/all" &&
+		url == "metadataCurator#/catalogue/conceptualDomain/all" &&
 		 title == "Metadata Curation"
 	}
 

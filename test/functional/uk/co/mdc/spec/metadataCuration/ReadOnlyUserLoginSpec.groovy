@@ -23,30 +23,8 @@ class ReadOnlyUserLoginSpec extends GebReportingSpec{
 		}
 	}
 
-	def "Regular user does not have access to Administrator Menu"(){
 
-		expect:"administration menu should be disabled for regular users"
-		at ModelListPage
-		nav
-		!nav.administrationLink.displayed
-	}
-
-	def "Regular user does not have access to Administrator Menu in any other pages"(){
-
-		when:"user goes to ConceptualDomainlist page"
-		to ConceptualDomainListPage
-
-		then:"administration menu should be disabled for regular users"
-		waitFor {
-			ConceptualDomainListPage
-		}
-		nav
-		!nav.administrationLink.displayed
-	}
-
-
-
-	def "Regular user has access to Account Menu"(){
+	def "ReadOnly user has access to Account Menu"(){
 
 		when:"user goes to ConceptualDomainlist page"
 		to ConceptualDomainListPage
@@ -61,7 +39,7 @@ class ReadOnlyUserLoginSpec extends GebReportingSpec{
 
 
 
-	def "Regular user can change password from Account Menu"(){
+	def "ReadOnly user can change password from Account Menu"(){
 
 		when:"user goes to ConceptualDomainlist page"
 		waitFor {
@@ -99,9 +77,8 @@ class ReadOnlyUserLoginSpec extends GebReportingSpec{
 
 
 
-	@Unroll
-	def"regular user can not access administration urls #NotAuthorizedUrl"(){
-		when:"regular user goes to an admin url"
+	def"ReadOnly user can not access administration urls #NotAuthorizedUrl"(){
+		when:"ReadOnly user goes to an admin url"
 		at ModelListPage
 		go NotAuthorizedUrl
 

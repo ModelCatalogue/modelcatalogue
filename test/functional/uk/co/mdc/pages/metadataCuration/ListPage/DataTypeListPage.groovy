@@ -4,10 +4,10 @@ package uk.co.mdc.pages.metadataCuration.ListPage
  */
 class DataTypeListPage extends ListPage {
 
-	static url = "metadataCurator/#/catalogue/dataType/all"
+	static url = "metadataCurator#/catalogue/dataType/all"
 
 	static at = {
-		url == "metadataCurator/#/catalogue/dataType/all" &&
+		url == "metadataCurator#/catalogue/dataType/all" &&
 		title == "Metadata Curation"
 	}
 }

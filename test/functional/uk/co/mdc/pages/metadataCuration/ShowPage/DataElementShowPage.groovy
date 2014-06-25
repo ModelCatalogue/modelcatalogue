@@ -20,16 +20,16 @@ class DataElementShowPage extends BasePageWithNavReadOnly {
 		description(wait:true) { $("blockquote.ce-description")}
 
 		propertiesTab {waitFor {$("div.tabbable ul li[heading='Properties']")}}
-		dataTypesTab{waitFor { $("div.tabbable ul li[heading='DataType']")}}
+		dataTypesTab{waitFor { $("div.tabbable ul li[heading='Data Type']")}}
 		metadataTab {waitFor { $("div.tabbable ul li[heading='Metadata']")}}
 		modelsTab {waitFor { $("div.tabbable ul li[heading='Models']")}}
-		relatedToTab {waitFor { $("div.tabbable ul li[heading='Related To']")}}
+		relationshipsTab {waitFor { $("div.tabbable ul li[heading='Relationships']")}}
 
 
-		propertiesTable {waitFor {$("table#-properties")}}
+		propertiesTable(required:false) {waitFor {$("table#Properties")}}
 		dataTypesTable {waitFor {$("table#-instantiatedBy")}}
-		metadataTable {waitFor {$("table#-ext")}}
+		metadataTable {waitFor {$("table#Metadata")}}
 		modelsTable {waitFor {$("table#-containedIn")}}
-//		relatedToTable {waitFor {$("table#-relatedTo")}}
+		relationshipsTable {waitFor {$("table#-relationships")}}
 	}
 }

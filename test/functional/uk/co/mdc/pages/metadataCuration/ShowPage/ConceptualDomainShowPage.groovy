@@ -10,6 +10,10 @@ class ConceptualDomainShowPage extends BasePageWithNavReadOnly{
 
 	static url = "metadataCurator/#/catalogue/conceptualDomain/"
 
+	static String propertiesTab = "div.tabbable ul li[heading='Properties']"
+	static String modelsTab     = "div.tabbable ul li[heading='Models']"
+	static String dataTypesTab  = "div.tabbable ul li[heading='Data Types']"
+
 
 	static at = {
 		url == "metadataCurator/#/catalogue/conceptualDomain/" &&
@@ -20,11 +24,11 @@ class ConceptualDomainShowPage extends BasePageWithNavReadOnly{
 		mainLabel { waitFor { $("h3.ce-name") }}
 		description {waitFor { $("blockquote.ce-description")}}
 
-		propertiesTab {waitFor {$("div.tabbable ul li[heading='Properties']")}}
-		modelsTab {waitFor { $("div.tabbable ul li[heading='Models']")}}
-		dataTypesTab{waitFor { $("div.tabbable ul li[heading='DataType']")}}
+//		propertiesTab {waitFor {$("div.tabbable ul li[heading='Properties']")}}
+//		modelsTab {waitFor { $("div.tabbable ul li[heading='Models']")}}
+//		dataTypesTab{waitFor { $("div.tabbable ul li[heading='DataTypes']")}}
 
-		propertiesTable(required:false) {waitFor {$("table#-properties")}}
+		propertiesTable(required:false) {waitFor {$("table#Properties")}}
 		modelsTable {waitFor {$("table#-isContextFor")}}
 		dataTypesTable {waitFor {$("table#-includes")}}
 	}

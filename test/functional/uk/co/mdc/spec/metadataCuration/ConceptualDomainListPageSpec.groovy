@@ -18,17 +18,15 @@ class ConceptualDomainListPageSpec extends GebReportingSpec {
 			at ModelListPage
 		}
 		waitFor {
-			nav.catalogueElementLink.displayed
+			$(ModelListPage.catalogueElementLink).displayed
 		}
-		interact {
-			click(nav.catalogueElementLink)
-		}
+		$(ModelListPage.catalogueElementLink).click()
+
 		waitFor {
-			nav.conceptualDomainLink.displayed
+			$(ModelListPage.conceptualDomainLink).displayed
 		}
-		interact {
-			click(nav.conceptualDomainLink)
-		}
+		$(ModelListPage.conceptualDomainLink).click()
+
 		waitFor {
 			ConceptualDomainListPage
 		}
@@ -48,9 +46,8 @@ class ConceptualDomainListPageSpec extends GebReportingSpec {
 		waitFor {
 			nameElement.displayed
 		}
-		interact {
-			click(nameElement)
-		}
+		nameElement.click()
+
 		waitFor {
 			at ConceptualDomainShowPage
 		}
@@ -61,11 +58,16 @@ class ConceptualDomainListPageSpec extends GebReportingSpec {
 			mainLabel.displayed
 		}
 		mainLabel.text().contains("NHIC")
-		description.text() == "Test Description"
+		description.text() == "NHIC Test Description"
 		waitFor {
-			propertiesTab.displayed
-			modelsTab.displayed
-			dataTypesTab.displayed
+			$(ConceptualDomainShowPage.dataTypesTab).displayed
 		}
+		waitFor{
+			$(ConceptualDomainShowPage.modelsTab).displayed
+		}
+		waitFor{
+			$(ConceptualDomainShowPage.dataTypesTab).displayed
+		}
+
 	}
 }

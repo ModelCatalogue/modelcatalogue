@@ -1,6 +1,7 @@
 package uk.co.mdc.spec.metadataCuration
 
 import geb.spock.GebReportingSpec
+import spock.lang.Stepwise
 import uk.co.mdc.pages.authentication.LoginPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ConceptualDomainListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ModelListPage
@@ -9,18 +10,17 @@ import uk.co.mdc.pages.metadataCuration.ShowPage.ConceptualDomainShowPage
 /**
  * Created by soheil on 15/05/2014.
  */
+@Stepwise
 class ConceptualDomainShowPageSpec extends GebReportingSpec {
 
 
-	def setup() {
+	def setupSpec() {
 		to LoginPage
 		loginReadOnlyUser()
 		waitFor {
 			at ModelListPage
 		}
-
 	}
-
 
 	def "At ConceptualDomainShowPage, it shows properties, models and dataTypes"() {
 
@@ -37,9 +37,7 @@ class ConceptualDomainShowPageSpec extends GebReportingSpec {
 		waitFor {
 			nameElement.displayed
 		}
-		interact {
-			click(nameElement)
-		}
+		 nameElement.click()
 
 		waitFor {
 			at ConceptualDomainShowPage
@@ -51,12 +49,17 @@ class ConceptualDomainShowPageSpec extends GebReportingSpec {
 			mainLabel.displayed
 		}
 		mainLabel.text().contains("NHIC")
-		description.text() == "Test Description"
+		description.text() == "NHIC Test Description"
 		waitFor {
-			propertiesTab.displayed
-			modelsTab.displayed
-			dataTypesTab.displayed
+			$(ConceptualDomainShowPage.dataTypesTab).displayed
 		}
+		waitFor{
+			$(ConceptualDomainShowPage.modelsTab).displayed
+		}
+		waitFor{
+			$(ConceptualDomainShowPage.dataTypesTab).displayed
+		}
+
 	}
 
 
@@ -74,41 +77,36 @@ class ConceptualDomainShowPageSpec extends GebReportingSpec {
 		waitFor {
 			nameElement.displayed
 		}
-		interact {
-			click(nameElement)
-		}
 
+		nameElement.click()
 
 		then: "it redirects to conceptualDomain show page"
 		waitFor {
 			at ConceptualDomainShowPage
 		}
 		waitFor {
-			dataTypesTab.displayed
-			dataTypesTab.find("a").displayed
+			$(ConceptualDomainShowPage.dataTypesTab).displayed
+			$(ConceptualDomainShowPage.dataTypesTab).find("a").displayed
 		}
 		when:"Clicking on dataTypes Tab"
-		interact {
-			click(dataTypesTab.find("a"))
-		}
+		$(ConceptualDomainShowPage.dataTypesTab).find("a").click()
 
 		then:"dataTypes Table will be displayed"
 		waitFor {
-			dataTypesTable.displayed
+			$(ConceptualDomainShowPage.dataTypesTab).displayed
 		}
 
 		when:"Clicking on model Tab"
 		waitFor {
-			modelsTab.displayed
-			modelsTab.find("a").displayed
+			$(ConceptualDomainShowPage.modelsTab).displayed
+			$(ConceptualDomainShowPage.modelsTab).find("a").displayed
 		}
-		interact {
-			click(modelsTab.find("a"))
-		}
+
+		$(ConceptualDomainShowPage.modelsTab).find("a").click()
 
 		then:"model Table will be displayed"
 		waitFor {
-			modelsTable.displayed
+			$(ConceptualDomainShowPage.modelsTab).displayed
 		}
 	}
 }

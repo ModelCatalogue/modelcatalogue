@@ -1,6 +1,5 @@
 package uk.co.mdc.pages.metadataCuration.ListPage
 
-import uk.co.mdc.pages.BasePageWithNav
 import uk.co.mdc.pages.BasePageWithNavReadOnly
 
 /**
@@ -8,10 +7,10 @@ import uk.co.mdc.pages.BasePageWithNavReadOnly
  */
 class ModelListPage extends BasePageWithNavReadOnly {
 
-	static url = "metadataCurator/#/catalogue/model/all"
+	static url = "metadataCurator#/catalogue/model/all"
 
 	static at = {
-				url == "metadataCurator/#/catalogue/model/all" &&
+				url == "metadataCurator#/catalogue/model/all" &&
 				title == "Metadata Curation"
 	}
 
@@ -38,7 +37,7 @@ class ModelListPage extends BasePageWithNavReadOnly {
 		Model1_Item_Show { Model1_Item.find("a.btn[title='Show']") }
 		Model1_Item_Name { Model1_Item.find("span.catalogue-element-treeview-name") }
 
-		dataElementsTable { $("table[list='containedElements']") }
+		dataElementsTable { $("table[list='contained.elements']") }
 	}
 
 
