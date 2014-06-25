@@ -118,7 +118,8 @@ class BootStrap {
 			}
 		}
 
-        configureRequestMapSecurity()
+        if(Requestmap.count()==0) configureRequestMapSecurity()
+
 	}
 
     private configureRequestMapSecurity(){
@@ -191,11 +192,11 @@ class BootStrap {
         new Requestmap(url: '/api/modelCatalogue/core/search/**', configAttribute: 'ROLE_READONLY_USER,ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
 
 
-		new Requestmap(url: '/api/modelCatalogue/core/*/create', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/edit', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/save', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/update', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.PUT).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/delete', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.DELETE).save()
+		new Requestmap(url: '/api/modelCatalogue/core/*/create', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/edit', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/save', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/update', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.PUT).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/delete', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.DELETE).save()
 
     }
 
