@@ -251,13 +251,13 @@ class BootStrap {
 
 
 		if(!SecUser.findByUsername('user1') ){
-			def user = new SecUser(username: "user1", enabled: true, emailAddress: "user1@example.org", password: "password1").save(failOnError: true)
+			def user = new SecUser(username: "user1", enabled: true, emailAddress: "user1@example.org", password: "password1@").save(failOnError: true)
 			SecUserSecAuth.create user, roleUser			
 		}
 
 
 		if(!SecUser.findByUsername('ruser1') ){
-			def readOnlyUser = new SecUser(username: "ruser1", enabled: true, emailAddress: "user1@example.org", password: "rpassword1").save(failOnError: true)
+			def readOnlyUser = new SecUser(username: "ruser1", enabled: true, emailAddress: "user1@example.org", password: "rpassword1@").save(failOnError: true)
 			SecUserSecAuth.create readOnlyUser, roleReadOnlyUser
 		}
 
@@ -429,19 +429,19 @@ class BootStrap {
 
 
 
-		ConceptualDomain conceptualDomain = new ConceptualDomain(name: "NHIC", description: "NHIC").save(failOnError: true)
+		ConceptualDomain conceptualDomain = new ConceptualDomain(name: "NHIC", description: "NHIC Test Description").save(failOnError: true)
 
 
-		def de1  = new DataElement(name: "DE1",  modelCatalogueId: "MC_a6ff28a6-d214-4fca-824f-e5c8fc8c6b5d_1").save(failOnError: true)
-		def de2 = new DataElement(name: "DE2", modelCatalogueId: "MC_a7ff77a6-d777-7fca-777f-e7c7fc7c7b7d_1").save(failOnError: true)
+		def de1  = new DataElement(name: "DE1",  modelCatalogueId: "MC_a6ff28a6-d214-4fca-824f-e5c8fc8c6b5d_1",description:"DE1 Desc" ).save(failOnError: true)
+		def de2 = new DataElement(name: "DE2", modelCatalogueId: "MC_a7ff77a6-d777-7fca-777f-e7c7fc7c7b7d_1",description:"DE2 Desc").save(failOnError: true)
 		de1.ext["NHIC_Identifier"] = "123"
 		de1.ext["Multiplicity"]	   = "2"
 		de1.ext["Comment"] 		   = "SimpleComment"
 
 
-		def topParentModel = new Model(name: "NHIC Datasets",modelCatalogueId:"MC_a6ff28a6-d214-4fca-811f-e7c8fc8c6b5d_1").save(failOnError: true)
-		def parentModel    = new Model(name: "ParentModel1", modelCatalogueId:"MC_a6ff28a6-d214-4fca-824f-e7c8fc8c6b5d_1").save(failOnError: true)
-		def model          = new Model(name: "Model1",       modelCatalogueId:"MC_a6ff28a6-d216-4fca-824f-e5c8fc8c6b5d_1").save(failOnError: true)
+		def topParentModel = new Model(name: "NHIC Datasets",description: "Test Description", modelCatalogueId:"MC_a6ff28a6-d214-4fca-811f-e7c8fc8c6b5d_1").save(failOnError: true)
+		def parentModel    = new Model(name: "ParentModel1",description: "Test Description", modelCatalogueId:"MC_a6ff28a6-d214-4fca-824f-e7c8fc8c6b5d_1").save(failOnError: true)
+		def model          = new Model(name: "Model1",description: "Test Description",       modelCatalogueId:"MC_a6ff28a6-d216-4fca-824f-e5c8fc8c6b5d_1").save(failOnError: true)
 
 
 		topParentModel.addToHasContextOf(conceptualDomain)
