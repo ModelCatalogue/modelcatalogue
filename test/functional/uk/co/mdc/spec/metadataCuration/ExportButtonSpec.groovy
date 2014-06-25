@@ -1,6 +1,7 @@
 package uk.co.mdc.spec.metadataCuration
 
 import geb.spock.GebReportingSpec
+import org.modelcatalogue.core.DataElement
 import spock.lang.Ignore
 import spock.lang.Stepwise
 import uk.co.mdc.pages.authentication.LoginPage
@@ -11,17 +12,15 @@ import uk.co.mdc.pages.metadataCuration.ListPage.ModelListPage
 /**
  * Created by soheil on 22/05/2014.
  */
-@Stepwise
 class ExportButtonSpec extends GebReportingSpec {
 
-	def setupSpec(){
+	def setup(){
 		to LoginPage
 		loginReadOnlyUser()
 		waitFor {
 			at ModelListPage
 		}
 	}
-
 
 	def "ConceptualDomain list page has exportButton"() {
 
@@ -38,7 +37,6 @@ class ExportButtonSpec extends GebReportingSpec {
 			$(ConceptualDomainListPage.exportButton).displayed
 		}
 	}
-
 
 	def "Clicking on exportButton in conceptualDomain list page will show the list of available reports"() {
 
@@ -77,13 +75,10 @@ class ExportButtonSpec extends GebReportingSpec {
 
 		$(DataElementListPage.exportButton).click()
 
+
 		then: "list of available reports will be displayed in a menu"
-		waitFor {
-			$(DataElementListPage.exportButtonItems).displayed
-		}
-		waitFor {
-			$(DataElementListPage.exportButtonItems).find("li",0).displayed
-		}
+		$(DataElementListPage.exportButtonItems).displayed
+		$(DataElementListPage.exportButtonItems).find("li",0).displayed
 		$(DataElementListPage.exportButtonItems).find("li",0).find("a").size() == 3
 		$(DataElementListPage.exportButtonItems).find("li",0).find("a")[index].text() == label
 
@@ -131,6 +126,7 @@ class ExportButtonSpec extends GebReportingSpec {
 		index << [0,1,2]
 	}
 
+
 	def "ExportButton in conceptualDomain list page will export conceptualDomain list as an excel file"() {
 
 		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
@@ -157,7 +153,7 @@ class ExportButtonSpec extends GebReportingSpec {
 		def downloadLink = $(ConceptualDomainListPage.exportButtonItems).find("li",0).find("a",0)
 		def bytes = downloadBytes(downloadLink.@href)
 
-		then: "its download the excel file"
+		then: "it downloads the excel file"
 		bytes.size() != 0
 	}
 }

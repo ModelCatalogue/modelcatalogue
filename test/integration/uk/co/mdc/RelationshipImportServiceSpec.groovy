@@ -1,6 +1,7 @@
 package uk.co.mdc
 
 import grails.test.spock.IntegrationSpec
+import spock.lang.Ignore
 import org.modelcatalogue.core.DataElement
 import org.modelcatalogue.core.Model
 import org.modelcatalogue.core.dataarchitect.ExcelLoader
@@ -16,6 +17,7 @@ class RelationshipImportServiceSpec extends IntegrationSpec {
         initCatalogueService.initDefaultRelationshipTypes()
         initCatalogueService.initDefaultMeasurementUnits()
         initCatalogueService.initDefaultDataTypes()
+
     }
 
     void "load element from spreadsheet then load relationship from spreadsheet"()

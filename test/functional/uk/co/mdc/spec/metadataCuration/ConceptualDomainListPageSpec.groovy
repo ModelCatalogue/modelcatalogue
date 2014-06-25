@@ -17,25 +17,12 @@ class ConceptualDomainListPageSpec extends GebReportingSpec {
 		waitFor {
 			at ModelListPage
 		}
-		waitFor {
-			$(ModelListPage.catalogueElementLink).displayed
-		}
-		$(ModelListPage.catalogueElementLink).click()
-
-		waitFor {
-			$(ModelListPage.conceptualDomainLink).displayed
-		}
-		$(ModelListPage.conceptualDomainLink).click()
-
-		waitFor {
-			ConceptualDomainListPage
-		}
 	}
-
 
 	def "Clicking on conceptualDomain name will lead to its show page"() {
 
 		when: "at conceptualDomainList Page and clicking on a conceptualDomain name"
+		to ConceptualDomainListPage
 		waitFor {
 			at ConceptualDomainListPage
 		}

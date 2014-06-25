@@ -2,6 +2,7 @@ package uk.co.mdc
 
 import grails.test.spock.IntegrationSpec
 import org.modelcatalogue.core.DataElement
+import spock.lang.Ignore
 import uk.co.mdc.utils.COSDImporterController
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.mock.web.MockMultipartHttpServletRequest
