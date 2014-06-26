@@ -8,7 +8,7 @@ class DataElementListPage extends ListPage {
 
 	static at = {
 		url == "metadataCurator#/catalogue/dataElement/all" &&
-		title == "Metadata Curation"
+		title == "Metadata Registry"
 	}
 
 	@Override

@@ -47,14 +47,91 @@ class ConceptualDomainListPageSpec extends GebReportingSpec {
 		mainLabel.text().contains("NHIC")
 		description.text() == "NHIC Test Description"
 		waitFor {
-			$(ConceptualDomainShowPage.dataTypesTab).displayed
+			$(ConceptualDomainShowPage.valueDomainsTab).displayed
 		}
 		waitFor{
 			$(ConceptualDomainShowPage.modelsTab).displayed
 		}
 		waitFor{
-			$(ConceptualDomainShowPage.dataTypesTab).displayed
+			$(ConceptualDomainShowPage.propertiesTab).displayed
 		}
 
 	}
+
+
+
+	def "ConceptualDomain list page has exportButton"() {
+
+		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
+		to ConceptualDomainListPage
+
+		when: "at conceptualDomainList Page"
+		waitFor {
+			at ConceptualDomainListPage
+		}
+
+		then: "it should have export button"
+		waitFor {
+			$(ConceptualDomainListPage.exportButton).displayed
+		}
+	}
+
+	def "Clicking on exportButton in conceptualDomain list page will show the list of available reports"() {
+
+		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
+		to ConceptualDomainListPage
+
+		when: "at conceptualDomainList Page"
+		waitFor {
+			at ConceptualDomainListPage
+		}
+		waitFor {
+			$(ConceptualDomainListPage.exportButton).displayed
+		}
+
+		$(ConceptualDomainListPage.exportButton).click()
+
+		then: "list of available reports will be displayed in a menu"
+		$(ConceptualDomainListPage.exportButtonItems).displayed
+		$(ConceptualDomainListPage.exportButtonItems).find("li",0).displayed
+	}
+
+	def "ExportButton in conceptualDomain list page will export conceptualDomain list as an excel file"() {
+
+		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
+		to ConceptualDomainListPage
+
+		when: "at conceptualDomainList Page"
+		waitFor {
+			at ConceptualDomainListPage
+		}
+		waitFor {
+			$(ConceptualDomainListPage.exportButton).displayed
+		}
+		$(ConceptualDomainListPage.exportButton).click()
+
+		waitFor {
+			$(ConceptualDomainListPage.exportButtonItems).displayed
+		}
+
+		waitFor {
+			$(ConceptualDomainListPage.exportButtonItems).find("li",0).displayed
+		}
+
+		waitFor {
+			$(ConceptualDomainListPage.exportButtonItems).find("li",0).find("a",0).displayed
+		}
+
+
+		//$("div.export.open ul#exportBtnItems").find("li",0).find("a",0).click()
+		//Instead of clicking on the link, we will get the link href and download the file directly
+		//and make sure that the content of the file is not empty
+		def downloadLink = $(ConceptualDomainListPage.exportButtonItems).find("li",0).find("a",0)
+		def bytes = downloadBytes(downloadLink.@href)
+
+		then: "it downloads the excel file"
+		bytes.size() != 0
+	}
+
+
 }

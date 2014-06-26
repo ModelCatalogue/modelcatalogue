@@ -10,6 +10,9 @@ class TopNavElementsReadOnlyAdmin extends Module{
 	static String catalogueElementLink = "a#catalogueElementLink"
 	static String conceptualDomainLink = "a#conceptualDomainLink"
 
+	static String accountLink = "a#accountLink"
+	static String changePasswordLink = "li#changePasswordLink a"
+
 
 	static content = {
 
@@ -19,10 +22,7 @@ class TopNavElementsReadOnlyAdmin extends Module{
 		dataTypeLink(wait:true) {$("li a#dataTypeLink")}
 		modelLink(wait:true) {$("li a#modelLink")}
 
-		accountLink(required: false)  {$("li a#accountLink")}
 
-
-		changePasswordLink(required: false)  {$("li#changePasswordLink a")}
 
 
 

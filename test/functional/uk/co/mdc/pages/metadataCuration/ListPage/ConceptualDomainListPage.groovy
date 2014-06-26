@@ -9,7 +9,7 @@ class ConceptualDomainListPage extends ListPage  {
 
 	static at = {
 		url == "metadataCurator#/catalogue/conceptualDomain/all" &&
-		 title == "Metadata Curation"
+		 title == "Metadata Registry"
 	}
 
 	@Override

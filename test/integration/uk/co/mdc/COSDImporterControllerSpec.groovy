@@ -16,6 +16,8 @@ class COSDImporterControllerSpec extends IntegrationSpec {
 
     def fileName= "test/unit/resources/COSD/COSD.xls"
 
+	//This test takes a long time to load excel file and run !
+	@Ignore
     def "Test the dataImportService in the COSDImporterController"()
     {
         when: "The dataImportSercive is called"

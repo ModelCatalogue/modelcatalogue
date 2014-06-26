@@ -22,7 +22,7 @@ class ConceptualDomainShowPageSpec extends GebReportingSpec {
 		}
 	}
 
-	def "At ConceptualDomainShowPage, it shows properties, models and dataTypes"() {
+	def "At ConceptualDomainShowPage, it shows properties, models and valueDomains"() {
 
 		when: "at conceptualDomainList Page and clicking on a conceptualDomain name"
 		to ConceptualDomainListPage
@@ -51,13 +51,13 @@ class ConceptualDomainShowPageSpec extends GebReportingSpec {
 		mainLabel.text().contains("NHIC")
 		description.text() == "NHIC Test Description"
 		waitFor {
-			$(ConceptualDomainShowPage.dataTypesTab).displayed
+			$(ConceptualDomainShowPage.valueDomainsTab).displayed
 		}
 		waitFor{
 			$(ConceptualDomainShowPage.modelsTab).displayed
 		}
 		waitFor{
-			$(ConceptualDomainShowPage.dataTypesTab).displayed
+			$(ConceptualDomainShowPage.valueDomainsTab).displayed
 		}
 
 	}
@@ -85,15 +85,15 @@ class ConceptualDomainShowPageSpec extends GebReportingSpec {
 			at ConceptualDomainShowPage
 		}
 		waitFor {
-			$(ConceptualDomainShowPage.dataTypesTab).displayed
-			$(ConceptualDomainShowPage.dataTypesTab).find("a").displayed
+			$(ConceptualDomainShowPage.valueDomainsTab).displayed
+			$(ConceptualDomainShowPage.valueDomainsTab).find("a").displayed
 		}
-		when:"Clicking on dataTypes Tab"
-		$(ConceptualDomainShowPage.dataTypesTab).find("a").click()
+		when:"Clicking on valueDomains Tab"
+		$(ConceptualDomainShowPage.valueDomainsTab).find("a").click()
 
-		then:"dataTypes Table will be displayed"
+		then:"valueDomains Table will be displayed"
 		waitFor {
-			$(ConceptualDomainShowPage.dataTypesTab).displayed
+			valueDomainsTable.displayed
 		}
 
 		when:"Clicking on model Tab"
@@ -106,7 +106,7 @@ class ConceptualDomainShowPageSpec extends GebReportingSpec {
 
 		then:"model Table will be displayed"
 		waitFor {
-			$(ConceptualDomainShowPage.modelsTab).displayed
+			modelsTable.displayed
 		}
 	}
 }

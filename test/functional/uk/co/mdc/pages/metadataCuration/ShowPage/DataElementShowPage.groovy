@@ -12,7 +12,7 @@ class DataElementShowPage extends BasePageWithNavReadOnly {
 
 	static at = {
 		url == "metadataCurator/#/catalogue/dataElement/" &&
-				title == "Metadata Curation"
+				title == "Metadata Registry"
 	}
 
 	static content = {
@@ -20,14 +20,14 @@ class DataElementShowPage extends BasePageWithNavReadOnly {
 		description(wait:true) { $("blockquote.ce-description")}
 
 		propertiesTab {waitFor {$("div.tabbable ul li[heading='Properties']")}}
-		dataTypesTab{waitFor { $("div.tabbable ul li[heading='Data Type']")}}
+		valueDomainsTab{waitFor { $("div.tabbable ul li[heading='Value Domains']")}}
 		metadataTab {waitFor { $("div.tabbable ul li[heading='Metadata']")}}
 		modelsTab {waitFor { $("div.tabbable ul li[heading='Models']")}}
 		relationshipsTab {waitFor { $("div.tabbable ul li[heading='Relationships']")}}
 
 
 		propertiesTable(required:false) {waitFor {$("table#Properties")}}
-		dataTypesTable {waitFor {$("table#-instantiatedBy")}}
+		valueDomainsTable {waitFor {$("table#-instantiatedBy")}}
 		metadataTable {waitFor {$("table#Metadata")}}
 		modelsTable {waitFor {$("table#-containedIn")}}
 		relationshipsTable {waitFor {$("table#-relationships")}}

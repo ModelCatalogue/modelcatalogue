@@ -8,6 +8,6 @@ class DataTypeListPage extends ListPage {
 
 	static at = {
 		url == "metadataCurator#/catalogue/dataType/all" &&
-		title == "Metadata Curation"
+		title == "Metadata Registry"
 	}
 }

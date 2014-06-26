@@ -12,12 +12,12 @@ class ConceptualDomainShowPage extends BasePageWithNavReadOnly{
 
 	static String propertiesTab = "div.tabbable ul li[heading='Properties']"
 	static String modelsTab     = "div.tabbable ul li[heading='Models']"
-	static String dataTypesTab  = "div.tabbable ul li[heading='Data Types']"
+	static String valueDomainsTab  = "div.tabbable ul li[heading='Value Domain']"
 
 
 	static at = {
 		url == "metadataCurator/#/catalogue/conceptualDomain/" &&
-		title == "Metadata Curation"
+		title == "Metadata Registry"
 	}
 
 	static content = {
@@ -26,10 +26,10 @@ class ConceptualDomainShowPage extends BasePageWithNavReadOnly{
 
 //		propertiesTab {waitFor {$("div.tabbable ul li[heading='Properties']")}}
 //		modelsTab {waitFor { $("div.tabbable ul li[heading='Models']")}}
-//		dataTypesTab{waitFor { $("div.tabbable ul li[heading='DataTypes']")}}
+//		dataTypesTab{waitFor { $("div.tabbable ul li[headiDataTypeListPageSpec)ng='DataTypes']")}}
 
 		propertiesTable(required:false) {waitFor {$("table#Properties")}}
 		modelsTable {waitFor {$("table#-isContextFor")}}
-		dataTypesTable {waitFor {$("table#-includes")}}
+		valueDomainsTable {waitFor {$("table#-includes")}}
 	}
 }
