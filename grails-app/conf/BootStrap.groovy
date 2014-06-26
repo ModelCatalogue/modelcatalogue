@@ -62,8 +62,12 @@ class BootStrap {
         return [[parentModel?.modelCatalogueId, parentModel?.name, containingModel?.modelCatalogueId, containingModel?.name, element.modelCatalogueId, element.name, element.description, valueDomain?.unitOfMeasure?.name, valueDomain?.dataType?.name, "-"]]
     }
 
-    def registerReports(){
+    def generalModelExport(element){
+        Model parentModel = element.childOf.first()
+        return [[parentModel?.modelCatalogueId, parentModel?.name, element?.modelCatalogueId, element?.name, element.description, "-"]]
+    }
 
+    def registerReports(){
 
         xlsxListRenderer.registerRowWriter {
             title "Data Elements XLSX"
@@ -75,14 +79,13 @@ class BootStrap {
             }
         }
 
-
         xlsxListRenderer.registerRowWriter {
             title "Models XLSX"
-            headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Model Description", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata"
+            headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Model Description",	"Metadata"
             when { ListWrapper container, RenderContext context ->
-                context.actionName in [null, 'index', 'search', 'incoming', 'outgoing'] && container.itemType && DataElement.isAssignableFrom(container.itemType)
-            } then { DataElement element ->
-                generalDataElementExport(element)
+                context.actionName in [null, 'index', 'search', 'incoming', 'outgoing'] && container.itemType && Model.isAssignableFrom(container.itemType)
+            } then { Model element ->
+                generalModelExport(element)
             }
         }
 
@@ -154,7 +157,8 @@ class BootStrap {
 			}
 		}
 
-        configureRequestMapSecurity()
+        if(Requestmap.count()==0) configureRequestMapSecurity()
+
 	}
 
     private configureRequestMapSecurity(){
@@ -227,11 +231,11 @@ class BootStrap {
         new Requestmap(url: '/api/modelCatalogue/core/search/**', configAttribute: 'ROLE_READONLY_USER,ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
 
 
-		new Requestmap(url: '/api/modelCatalogue/core/*/create', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/edit', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/save', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/update', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.PUT).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/delete', configAttribute: 'ROLE_USER, ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.DELETE).save()
+		new Requestmap(url: '/api/modelCatalogue/core/*/create', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/edit', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/save', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/update', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.PUT).save()
+        new Requestmap(url: '/api/modelCatalogue/core/*/delete', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.DELETE).save()
 
     }
 
