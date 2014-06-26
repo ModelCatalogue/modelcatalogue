@@ -95,6 +95,8 @@ grails.project.dependency.resolution = {
 
         runtime 'org.springframework:spring-test:3.2.8.RELEASE'
 
+        runtime "org.modelcatalogue:spring-security-ajax-aware:0.1.1"
+
     }
 
     plugins {
