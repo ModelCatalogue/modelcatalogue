@@ -55,6 +55,74 @@ class BootStrap {
         return [[parentModel?.modelCatalogueId, parentModel?.name, containingModel?.modelCatalogueId, containingModel?.name, element.modelCatalogueId, element.name, element.description, valueDomain?.unitOfMeasure?.name, valueDomain?.dataType?.name, "-", element.ext.get("NHIC_Identifier"), element.ext.get("Link_to_existing_definition"), element.ext.Notes_from_GD_JCIS , element.ext.Optional_Local_Identifier, element.ext.A, element.ext.B, element.ext.C , element.ext.D , element.ext.E , element.ext.F , element.ext.G, element.ext.H, element.ext.E2, element.ext.System, element.ext.Comments, element.ext.Group]]
     }
 
+    def generalDataElementExport(element){
+        Model parentModel = catalogueElementService.getParentModel(element)
+        Model containingModel = catalogueElementService.getContainingModel(element)
+        ValueDomain valueDomain = catalogueElementService.getValueDomain(element)
+        return [[parentModel?.modelCatalogueId, parentModel?.name, containingModel?.modelCatalogueId, containingModel?.name, element.modelCatalogueId, element.name, element.description, valueDomain?.unitOfMeasure?.name, valueDomain?.dataType?.name, "-"]]
+    }
+
+    def registerReports(){
+
+
+        xlsxListRenderer.registerRowWriter {
+            title "Data Elements XLSX"
+            headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata"
+            when { ListWrapper container, RenderContext context ->
+                context.actionName in [null, 'index', 'search', 'incoming', 'outgoing'] && container.itemType && DataElement.isAssignableFrom(container.itemType)
+            } then { DataElement element ->
+                generalDataElementExport(element)
+            }
+        }
+
+
+        xlsxListRenderer.registerRowWriter {
+            title "Models XLSX"
+            headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Model Description", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata"
+            when { ListWrapper container, RenderContext context ->
+                context.actionName in [null, 'index', 'search', 'incoming', 'outgoing'] && container.itemType && DataElement.isAssignableFrom(container.itemType)
+            } then { DataElement element ->
+                generalDataElementExport(element)
+            }
+        }
+
+
+        xlsxListRenderer.registerRowWriter('COSD') {
+            title: "COSD XLSX"
+            headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata", "Data item No.","Schema Specification","Data Dictionary Element", "Current Collection", "Format"
+            when { ListWrapper container, RenderContext context ->
+                context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && container.itemType && DataElement.isAssignableFrom(container.itemType)
+            } then { DataElement element ->
+                cosdExport(element)
+            }
+        }
+
+
+        xlsxListRenderer.registerRowWriter('NHIC') {
+            title: "NHIC XLSX"
+            headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata", "NHIC_Identifier","Link_to_existing_definition", "Notes_from_GD_JCIS" ,"Optional_Local_Identifier","A" ,"B","C" ,"D" ,"E" ,"F" ,"G","H","E2", "System", "Comments", "Group"
+            when { ListWrapper container, RenderContext context ->
+                context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && container.itemType && DataElement.isAssignableFrom(container.itemType)
+            } then { DataElement element ->
+                nhicExport(element)
+            }
+        }
+
+
+        reportsRegistry.register {
+            title 'Export All to COSD'
+            type Model
+            link controller: 'dataArchitect', action: 'getSubModelElements', params: [format: 'xlsx', report: 'COSD'], id: true
+        }
+
+        reportsRegistry.register {
+            title 'Export All to NHIC'
+            type Model
+            link controller: 'dataArchitect', action: 'getSubModelElements', params: [format: 'xlsx', report: 'NHIC'], id: true
+        }
+
+    }
+
     def init = { servletContext ->
 
 		def springContext = WebApplicationContextUtils.getWebApplicationContext( servletContext )
@@ -66,40 +134,8 @@ class BootStrap {
         initCatalogueService.initDefaultRelationshipTypes()
         initCatalogueService.initDefaultMeasurementUnits()
 
-		xlsxListRenderer.registerRowWriter('COSD') {
-			title: "COSD"
-			headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata", "Data item No.","Schema Specification","Data Dictionary Element", "Current Collection", "Format"
-			when { ListWrapper container, RenderContext context ->
-				context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && container.itemType && DataElement.isAssignableFrom(container.itemType)
-			} then { DataElement element ->
-                cosdExport(element)
-            }
-		}
 
-
-		xlsxListRenderer.registerRowWriter('NHIC') {
-			title: "NHIC"
-			headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata", "NHIC_Identifier","Link_to_existing_definition", "Notes_from_GD_JCIS" ,"Optional_Local_Identifier","A" ,"B","C" ,"D" ,"E" ,"F" ,"G","H","E2", "System", "Comments", "Group"
-			when { ListWrapper container, RenderContext context ->
-				context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && container.itemType && DataElement.isAssignableFrom(container.itemType)
-			} then { DataElement element ->
-                nhicExport(element)
-			}
-		}
-
-
-		reportsRegistry.register {
-			title 'Export All to COSD'
-			type Model
-			link controller: 'dataArchitect', action: 'getSubModelElements', params: [format: 'xlsx', report: 'COSD'], id: true
-		}
-
-		reportsRegistry.register {
-			title 'Export All to NHIC'
-			type Model
-			link controller: 'dataArchitect', action: 'getSubModelElements', params: [format: 'xlsx', report: 'NHIC'], id: true
-		}
-
+        registerReports()
 
 		environments {
 			production {
