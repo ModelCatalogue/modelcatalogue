@@ -106,11 +106,6 @@
                                 <li><g:link controller="user" action='create'>Create user</g:link></li>
                                 <li><g:link controller="registrationCode" action='search'> <g:message code="spring.security.ui.menu.registrationCode" /> </g:link></li>
                                 <li><g:link controller="role" action='listPendingUsers'>Activate pending users</g:link></li>
-                                <li class="divider"></li>
-                                <li class="dropdown-header">Import/Export</li>
-                                <li><g:link mapping="importData">Import Data</g:link></li>
-                                %{--<li><g:link mapping="importRelationships">Import Relationships</g:link></li>--}%
-                                %{--<li><g:link mapping="importCOSD">Import COSD Excel</g:link></li>--}%
                             </ul>
                         </li>
                     </ul>
