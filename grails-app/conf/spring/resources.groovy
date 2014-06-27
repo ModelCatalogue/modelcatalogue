@@ -1,5 +1,4 @@
 import grails.util.Environment
-import org.modelcatalogue.core.ModelCatalogueSearchService
 import uk.co.mdc.loginHandler.CustomAuthenticationHandler
 import uk.co.mdc.pathways.LinkMarshaller
 import uk.co.mdc.pathways.NodeMarshaller
