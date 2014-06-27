@@ -73,7 +73,7 @@ class BootStrap {
             title "Data Elements XLSX"
             headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata"
             when { ListWrapper container, RenderContext context ->
-                context.actionName in [null, 'index', 'search', 'incoming', 'outgoing'] && container.itemType && DataElement.isAssignableFrom(container.itemType)
+                context.actionName in [null, 'index', 'search', 'incoming', 'outgoing', 'getSubModelElements'] && container.itemType && DataElement.isAssignableFrom(container.itemType)
             } then { DataElement element ->
                 generalDataElementExport(element)
             }
