@@ -4,6 +4,11 @@ Hi ${user.firstName},<br>
 <br>
 A user account has been created for you on the BRC Model Catalogue (${mcURL}).
 <br>
+Your account details are as follows:<br>
+Username: ${user.username}<br>
+First name: ${user.firstName}<br>
+Last name: ${user.lastName}<br>
+<br>
 To activate your account, please click <a href='${resetLink}'>here</a>, or paste the URL below into your favourite browser:
 <br>
 ${resetLink}
