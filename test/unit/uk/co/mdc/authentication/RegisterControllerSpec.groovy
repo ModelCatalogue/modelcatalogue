@@ -9,8 +9,8 @@ import spock.lang.Specification
 import uk.co.mdc.SecAuth
 import uk.co.mdc.SecUser
 import uk.co.mdc.SecUserSecAuth
-import uk.co.mdc.register.RegisterController
-import uk.co.mdc.register.ResetPasswordCommand
+import uk.co.mdc.RegisterController
+import uk.co.mdc.ResetPasswordCommand
 
 /**
  * Created by soheil on 28/05/2014.
