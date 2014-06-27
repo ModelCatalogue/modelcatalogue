@@ -91,6 +91,30 @@ environments {
 					"mail.smtp.socketFactory.fallback":"false"]
 			}
 		 }
+
+		plugins{
+			springsecurity{
+				//This will ask server to use HTTPS when accessing login page
+				//after login, communication channel remains in HTTPS as  WE HAVE NOT DEFINED channel status for other pages
+				secureChannel.definition = [
+						'/login': 			'REQUIRES_SECURE_CHANNEL',
+						'/login.*': 		'REQUIRES_SECURE_CHANNEL',
+						'/login/*': 		'REQUIRES_SECURE_CHANNEL',
+				]
+				auth.forceHttps = true
+			}
+		
+			//But when using a load balancer such as an F5 BIG-IP it's not possible to just check secure/insecure.
+			// In that case you can configure the load balancer to set a request header indicating the current state.
+			//http://grails-plugins.github.io/grails-spring-security-core/guide/channelSecurity.html
+			secureChannel.useHeaderCheckChannelSecurity = true
+			portMapper.httpPort = 80
+			portMapper.httpsPort = 443
+			secureChannel.secureHeaderName = 'X-Forwarded-Proto'
+			secureChannel.secureHeaderValue = 'http'
+			secureChannel.insecureHeaderName = 'X-Forwarded-Proto'
+			secureChannel.insecureHeaderValue = 'https'
+		}
 	}
 }
 
@@ -129,9 +153,9 @@ grails.views.javascript.library="jquery"
 
 grails{
     assets{
-        excludes = ["**/*.less"]
-        includes = ["**/application.less"]
-        less.compiler='less4j' // faster than the default
+		excludes = ["**/*.less","**/*.coffee"]
+	    includes = ["**/application.less","**/metaDataCurator.less","**/app.coffee","**/list.coffee","**/metaDataCurator.coffee"]
+		less.compiler='less4j' // faster than the default
         minifyJs=false
         minifyCss =false
         bundle=false
@@ -139,10 +163,7 @@ grails{
     plugins{
         springsecurity{
 
-            // redirection page for success (including successful registration
-            successHandler.defaultTargetUrl = '/dashboard/'
-
-			// Added by the Spring Security Core plugin:
+            // Added by the Spring Security Core plugin:
 			userLookup.userDomainClassName = 'uk.co.mdc.SecUser'
 			userLookup.authorityJoinClassName = 'uk.co.mdc.SecUserSecAuth'
 			authority.className = 'uk.co.mdc.SecAuth'

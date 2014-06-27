@@ -13,9 +13,9 @@ grails.project.fork = [
         // configure settings for the run-app JVM
         run: false, //[maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
         // configure settings for the run-war JVM
-        war: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
-        // configure settings for the Console UI JVM
-        console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
+		//war: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
+        //configure settings for the Console UI JVM
+        //console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
 
 
@@ -58,7 +58,7 @@ grails.project.dependency.resolution = {
         mavenRepo 'http://repo.spring.io/milestone'
 
         mavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueCorePlugin/'
-        //git commmavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueElasticSearchPlugin/'
+        mavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueElasticSearchPlugin/'
 
 		// Used for Vlad's fixtures plugin
 		mavenRepo 'http://dl.bintray.com/metadata/model-catalogue'
@@ -95,6 +95,8 @@ grails.project.dependency.resolution = {
 
         runtime 'org.springframework:spring-test:3.2.8.RELEASE'
 
+        runtime "org.modelcatalogue:spring-security-ajax-aware:0.1.1"
+
     }
 
     plugins {
@@ -102,13 +104,11 @@ grails.project.dependency.resolution = {
         compile ":spring-security-ui:0.2"
         compile ':spring-security-core:1.2.7.4'
         compile ":spring-security-acl:1.1.1"
-
-        compile ":audit-logging:0.5.5.3"
         compile ":jquery-ui:1.10.3"
         compile ":famfamfam:1.0.1"
 
-        compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.3.1"
-        //compile "org.modelcatalogue.plugins:grails-model-catalogue-elastic-search-plugin:0.2"
+        compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.4.1"
+        compile "org.modelcatalogue.plugins:grails-model-catalogue-elastic-search-plugin:0.3.0"
 
         compile ':cache:1.0.1'
         compile ':mail:1.0.1', {
@@ -138,8 +138,6 @@ grails.project.dependency.resolution = {
 
         // The following are dead, we shouldn't use them!
         compile ":csv:0.3.1"
-
-        compile ":excel-export:0.2.0"
 
 		// Code quality bits
 		compile ":codenarc:0.20"

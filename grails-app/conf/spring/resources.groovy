@@ -1,19 +1,15 @@
-import grails.rest.render.RenderContext
-import org.modelcatalogue.core.CatalogueElement
+import grails.util.Environment
 import org.modelcatalogue.core.ModelCatalogueSearchService
-import org.modelcatalogue.core.util.ListWrapper
-import org.modelcatalogue.core.util.marshalling.xlsx.XLSXListRenderer
-import uk.co.mdc.pathways.PathwayMarshaller
-import util.marshalling.CustomObjectMarshallers
+import uk.co.mdc.loginHandler.CustomAuthenticationHandler
 import uk.co.mdc.pathways.LinkMarshaller
 import uk.co.mdc.pathways.NodeMarshaller
-import grails.util.Environment
+import uk.co.mdc.pathways.PathwayMarshaller
+import util.marshalling.CustomObjectMarshallers
 import util.marshalling.DataElementMarshaller
+import org.modelcatalogue.core.security.ajax.AjaxAwareLoginUrlAuthenticationEntryPoint
 
 // Place your Spring DSL code here
 beans = {
-
-    modelCatalogueSearchService(ModelCatalogueSearchService)
 
 	Environment.executeForCurrentEnvironment {
 		// Override mail server for dummy in 'development' mode only.
@@ -21,6 +17,17 @@ beans = {
 			mailService(uk.co.mdc.mail.DummyMailService)
 		}
 	}
+
+    authenticationEntryPoint(AjaxAwareLoginUrlAuthenticationEntryPoint) {
+        loginFormUrl = '/login/auth' // has to be specified even though it's ignored
+        portMapper = ref('portMapper')
+        portResolver = ref('portResolver')
+    }
+
+	//CustomAuthenticationHandler class will manage users welcome page
+	//authenticationSuccessHandler is a Spring Security bean for success authenticationHandler
+	authenticationSuccessHandler(CustomAuthenticationHandler)
+
 
 	customObjectMarshallers( CustomObjectMarshallers ) {
 		marshallers = [

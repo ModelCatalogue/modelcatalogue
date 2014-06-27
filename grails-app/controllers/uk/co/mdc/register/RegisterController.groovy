@@ -84,7 +84,47 @@ class RegisterController extends grails.plugins.springsecurity.ui.RegisterContro
 			return 'command.password.error.strength'
 		}
 	}
-	
+
+
+	/**
+	 * changePassword
+	 */
+	def changePassword (ResetPasswordCommand command){
+
+		def user = springSecurityService.getCurrentUser()
+		if(!user){
+			flash.error = message(code: 'spring.security.ui.resetPassword.badCode')
+			redirect uri: SpringSecurityUtils.securityConfig.successHandler.defaultTargetUrl
+			return
+		}
+
+		if (!request.post) {
+			return [command: new ResetPasswordCommand()]
+		}
+
+		command.username = user.username
+		command.validate()
+		if (command.hasErrors()) {
+			return [command: command]
+		}
+
+		String salt = saltSource instanceof NullSaltSource ? null : user.username
+		user.password = springSecurityUiService.encodePassword(command.password, salt)
+		user.save()
+
+		springSecurityService.reauthenticate user.username
+
+		//successfully changed so return
+		command.password = null
+		command.password2 = null
+		flash.success = "Your password has been successfully updated."
+		return [command: command]
+
+//		def conf = SpringSecurityUtils.securityConfig
+//		String postResetUrl = conf.ui.register.postResetUrl ?: conf.successHandler.defaultTargetUrl
+//		redirect uri: postResetUrl
+	}
+
 	static boolean checkPasswordMinLength(String password, command) {
 		def conf = SpringSecurityUtils.securityConfig
 

@@ -17,9 +17,12 @@
 				software components
 			</p>
 
-			<g:link controller="login" action="auth" class="btn btn-large btn-primary">Login</g:link>
-			<span class="lead">&nbsp;&nbsp;or&nbsp;&nbsp;</span>
-			<g:link controller="register" action="index" class="btn btn-large btn-primary">Sign Up</g:link>
+
+            <sec:ifNotLoggedIn>
+                <g:link controller="login" action="auth" class="btn btn-large btn-primary">Login</g:link>
+                <span class="lead">&nbsp;&nbsp;or&nbsp;&nbsp;</span>
+                <g:link controller="register" action="index" class="btn btn-large btn-primary">Sign Up</g:link>
+            </sec:ifNotLoggedIn>
 
 				
 		</div>

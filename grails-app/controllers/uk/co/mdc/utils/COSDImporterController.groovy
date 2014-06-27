@@ -62,7 +62,9 @@ class COSDImporterController {
                     headersMap.containingModelCodeRow = ""
                     headersMap.measurementUnitNameRow = ""
                     headersMap.metadataRow = "Metadata"
-                    dataImportService.importData(headersCOSDSheet, rowsCOSDSheet, "COSD", "Cancer Outcomes and Services Dataset", headersMap)
+                    def importer = dataImportService.importData(headersCOSDSheet, rowsCOSDSheet, "COSD?import", "COSD", "Cancer Outcomes and Services Dataset", headersMap)
+                    dataImportService.resolveAllPendingRows(importer)
+                    dataImportService.ingestImportQueue(importer)
                 }
                 excelCOSDSheets
                 flash.message = "DataElements have been created.\n"
