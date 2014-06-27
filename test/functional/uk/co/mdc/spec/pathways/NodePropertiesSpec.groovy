@@ -54,7 +54,7 @@ class NodePropertiesSpec extends GebReportingSpec{
         when: "I edit the name of a node and leave the textbox and refresh the page"
         def node = getNode( getNodeIds()[0])
         node.click()
-		waitFor { propertiesName.present }
+		waitFor { propertiesName.displayed }
         propertiesName.click()
         propertiesEditName.value("")
         propertiesEditName <<  newName
