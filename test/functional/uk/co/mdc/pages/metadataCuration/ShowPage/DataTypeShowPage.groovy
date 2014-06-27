@@ -12,7 +12,7 @@ class DataTypeShowPage extends BasePageWithNavReadOnly {
 
 	static at = {
 		url == "metadataCurator/#/catalogue/dataType/" &&
-				title == "Metadata Curation"
+				title == "Metadata Registry"
 	}
 
 	static content = {

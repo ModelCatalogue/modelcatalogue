@@ -18,27 +18,12 @@ class DataTypeListPageSpec extends GebReportingSpec {
 		waitFor {
 			at ModelListPage
 		}
-		waitFor {
-			$(ModelListPage.catalogueElementLink).displayed
-		}
-		$(ModelListPage.catalogueElementLink).click()
-
-
-		waitFor {
-			$(ModelListPage.dataTypeLink).displayed
-		}
-
-		$(ModelListPage.dataTypeLink).click()
-
-		waitFor {
-			at DataTypeListPage
-		}
-
 	}
 
 	def "Clicking on dataType name will lead to its show page"() {
 
 		when: "at dataTypeList Page and clicking on a dataType name"
+		to DataTypeListPage
 		waitFor {
 			at DataTypeListPage
 		}

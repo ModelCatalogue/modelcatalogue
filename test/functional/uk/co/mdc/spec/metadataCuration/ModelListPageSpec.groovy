@@ -14,12 +14,10 @@ import uk.co.mdc.pages.metadataCuration.ShowPage.ModelShowPage
 /**
  * Created by soheil on 15/05/2014.
  */
-@Stepwise
+
 class ModelListPageSpec extends GebReportingSpec{
 
-
-
-	def setupSpec(){
+	def setup(){
 		to LoginPage
 		loginReadOnlyUser()
 		waitFor{
@@ -145,7 +143,6 @@ class ModelListPageSpec extends GebReportingSpec{
 		(getDataElementRow(0)["desc"]).text() == "DE1 Desc"
 	}
 
-	@Ignore
 	def "Clicking on a model show icon, will show the model page"(){
 
 		when: "Click on a model"

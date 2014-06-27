@@ -62,7 +62,6 @@ grails.project.dependency.resolution = {
 
 		// Used for Vlad's fixtures plugin
 		mavenRepo 'http://dl.bintray.com/metadata/model-catalogue'
-
     }
 
     dependencies {

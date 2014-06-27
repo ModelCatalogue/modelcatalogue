@@ -132,7 +132,9 @@ class PathwayAddRemoveLinkSpec extends GebReportingSpec{
 		def link = createLink(nodeA,'down',nodeB,'up')
 
 		expect:
-		getLocalLinkIds().size() == preCreationLinkCount + 1
+		waitFor {
+			getLocalLinkIds().size() == preCreationLinkCount + 1
+		}
 
         when:"deleting a link"
 

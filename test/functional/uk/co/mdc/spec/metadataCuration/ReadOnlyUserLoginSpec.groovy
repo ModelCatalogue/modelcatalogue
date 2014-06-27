@@ -24,36 +24,20 @@ class ReadOnlyUserLoginSpec extends GebReportingSpec{
 	}
 
 
-	def "ReadOnly user has access to Account Menu"(){
-
-		when:"user goes to ConceptualDomainlist page"
-		to ConceptualDomainListPage
-
-		then:"account menu should be enabled for regular users"
-		waitFor {
-			ConceptualDomainListPage
-		}
-		nav
-		nav.accountLink.displayed
-	}
-
-
-
 	def "ReadOnly user can change password from Account Menu"(){
 
-		when:"user goes to ConceptualDomainlist page"
+		when:"user changes her/his password"
 		waitFor {
-			nav.accountLink.displayed
+			$(ModelListPage.accountLink).displayed
 		}
-		interact {
-			click(nav.accountLink)
-		}
+
+		$(ModelListPage.accountLink).click()
+
 		waitFor {
-			nav.changePasswordLink.displayed
+			$(ModelListPage.changePasswordLink).displayed
 		}
-		interact {
-			click(nav.changePasswordLink)
-		}
+		$(ModelListPage.changePasswordLink).click()
+
 		waitFor {
 			at ChangePasswordPage
 		}

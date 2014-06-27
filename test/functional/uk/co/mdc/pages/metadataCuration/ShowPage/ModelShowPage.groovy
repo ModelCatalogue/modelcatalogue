@@ -13,7 +13,7 @@ class ModelShowPage extends BasePageWithNavReadOnly{
 
 	static at = {
 		url == "metadataCurator/#/catalogue/model/" &&
-		title == "Metadata Curation"
+		title == "Metadata Registry"
 	}
 
 	static content = {

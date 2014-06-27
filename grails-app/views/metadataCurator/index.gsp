@@ -112,15 +112,20 @@
                         </li>
                     </sec:ifAnyGranted>
                 </ul>
-                <form show-if-logged-in class="navbar-form navbar-right" ng-submit="logout()"
-                      ng-controller="metadataCurator.logoutCtrl">
-                    <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-log-out"></i></button>
-                </form>
 
-                <form hide-if-logged-in class="navbar-form navbar-right" ng-submit="login()"
-                      ng-controller="metadataCurator.loginCtrl">
-                    <button class="btn btn-success" type="submit"><i class="glyphicon glyphicon-log-in"></i></button>
-                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><g:link data-placement="bottom" class="btn btn-inverse" data-original-title="Logout" rel="tooltip" controller="logout"> Logout </g:link></li>
+                </ul>
+
+                %{--<form show-if-logged-in class="navbar-form navbar-right" ng-submit="logout()"--}%
+                      %{--ng-controller="metadataCurator.logoutCtrl">--}%
+                    %{--<button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-log-out"></i></button>--}%
+                %{--</form>--}%
+
+                %{--<form hide-if-logged-in class="navbar-form navbar-right" ng-submit="login()"--}%
+                      %{--ng-controller="metadataCurator.loginCtrl">--}%
+                    %{--<button class="btn btn-success" type="submit"><i class="glyphicon glyphicon-log-in"></i></button>--}%
+                %{--</form>--}%
 
                 <form class="navbar-form navbar-right navbar-input-group" role="search" autocomplete="off"
                       ng-submit="search()" ng-controller="metadataCurator.searchCtrl">

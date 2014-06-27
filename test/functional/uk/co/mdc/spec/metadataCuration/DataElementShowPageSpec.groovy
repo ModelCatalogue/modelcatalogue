@@ -83,7 +83,7 @@ class DataElementShowPageSpec extends GebReportingSpec {
 			propertiesTab.displayed
 		}
 		waitFor {
-			dataTypesTab.displayed
+			valueDomainsTab.displayed
 		}
 		waitFor {
 			metadataTab.displayed
@@ -147,17 +147,17 @@ class DataElementShowPageSpec extends GebReportingSpec {
 		}
 
 
-		when:"Clicking on dataTypes Tab"
+		when:"Clicking on valueDomains Tab"
 		waitFor {
-			dataTypesTab.displayed
-			dataTypesTab.find("a").displayed
+			valueDomainsTab.displayed
+			valueDomainsTab.find("a").displayed
 		}
-		dataTypesTab.find("a").click()
+		valueDomainsTab.find("a").click()
 
 
-		then:"dataTypes Table will be displayed"
+		then:"valueDomains Table will be displayed"
 		waitFor {
-		 dataTypesTable.displayed
+			valueDomainsTable.displayed
 		}
 
 

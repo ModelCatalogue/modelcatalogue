@@ -40,15 +40,18 @@ class SearchSpec  extends GebReportingSpec{
 		}
 
 		when:"Searching for a term"
-		$(nav.searchTextInput).value("DE")
+		$(nav.searchTextInput).value("DE1")
 
 
 		then:"it will return all found elements"
-		waitFor {
+		//It may take a bit long to load the search result
+		waitFor (30){
 			$(nav.searchResultUl).displayed
 		}
- 		$(nav.searchResultUl).find("li").size() == 10
-		$(nav.searchResultUl).find("li",0).text().trim().contains("candela (Measurement Unit:")
+ 		$(nav.searchResultUl).find("li").size() == 3
+		$(nav.searchResultUl).find("li",0).text().trim().contains("Search Catalogue Element for DE1")
+		$(nav.searchResultUl).find("li",1).text().trim().contains("Search Model for DE1")
+		$(nav.searchResultUl).find("li",2).text().trim().contains("DE1")
 
 	}
 
@@ -61,7 +64,7 @@ class SearchSpec  extends GebReportingSpec{
 		}
 
 		when:"Searching for a term and clicking on the result"
-		$(nav.searchTextInput).value("DE")
+		$(nav.searchTextInput).value("DE1")
 		waitFor {
 			$(nav.searchResultUl).displayed
 		}

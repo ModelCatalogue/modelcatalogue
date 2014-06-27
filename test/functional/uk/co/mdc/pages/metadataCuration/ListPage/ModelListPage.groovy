@@ -11,7 +11,7 @@ class ModelListPage extends BasePageWithNavReadOnly {
 
 	static at = {
 				url == "metadataCurator#/catalogue/model/all" &&
-				title == "Metadata Curation"
+				title == "Metadata Registry"
 	}
 
 
