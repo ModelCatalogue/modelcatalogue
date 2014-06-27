@@ -114,7 +114,7 @@ class BootStrap {
         reportsRegistry.register {
             title 'Export All'
             type Model
-            link controller: 'dataArchitect', action: 'getSubModelElements', params: [format: 'xlsx', report: 'COSD'], id: true
+            link controller: 'dataArchitect', action: 'getSubModelElements', params: [format: 'xlsx', report: 'General'], id: true
         }
 
 
@@ -127,7 +127,7 @@ class BootStrap {
         reportsRegistry.register {
             title 'Export All to NHIC'
             type Model
-            link controller: 'dataArchitect', action: 'getSubModelElements', params: [format: 'xlsx', report: 'General'], id: true
+            link controller: 'dataArchitect', action: 'getSubModelElements', params: [format: 'xlsx', report: 'NHIC'], id: true
         }
 
     }
