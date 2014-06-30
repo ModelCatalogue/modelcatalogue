@@ -58,7 +58,7 @@ grails.project.dependency.resolution = {
         mavenRepo 'http://repo.spring.io/milestone'
 
         mavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueCorePlugin/'
-        mavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueElasticSearchPlugin/'
+        //mavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueElasticSearchPlugin/'
 
 		// Used for Vlad's fixtures plugin
 		mavenRepo 'http://dl.bintray.com/metadata/model-catalogue'
@@ -108,7 +108,7 @@ grails.project.dependency.resolution = {
         compile ":famfamfam:1.0.1"
 
         compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.4.1"
-        compile "org.modelcatalogue.plugins:grails-model-catalogue-elastic-search-plugin:0.3.0"
+        //compile "org.modelcatalogue.plugins:grails-model-catalogue-elastic-search-plugin:0.3.0"
 
         compile ':cache:1.0.1'
         compile ':mail:1.0.1', {
