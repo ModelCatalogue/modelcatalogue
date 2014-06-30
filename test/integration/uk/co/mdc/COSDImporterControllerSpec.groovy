@@ -20,7 +20,7 @@ class COSDImporterControllerSpec extends IntegrationSpec {
 	@Ignore
     def "Test the dataImportService in the COSDImporterController"()
     {
-        when: "The dataImportSercive is called"
+        when: "The dataImportService is called"
         def cosdImporterController = new COSDImporterController()
 
         def numElements = DataElement.count()
