@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 U (http://www.altova.com) by Teresa McDonell (NHS Connecting for Health) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.datadictionary.nhs.uk/data_dictionary/messages/SACT-v1-0/" xmlns:sact="http://www.datadictionary.nhs.uk/data_dictionary/messages/SACT-v1-0/" targetNamespace="http://www.datadictionary.nhs.uk/data_dictionary/messages/SACT-v1-0/" elementFormDefault="qualified" attributeFormDefault="unqualified" blockDefault="#all" finalDefault="extension" version="1.0.0" id="SACT-v1-0">
+	<xs:include schemaLocation="CommonTypes_20110810.xsd"/>
+	<xs:element name="SACT" type="SACTStructure"/>
+	<xs:complexType name="SACTStructure">
+		<xs:sequence>
+			<xs:element name="SACTRecord" type="SACTRecordType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SACTRecordType">
+		<xs:sequence>
+			<xs:element name="DemographicsAndConsultant" type="DemographicsAndConsultantStructure"/>
+			<xs:element name="ClinicalStatus" type="ClinicalStatusStructure"/>
+			<xs:element name="ProgrammeAndRegimen" type="ProgrammeAndRegimenStructure" maxOccurs="unbounded"/>
+			<xs:element name="Cycle" type="CycleStructure" maxOccurs="unbounded"/>
+			<xs:element name="DrugDetails" type="DrugDetailsStructure" maxOccurs="unbounded"/>
+			<xs:element name="Outcome" type="OutcomeStructure" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DemographicsAndConsultantStructure">
+		<xs:sequence>
+			<xs:element name="NHSNumber" type="NHSNumberType">
+				<xs:annotation>
+					<xs:appinfo>NHS NUMBER</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PersonBirthDate" type="DateType">
+				<xs:annotation>
+					<xs:appinfo>PERSON BIRTH DATE</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PersonGenderCode" type="GenderType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>PERSON GENDER CODE CURRENT</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EthnicCategory" type="EthnicCategoryType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>ETHNIC CATEGORY</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PostCode" type="PostcodeType">
+				<xs:annotation>
+					<xs:appinfo>POSTCODE OF USUAL ADDRESS</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GPPracticeCodeRegistration" type="OrgCodeType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>GENERAL MEDICAL PRACTICE CODE (PATIENT REGISTRATION)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ConsultantCode" type="ConsultantCodeType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>CONSULTANT CODE (INITIATED SYSTEMIC ANTI-CANCER THERAPY)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StartCareProfessionalMainSpecialtyCode" type="MainSpecialtyCode" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>CARE PROFESSIONAL MAIN SPECIALTY CODE (START SYSTEMIC ANTI-CANCER THERAPY)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="OrgCodeOfProvider" type="OrgCode_CodeOfProviderType">
+				<xs:annotation>
+					<xs:appinfo>ORGANISATION CODE (CODE OF PROVIDER)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ClinicalStatusStructure">
+		<xs:sequence>
+			<xs:choice>
+				<xs:choice>
+					<xs:sequence>
+						<xs:element name="StartPrimaryDiagnosis" type="PrimaryICDDiagnosisType">
+							<xs:annotation>
+								<xs:appinfo>PRIMARY DIAGNOSIS (ICD AT START SYSTEMIC ANTI-CANCER THERAPY)</xs:appinfo>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="StartMorphology" type="MorphologyICDOType" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>MORPHOLOGY (ICD-O AT START SYSTEMIC ANTI-CANCER THERAPY)</xs:appinfo>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:choice>
+				<xs:choice>
+					<xs:sequence>
+						<xs:element name="StartMorphology" type="MorphologyICDOType">
+							<xs:annotation>
+								<xs:appinfo>MORPHOLOGY (ICD-O AT START SYSTEMIC ANTI-CANCER THERAPY)</xs:appinfo>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:choice>
+			</xs:choice>
+			<xs:element name="FinalTNMCategory" type="TNMCategoryType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>TNM CATEGORY (FINAL PRETREATMENT)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ProgrammeAndRegimenStructure">
+		<xs:sequence>
+			<xs:element name="SACTProgrammeNumber" type="SACTProgrammeNumberType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>SYSTEMIC ANTI-CANCER THERAPY PROGRAMME NUMBER</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ACRegimenNumber" type="ACRegimenNumberType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>ANTI-CANCER REGIMEN NUMBER</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DrugTreatmentIntent" type="DrugTreatmentIntentType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>DRUG TREATMENT INTENT</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DrugRegimenAcronym" type="DrugRegimenAcronymType">
+				<xs:annotation>
+					<xs:appinfo>DRUG REGIMEN ACRONYM</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PersonHeight" type="PersonHeightInMetresType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>PERSON HEIGHT IN METRES</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PersonWeight" type="PersonWeightType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>PERSON WEIGHT</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice minOccurs="0">
+				<xs:element name="PerformanceStatusAdult" type="PerformanceStatusAdultType">
+					<xs:annotation>
+						<xs:appinfo>PERFORMANCE STATUS (ADULT)</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="PerformanceStatusChild" type="PerformanceStatusChildType">
+					<xs:annotation>
+						<xs:appinfo>PERFORMANCE STATUS (YOUNG PERSON)</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="CoMorbidityAdjustmentIndicator" type="BooleanType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>CO-MORBIDITY ADJUSTMENT INDICATOR</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DecisionToTreatDate" type="DateType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>DECISION TO TREAT DATE (ANTI-CANCER DRUG REGIMEN)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StartDateACDrugRegimen" type="DateType">
+				<xs:annotation>
+					<xs:appinfo>START DATE (ANTI-CANCER DRUG REGIMEN)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ClinicalTrialIndicator" type="ClinicalTrialIndicatorType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>CLINICAL TRIAL INDICATOR</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ChemoRadiationIndicator" type="BooleanType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>CHEMO-RADIATION INDICATOR</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NumberPlannedSACTCycles" type="NumberPlannedSACTCyclesType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>NUMBER OF SYSTEMIC ANTI-CANCER THERAPY CYCLES PLANNED</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CycleStructure">
+		<xs:sequence>
+			<xs:element name="ACDrugCycleId" type="ACDrugCycleIdType">
+				<xs:annotation>
+					<xs:appinfo>ANTI-CANCER DRUG CYCLE IDENTIFIER</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CycleStartDate" type="DateType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>START DATE (SYSTEMIC ANTI-CANCER DRUG CYCLE)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PersonWeight" type="PersonWeightType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>PERSON WEIGHT</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice minOccurs="0">
+				<xs:element name="PerformanceStatusAdult" type="PerformanceStatusAdultType">
+					<xs:annotation>
+						<xs:appinfo>PERFORMANCE STATUS (ADULT)</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="PerformanceStatusChild" type="PerformanceStatusChildType">
+					<xs:annotation>
+						<xs:appinfo>PERFORMANCE STATUS (YOUNG PERSON)</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="PrimaryProcedure" type="OPCSProcedureType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>PRIMARY PROCEDURE (OPCS)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DrugDetailsStructure">
+		<xs:sequence>
+			<xs:element name="SACTDrugName" type="SACTDrugNameType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>SYSTEMIC ANTI-CANCER DRUG NAME</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ChemoActualDose" type="ChemoActualDoseType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>CHEMOTHERAPY ACTUAL DOSE</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SACTDrugRouteOfAdmin" type="SACTDrugRouteOfAdminType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>SYSTEMIC ANTI-CANCER THERAPY DRUG ROUTE OF ADMINISTRATION</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SACTAdminDate" type="DateType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>SYSTEMIC ANTI-CANCER THERAPY ADMINISTRATION DATE</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="OrgCodeOfProvider" type="OrgCode_CodeOfProviderType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>ORGANISATION CODE (CODE OF PROVIDER)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PrimaryProcedure" type="OPCSProcedureType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>PRIMARY PROCEDURE (OPCS)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OutcomeStructure">
+		<xs:sequence>
+			<xs:element name="FinalSACTStartDate" type="DateType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>START DATE (FINAL SYSTEMIC ANTI-CANCER THERAPY)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SACTRegimenModIndicatorDoseReduction" type="BooleanType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>SYSTEMIC ANTI-CANCER THERAPY REGIMEN MODIFICATION INDICATOR (DOSE REDUCTION)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SACTRegimenModIndicatorTimeDelay" type="BooleanType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>SYSTEMIC ANTI-CANCER THERAPY REGIMEN MODIFICATION INDICATOR (TIME DELAY)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SACTRegimenModIndicatorDaysReduced" type="BooleanType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>SYSTEMIC ANTI-CANCER THERAPY REGIMEN MODIFICATION INDICATOR (DAYS REDUCED)</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PlannedTreatmentChangeReason" type="PlannedTreatmentChangeReasonType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>PLANNED TREATMENT CHANGE REASON</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PersonDeathDate" type="DateType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>PERSON DEATH DATE</xs:appinfo>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="DrugTreatmentIntentType">
+		<xs:restriction base="AlphaNumericType">
+			<xs:enumeration value="A"/>
+			<xs:enumeration value="N"/>
+			<xs:enumeration value="C"/>
+			<xs:enumeration value="P"/>
+			<xs:enumeration value="9"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PerformanceStatusAdultType">
+		<xs:restriction base="CodeListType">
+			<xs:enumeration value="0"/>
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PerformanceStatusChildType">
+		<xs:restriction base="CodeListType">
+			<xs:enumeration value="00"/>
+			<xs:enumeration value="01"/>
+			<xs:enumeration value="02"/>
+			<xs:enumeration value="03"/>
+			<xs:enumeration value="04"/>
+			<xs:enumeration value="05"/>
+			<xs:enumeration value="06"/>
+			<xs:enumeration value="07"/>
+			<xs:enumeration value="08"/>
+			<xs:enumeration value="09"/>
+			<xs:enumeration value="10"/>
+			<xs:enumeration value="11"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ClinicalTrialIndicatorType">
+		<xs:restriction base="CodeListType">
+			<xs:enumeration value="01"/>
+			<xs:enumeration value="02"/>
+			<xs:enumeration value="99"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NumberPlannedSACTCyclesType">
+		<xs:restriction base="IntegerType">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="99"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SACTDrugRouteOfAdminType">
+		<xs:restriction base="CodeListType">
+			<xs:enumeration value="01"/>
+			<xs:enumeration value="02"/>
+			<xs:enumeration value="03"/>
+			<xs:enumeration value="04"/>
+			<xs:enumeration value="05"/>
+			<xs:enumeration value="06"/>
+			<xs:enumeration value="07"/>
+			<xs:enumeration value="08"/>
+			<xs:enumeration value="09"/>
+			<xs:enumeration value="10"/>
+			<xs:enumeration value="11"/>
+			<xs:enumeration value="12"/>
+			<xs:enumeration value="99"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PlannedTreatmentChangeReasonType">
+		<xs:restriction base="CodeListType">
+			<xs:enumeration value="0"/>
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+			<xs:enumeration value="9"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SACTProgrammeNumberType">
+		<xs:restriction base="IntegerType">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="99"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ACRegimenNumberType">
+		<xs:restriction base="IntegerType">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="99"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DrugRegimenAcronymType">
+		<xs:restriction base="PopulatedStringType">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="35"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SACTDrugNameType">
+		<xs:restriction base="PopulatedStringType">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="35"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ACDrugCycleIdType">
+		<xs:restriction base="IntegerType">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="99"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ChemoActualDoseType">
+		<xs:restriction base="xs:double">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="9999999"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

@@ -17,7 +17,13 @@
         <h5>Please select the XSD SACT file:</h5>
         <p>
             <input type="file" id="xsdSACTFile" name="xsdSACTFile" multiple="false" />
-            <button id='btnUpload' type="submit" class="btn btn-primary">Upload SACT xsd file </button>
+        </p>
+        <h5>Please select the XSD CommonTypes SACT file:</h5>
+        <p>
+            <input type="file" id="xsdSACTTypesFile" name="xsdSACTTypesFile" multiple="false" />
+        </p>
+        <p>
+            <button id='btnUpload' type="submit" class="btn btn-primary">Upload SACT xsd files </button>
         </p>
     </g:form>
 </div>

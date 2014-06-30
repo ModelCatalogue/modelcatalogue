@@ -100,7 +100,7 @@
                                 <li><g:link mapping="importData">Import Data</g:link></li>
                                 %{--<li><g:link mapping="importRelationships">Import Relationships</g:link></li>--}%
                                 %{--<li><g:link mapping="importCOSD">Import COSD Excel</g:link></li>--}%
-                                {--<li><g:link mapping="importSACT">Import SACT Excel</g:link></li>--}
+                                <li><g:link mapping="importSACT">Import SACT XSD</g:link></li>
                             </ul>
                         </li>
                     </ul>
