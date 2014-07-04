@@ -1,16 +1,14 @@
-package uk.co.mdc.register
+package uk.co.mdc
 
 import org.codehaus.groovy.grails.plugins.springsecurity.NullSaltSource
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.plugins.springsecurity.ui.RegistrationCode
 
-/**
- * Overridden to provide firstName/lastName support
- * @author Ryan Brooks (ryan.brooks@ndm.ox.ac.uk)
- *
- */
+
 class RegisterController extends grails.plugins.springsecurity.ui.RegisterController {
-	
+
+
+
 	/**
 	 * Overridden index because we need to use the RegisterCommand object from this class.
 	 */
@@ -20,7 +18,7 @@ class RegisterController extends grails.plugins.springsecurity.ui.RegisterContro
 		copy.remove 'action'
 		[command: new RegisterCommand(copy)]
 	}
-	
+
 	/**
 	 * Overridden register action to provide firstname/lastname support
 	 */
@@ -33,12 +31,12 @@ class RegisterController extends grails.plugins.springsecurity.ui.RegisterContro
 
 		String salt = saltSource instanceof NullSaltSource ? null : command.username
 		def user = lookupUserClass().newInstance(
-			email: command.email, 
-			username: command.username,
-			firstName: command.firstName,
-			lastName: command.lastName,
-			accountLocked: true, 
-			enabled: true
+				email: command.email,
+				username: command.username,
+				firstName: command.firstName,
+				lastName: command.lastName,
+				accountLocked: true,
+				enabled: true
 		)
 
 		RegistrationCode registrationCode = springSecurityUiService.register(user, command.password, salt)
@@ -66,25 +64,64 @@ class RegisterController extends grails.plugins.springsecurity.ui.RegisterContro
 
 		render view: 'index', model: [emailSent: true]
 	}
-	
+
 	static final betterPasswordValidator = { String password, command ->
 		// Username cannot be password
 		if (command.username && command.username.equals(password)) {
 			return 'command.password.error.username'
 		}
-		
+
 		if (!checkPasswordMinLength(password, command) ||
-			!checkPasswordMaxLength(password, command)){
+				!checkPasswordMaxLength(password, command)){
 			return 'command.password.error.length'
 		}
-			
+
 		if (!checkPasswordMinLength(password, command) ||
-			!checkPasswordMaxLength(password, command) ||
-			!checkPasswordRegex(password, command)) {
+				!checkPasswordMaxLength(password, command) ||
+				!checkPasswordRegex(password, command)) {
 			return 'command.password.error.strength'
 		}
 	}
-	
+
+	/**
+	 * changePassword
+	 */
+	def changePassword (ResetPasswordCommand command){
+
+		def user = springSecurityService.getCurrentUser()
+		if(!user){
+			flash.error = message(code: 'spring.security.ui.resetPassword.badCode')
+			redirect uri: SpringSecurityUtils.securityConfig.successHandler.defaultTargetUrl
+			return
+		}
+
+		if (!request.post) {
+			return [command: new ResetPasswordCommand()]
+		}
+
+		command.username = user.username
+		command.validate()
+		if (command.hasErrors()) {
+			return [command: command]
+		}
+
+		String salt = saltSource instanceof NullSaltSource ? null : user.username
+		user.password = springSecurityUiService.encodePassword(command.password, salt)
+		user.save()
+
+		springSecurityService.reauthenticate user.username
+
+		//successfully changed so return
+		command.password = null
+		command.password2 = null
+		flash.success = "Your password has been successfully updated."
+		return [command: command]
+
+//		def conf = SpringSecurityUtils.securityConfig
+//		String postResetUrl = conf.ui.register.postResetUrl ?: conf.successHandler.defaultTargetUrl
+//		redirect uri: postResetUrl
+	}
+
 	static boolean checkPasswordMinLength(String password, command) {
 		def conf = SpringSecurityUtils.securityConfig
 
@@ -118,36 +155,36 @@ class RegisterController extends grails.plugins.springsecurity.ui.RegisterContro
  *
  */
 class RegisterCommand {
-	
-		String username
-		String email
-		String firstName
-		String lastName
-		String password
-		String password2
-	
-		def grailsApplication
-	
-		static constraints = {
-			username blank: false, nullable: false, validator: { value, command ->
-				if (value) {
-					def User = command.grailsApplication.getDomainClass(SpringSecurityUtils.securityConfig.userLookup.userDomainClassName).clazz
-					if (User.findByUsername(value)) {
-						return 'registerCommand.username.unique'
-					}
-					if(value.length() > 64 || value.length() < 6){
-						return 'registerCommand.username.length'
-					}
-					if(value.contains(' ')){
-						return 'registerCommand.username.spaces'
-					}
+
+	String username
+	String email
+	String firstName
+	String lastName
+	String password
+	String password2
+
+	def grailsApplication
+
+	static constraints = {
+		username blank: false, nullable: false, validator: { value, command ->
+			if (value) {
+				def User = command.grailsApplication.getDomainClass(SpringSecurityUtils.securityConfig.userLookup.userDomainClassName).clazz
+				if (User.findByUsername(value)) {
+					return 'registerCommand.username.unique'
+				}
+				if(value.length() > 64 || value.length() < 6){
+					return 'registerCommand.username.length'
+				}
+				if(value.contains(' ')){
+					return 'registerCommand.username.spaces'
 				}
 			}
-			email blank: false, nullable: false, email: true
-			password blank: false, nullable: false, validator: uk.co.mdc.register.RegisterController.betterPasswordValidator
-			password2 validator: uk.co.mdc.register.RegisterController.password2Validator
 		}
+		email blank: false, nullable: false, email: true
+		password blank: false, nullable: false, validator: uk.co.mdc.RegisterController.betterPasswordValidator
+		password2 validator: uk.co.mdc.RegisterController.password2Validator
 	}
+}
 
 class ResetPasswordCommand {
 	String username
@@ -156,7 +193,11 @@ class ResetPasswordCommand {
 
 	static constraints = {
 		username nullable: false
-		password blank: false, nullable: false, validator: uk.co.mdc.register.RegisterController.betterPasswordValidator
-		password2 validator: uk.co.mdc.register.RegisterController.password2Validator
+		password blank: false, nullable: false, validator: uk.co.mdc.RegisterController.betterPasswordValidator
+		password2 validator: uk.co.mdc.RegisterController.password2Validator
 	}
+
+
+
+
 }

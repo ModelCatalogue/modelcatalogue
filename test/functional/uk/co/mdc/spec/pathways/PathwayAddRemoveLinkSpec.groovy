@@ -95,7 +95,9 @@ class PathwayAddRemoveLinkSpec extends GebReportingSpec{
         createLink(nodeA,'right',nodeB,'bottom')
 
         then: "Just one node should be created between them"
-        getLocalLinkIds().size()== 1
+        waitFor {
+			getLocalLinkIds().size() == 1
+		}
     }
 
 
@@ -132,7 +134,9 @@ class PathwayAddRemoveLinkSpec extends GebReportingSpec{
 		def link = createLink(nodeA,'down',nodeB,'up')
 
 		expect:
-		getLocalLinkIds().size() == preCreationLinkCount + 1
+		waitFor {
+			getLocalLinkIds().size() == preCreationLinkCount + 1
+		}
 
         when:"deleting a link"
 
