@@ -59,10 +59,17 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
 <sec:ifLoggedIn>
-                        <li><a href="${createLink(uri: '/dashboard/')}">Dashboard</a></li>
+
+    <sec:ifAnyGranted roles="ROLE_USER,ROLE_ADMIN,ROLE_METADATA_CURATOR">
+                                <li><a href="${createLink(uri: '/dashboard/')}">Dashboard</a></li>
+    </sec:ifAnyGranted>
                         <!-- Metadata curation menu -->
                         <li><a href="${createLink(uri: '/metadataCurator')}">Data Curator</a></li>
 
+
+
+
+    <sec:ifAnyGranted roles="ROLE_USER,ROLE_ADMIN,ROLE_METADATA_CURATOR">
                         <!-- Pathways menu -->
                         <li class="dropdown">
                             <a id="nav-pathway-expand" class="dropdown-toggle" data-toggle="dropdown" href="#">Pathways <b class="caret"></b></a>
@@ -81,7 +88,11 @@
                             </ul>
                         </li>
 
-    <sec:ifAnyGranted roles="ROLE_ADMIN">
+    </sec:ifAnyGranted>
+
+
+
+                <sec:ifAnyGranted roles="ROLE_ADMIN">
                         <!-- Admin menu -->
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#"> Administration <b class="caret"></b></a>
@@ -95,19 +106,25 @@
                                 <li><g:link controller="user" action='create'>Create user</g:link></li>
                                 <li><g:link controller="registrationCode" action='search'> <g:message code="spring.security.ui.menu.registrationCode" /> </g:link></li>
                                 <li><g:link controller="role" action='listPendingUsers'>Activate pending users</g:link></li>
-                                <li class="divider"></li>
-                                <li class="dropdown-header">Import/Export</li>
-                                <li><g:link mapping="importData">Import Data</g:link></li>
-                                <li><g:link mapping="importRelationships">Import Relationships</g:link></li>
-                                <li><g:link mapping="importCOSD">Import COSD Excel</g:link></li>
                             </ul>
                         </li>
                     </ul>
     </sec:ifAnyGranted>
+
+            <!-- Show if the user is not an ADMIN -->
+            <sec:ifNotGranted roles="ROLE_ADMIN" >
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="accountLink">Account <b  class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li id="changePasswordLink"><g:link controller="register" action='changePassword' >Change Password</g:link></li>
+                    </ul>
+                </li>
+            </sec:ifNotGranted>
+
                     <ul class="nav navbar-nav navbar-right">
                         <li><g:link data-placement="bottom" class="btn btn-inverse" data-original-title="Logout" rel="tooltip" controller="logout"> Logout </g:link></li>
                     </ul>
-</sec:ifLoggedIn>
+                </sec:ifLoggedIn>
                 </div>
             </div>
         </nav>

@@ -13,6 +13,10 @@
 	<meta name='layout' content='main'/>
 	<g:set var="entityName" value="${message(code: 'user.label', default: 'User')}"/>
 	<title><g:message code="default.edit.label" args="[entityName]"/></title>
+
+    <asset:javascript src="jquery/dist/jquery.js"/>
+    <asset:javascript src="jquery-ui/ui/jquery-ui.js"/>
+
 </head>
 
 <body>

@@ -37,8 +37,12 @@ class LoginPage extends Page{
     }
 
     def loginRegularUser(){
-        loginUser("user1", "password1")
+        loginUser("user1", "password1@")
     }
+
+	def loginReadOnlyUser(){
+		loginUser("ruser1", "rpassword1@")
+	}
 
     /**
      * Logs a user into the system with the given password.
