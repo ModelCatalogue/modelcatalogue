@@ -12,7 +12,7 @@ class ConceptualDomainShowPage extends BasePageWithNavReadOnly{
 
 	static String propertiesTab = "div.tabbable ul li[heading='Properties']"
 	static String modelsTab     = "div.tabbable ul li[heading='Models']"
-	static String valueDomainsTab  = "div.tabbable ul li[heading='Value Domain']"
+	static String valueDomainsTab  = "div.tabbable ul li[heading='Value Domains']"
 
 
 	static at = {
