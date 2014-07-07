@@ -73,6 +73,7 @@ class ReadOnlyUserLoginSpec extends GebReportingSpec{
 		where:""
 		NotAuthorizedUrl <<
 							[
+							"pathways",
 							"role/search",
 							"role/create",
 							"user/search",
@@ -88,9 +89,16 @@ class ReadOnlyUserLoginSpec extends GebReportingSpec{
 							"aclClass",
 							"aclSid",
 							"aclEntry",
-							"aclObjectIdentity"
+							"aclObjectIdentity",
+							"bootstrap-data",
+							"dataImport",
+							"relationshipImport",
+							"oldDataImport",
+							"excelImporter",
+							"cosdimporter",
+							"formDesign/list",
+							"formDesign/preview",
+							"formDesign/show",
 							]
-
-
 	}
 }
