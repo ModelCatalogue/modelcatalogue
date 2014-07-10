@@ -11,8 +11,9 @@ import org.modelcatalogue.core.Model
 import org.modelcatalogue.core.ValueDomain
 import org.modelcatalogue.core.reports.ReportDescriptor
 import org.modelcatalogue.core.util.marshalling.ExtendibleElementMarshallers
+import org.modelcatalogue.core.util.marshalling.PublishedElementMarshallers
 
-class DataElementMarshaller extends ExtendibleElementMarshallers {
+class DataElementMarshaller extends PublishedElementMarshallers {
 
 	DataElementMarshaller() {
 		super(DataElement)

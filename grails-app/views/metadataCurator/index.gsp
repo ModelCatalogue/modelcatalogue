@@ -96,7 +96,7 @@
 
                             <li show-for-role="ADMIN" ui-sref-active="active"><a id="relationshipTypeLink"  ui-sref="mc.resource.list({resource: 'relationshipType'})" ui-sref-opts="{inherit: false}">Relationship Types</a></li>         <li ui-sref-active="active" ><a id="importsLink" ui-sref="mc.dataArchitect.imports.list">Imports</a></li>
                             <li ui-sref-active="active"><a id="uninstantiatedElements" ui-sref="mc.dataArchitect.uninstantiatedDataElements">Uninstantiated Data Elements</a></li>
-                            <li ui-sref-active="active"><a id="findRelationsByMetadataKeys" ui-sref="mc.dataArchitect.findRelationsByMetadataKeys">Create COSD Synonym Data Element Relationships</a></li>
+                            <li ui-sref-active="active"><a id="findRelationsByMetadataKeys" ui-sref="mc.dataArchitect.findRelationsByMetadataKeys">Find Data Element Relationships</a></li>
                             <li ui-sref-active="active"><a id="metadataKeyCheck" ui-sref="mc.dataArchitect.metadataKey">Data Elements without Metadata Key</a></li>
                             <li><a href="../model_catalogue/api/modelCatalogue/core/dataArchitect/uninstantiatedDataElements?format=xlsx&report=NHIC">Export Uninstantiated Elements</a></li>
                         </ul>
