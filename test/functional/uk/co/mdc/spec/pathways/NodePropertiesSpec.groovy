@@ -36,9 +36,13 @@ class NodePropertiesSpec extends GebReportingSpec{
         def node = getNode( getNodeIds()[0])
         node.click()
 
-        def oldName = propertiesName.text()
+		waitFor{
+			propertiesName.displayed
+		}
 
-        propertiesName.click()
+		def oldName = propertiesName.text()
+
+		propertiesName.click()
         propertiesEditName.value("")
         propertiesEditName <<  newName
         pathwayName.click() // clicking anywhere should do it
@@ -54,7 +58,7 @@ class NodePropertiesSpec extends GebReportingSpec{
         when: "I edit the name of a node and leave the textbox and refresh the page"
         def node = getNode( getNodeIds()[0])
         node.click()
-		waitFor { propertiesName.present }
+		waitFor { propertiesName.displayed }
         propertiesName.click()
         propertiesEditName.value("")
         propertiesEditName <<  newName
@@ -72,7 +76,8 @@ class NodePropertiesSpec extends GebReportingSpec{
         def node = getNode( getNodeIds()[0])
         node.click()
 
-        propertiesName.click()
+		waitFor { propertiesName.displayed }
+		propertiesName.click()
         propertiesEditName.value("")
         propertiesEditName <<  newName
         propertiesEditName <<  Keys.ENTER

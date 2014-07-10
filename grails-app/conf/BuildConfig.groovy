@@ -13,12 +13,11 @@ grails.project.fork = [
         // configure settings for the run-app JVM
         run: false, //[maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
         // configure settings for the run-war JVM
-        war: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
-        // configure settings for the Console UI JVM
-        console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
+		//war: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
+        //configure settings for the Console UI JVM
+        //console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
 
-//grails.plugin.location.'ModelCatalogueCorePlugin' = "../ModelCatalogueCorePlugin"
 
 grails.plugin.location.'ModelCatalogueCorePlugin' = "../ModelCataloguePlugin/ModelCatalogueCorePlugin"
 //grails.plugin.location.'ModelCatalogueElasticSearchPlugin' = "../ModelCataloguePlugin/ModelCatalogueElasticSearchPlugin"
@@ -60,6 +59,7 @@ grails.project.dependency.resolution = {
 
         mavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueCorePlugin/'
         //git commmavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueElasticSearchPlugin/'
+        //mavenRepo 'http://dl.bintray.com/modelcatalogue-core/ModelCatalogueElasticSearchPlugin/'
 
 		// Used for Vlad's fixtures plugin
 		mavenRepo 'http://dl.bintray.com/metadata/model-catalogue'
@@ -96,6 +96,8 @@ grails.project.dependency.resolution = {
 
         runtime 'org.springframework:spring-test:3.2.8.RELEASE'
 
+        runtime "org.modelcatalogue:spring-security-ajax-aware:0.1.1"
+
     }
 
     plugins {
@@ -103,8 +105,6 @@ grails.project.dependency.resolution = {
         compile ":spring-security-ui:0.2"
         compile ':spring-security-core:1.2.7.4'
         compile ":spring-security-acl:1.1.1"
-
-        compile ":audit-logging:0.5.5.3"
         compile ":jquery-ui:1.10.3"
         compile ":famfamfam:1.0.1"
 
