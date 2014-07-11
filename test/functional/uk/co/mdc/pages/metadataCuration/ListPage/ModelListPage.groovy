@@ -37,7 +37,7 @@ class ModelListPage extends BasePageWithNavReadOnly {
 		Model1_Item_Show { Model1_Item.find("a.btn[title='Show']") }
 		Model1_Item_Name { Model1_Item.find("span.catalogue-element-treeview-name") }
 
-		dataElementsTable { $("table[list='contained.elements']") }
+		dataElementsTable { $("table[list='contained.list']") }
 	}
 
 

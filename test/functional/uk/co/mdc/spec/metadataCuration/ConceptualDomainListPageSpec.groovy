@@ -115,11 +115,11 @@ class ConceptualDomainListPageSpec extends GebReportingSpec {
 		}
 
 		waitFor {
-			$(ConceptualDomainListPage.exportButtonItems).find("li",0).displayed
+			$(ConceptualDomainListPage.exportButtonItems).find("li",1).displayed
 		}
 
 		waitFor {
-			$(ConceptualDomainListPage.exportButtonItems).find("li",0).find("a",0).displayed
+			$(ConceptualDomainListPage.exportButtonItems).find("li",1).find("a",0).displayed
 		}
 
 

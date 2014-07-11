@@ -2,15 +2,17 @@ package util.marshalling
 
 import grails.converters.XML
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import org.modelcatalogue.core.CatalogueElement
 import org.modelcatalogue.core.DataElement
 import org.modelcatalogue.core.DataType
 import org.modelcatalogue.core.EnumeratedType
 import org.modelcatalogue.core.MeasurementUnit
 import org.modelcatalogue.core.Model
+import org.modelcatalogue.core.RelationshipType
+import org.modelcatalogue.core.RelationshipTypeService
 import org.modelcatalogue.core.ValueDomain
 import org.modelcatalogue.core.reports.ReportDescriptor
-import org.modelcatalogue.core.util.marshalling.ExtendibleElementMarshallers
 import org.modelcatalogue.core.util.marshalling.PublishedElementMarshallers
 
 class DataElementMarshaller extends PublishedElementMarshallers {
@@ -19,7 +21,9 @@ class DataElementMarshaller extends PublishedElementMarshallers {
 		super(DataElement)
 	}
 
+    @Override
 	protected void buildXml(element, XML xml) {
+
 		super.buildXml(element, xml)
 		def dt = getDataType(element)
 		if (dt instanceof EnumeratedType) {
@@ -44,9 +48,14 @@ class DataElementMarshaller extends PublishedElementMarshallers {
 		for (ReportDescriptor descriptor in reportsRegistry.getAvailableReports(el)) {
 			reports << [title: descriptor.title, url: descriptor.getLink(el)]
 		}
-
 		reports
 	}
+
+    @Override
+    protected getRelationshipTypesFor(Class elementClass){
+        RelationshipTypeService relationshipTypeService = ApplicationHolder.application.mainContext.getBean("relationshipTypeService")
+        relationshipTypeService.getRelationshipTypesFor(elementClass)
+    }
 
 	protected getContainingModel(DataElement dataElement){
 		if(dataElement.containedIn) {
