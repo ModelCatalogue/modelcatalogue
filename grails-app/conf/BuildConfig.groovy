@@ -19,8 +19,8 @@ grails.project.fork = [
 ]
 
 
-grails.plugin.location.'ModelCatalogueCorePlugin' = "../ModelCataloguePlugin/ModelCatalogueCorePlugin"
-grails.plugin.location.'ModelCatalogueElasticSearchPlugin' = "../ModelCataloguePlugin/ModelCatalogueElasticSearchPlugin"
+//grails.plugin.location.'ModelCatalogueCorePlugin' = "../ModelCataloguePlugin/ModelCatalogueCorePlugin"
+//grails.plugin.location.'ModelCatalogueElasticSearchPlugin' = "../ModelCataloguePlugin/ModelCatalogueElasticSearchPlugin"
 
 // Grails 2.3 uses Aether by default
 grails.project.dependency.resolver = "maven"
@@ -107,7 +107,7 @@ grails.project.dependency.resolution = {
         compile ":jquery-ui:1.10.3"
         compile ":famfamfam:1.0.1"
 
-        //compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.4.2"
+        compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.4.3"
         //compile "org.modelcatalogue.plugins:grails-model-catalogue-elastic-search-plugin:0.3.0"
 
         compile ':cache:1.0.1'
