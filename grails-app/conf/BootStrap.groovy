@@ -45,14 +45,16 @@ class BootStrap {
         Model parentModel = catalogueElementService.getParentModel(element)
         Model containingModel = catalogueElementService.getContainingModel(element)
         ValueDomain valueDomain = catalogueElementService.getValueDomain(element)
-        return [[parentModel?.modelCatalogueId, parentModel?.name, containingModel?.modelCatalogueId, containingModel?.name, element.modelCatalogueId, element.name, element.description,  valueDomain?.unitOfMeasure?.name, valueDomain?.dataType?.name, "-", element.ext.get("Data item No."), element.ext.get("Schema Specification"), element.ext.get("Data Dictionary Element"), element.ext.get("Current Collection"), element.ext.get("Format") ]]
+        String dataType = catalogueElementService.getDataType(valueDomain)
+        return [[parentModel?.modelCatalogueId, parentModel?.name, containingModel?.modelCatalogueId, containingModel?.name, element.modelCatalogueId, element.name, element.description,  valueDomain?.unitOfMeasure?.name, dataType, "-", element.ext.get("Data item No."), element.ext.get("Schema Specification"), element.ext.get("Data Dictionary Element"), element.ext.get("Current Collection"), element.ext.get("Format") ]]
     }
 
     def nhicExport(element){
         Model parentModel = catalogueElementService.getParentModel(element)
         Model containingModel = catalogueElementService.getContainingModel(element)
         ValueDomain valueDomain = catalogueElementService.getValueDomain(element)
-        return [[parentModel?.modelCatalogueId, parentModel?.name, containingModel?.modelCatalogueId, containingModel?.name, element.modelCatalogueId, element.name, element.description, valueDomain?.unitOfMeasure?.name, valueDomain?.dataType?.name, "-", element.ext.get("NHIC_Identifier"), element.ext.get("Link_to_existing_definition"), element.ext.Notes_from_GD_JCIS , element.ext.Optional_Local_Identifier, element.ext.A, element.ext.B, element.ext.C , element.ext.D , element.ext.E , element.ext.F , element.ext.G, element.ext.H, element.ext.E2, element.ext.System, element.ext.Comments, element.ext.Group,
+        String dataType = catalogueElementService.getDataType(valueDomain)
+        return [[parentModel?.modelCatalogueId, parentModel?.name, containingModel?.modelCatalogueId, containingModel?.name, element.modelCatalogueId, element.name, element.description, valueDomain?.unitOfMeasure?.name, dataType, "-", element.ext.get("NHIC_Identifier"), element.ext.get("Link_to_existing_definition"), element.ext.Notes_from_GD_JCIS , element.ext.Optional_Local_Identifier, element.ext.A, element.ext.B, element.ext.C , element.ext.D , element.ext.E , element.ext.F , element.ext.G, element.ext.H, element.ext.E2, element.ext.System, element.ext.Comments, element.ext.Group,
 				element.ext.get("More-comments"),
 				element.ext.get("Multiplicity"),
 				element.ext.get("Temp"),
@@ -86,7 +88,8 @@ class BootStrap {
         Model parentModel = catalogueElementService.getParentModel(element)
         Model containingModel = catalogueElementService.getContainingModel(element)
         ValueDomain valueDomain = catalogueElementService.getValueDomain(element)
-        return [[parentModel?.modelCatalogueId, parentModel?.name, containingModel?.modelCatalogueId, containingModel?.name, element.modelCatalogueId, element.name, element.description, valueDomain?.unitOfMeasure?.name, valueDomain?.dataType?.name, "-"]]
+        String dataType = catalogueElementService.getDataType(valueDomain)
+        return [[parentModel?.modelCatalogueId, parentModel?.name, containingModel?.modelCatalogueId, containingModel?.name, element.modelCatalogueId, element.name, element.description, valueDomain?.unitOfMeasure?.name, dataType, "-"]]
     }
 
     def generalModelExport(element){

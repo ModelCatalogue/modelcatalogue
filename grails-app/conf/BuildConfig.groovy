@@ -11,7 +11,7 @@ grails.project.fork = [
         // configure settings for the test-app JVM, uses the daemon by default
         test: false,
         // configure settings for the run-app JVM
-        run: false, //[maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
+        run: false,
         // configure settings for the run-war JVM
 		//war: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
         //configure settings for the Console UI JVM
@@ -107,7 +107,7 @@ grails.project.dependency.resolution = {
         compile ":jquery-ui:1.10.3"
         compile ":famfamfam:1.0.1"
 
-        compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.4.2"
+        compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.4.3"
         //compile "org.modelcatalogue.plugins:grails-model-catalogue-elastic-search-plugin:0.3.0"
 
         compile ':cache:1.0.1'
