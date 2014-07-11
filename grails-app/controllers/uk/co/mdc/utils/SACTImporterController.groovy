@@ -58,8 +58,6 @@ class SACTImporterController {
         def confTypeCommonTypes=fileCommonTypes.getContentType();
         if ((okContentTypes.contains(confType) && fileSACT.size > 0) && (okContentTypes.contains(confTypeCommonTypes) && fileCommonTypes.size > 0)) {
             try {
-//                def xmlFileName = "test/unit/resources/SACT/SACT-1.0.0_20110810.xsd"
-//                def xmlFileNameCommonTypes = "test/unit/resources/SACT/CommonTypes_20110810.xsd"
                 def logErrorsSACT
                 def logErrorCommonTypes
 
@@ -85,16 +83,12 @@ class SACTImporterController {
 
                 //Create Rows
                 def rows = createDataElementRows()
-//                                          ( headers,  rows,  conceptualDomain,  conceptualDomainDescription,  headersMap) {
-
-//                (ArrayList headers, ArrayList rows, String name, String conceptualDomain, String conceptualDomainDescription, HeadersMap headersMap) {
                 dataImportService.importData(sactHeaders, rows, "SACT", sactRootElement, sactDescription, headersMap)
-                rows
                 flash.message = "DataElements have been created.\n"
             }
             catch(Exception ex)
             {
-                log.error("Exception in handling xsd file :"+ex.message)
+                log.error("Exception in handling xsd file :" + ex.message)
                 flash.message ="Error in importing the xsd   file.";
             }
         }

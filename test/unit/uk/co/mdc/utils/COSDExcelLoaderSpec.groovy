@@ -22,9 +22,6 @@ class COSDExcelLoaderSpec extends Specification {
     //                  * no CORE sheet.
     //                  * Breast sheet has different headers title names. i.e. Data Item Name => Data Item Names.
 
-    def fileNameError="test/unit/resources/COSD/COSD_Error.xls"
-    def fileNameErrorEmptySheet="test/unit/resources/COSD/COSDErrorEmptySheet.xls"
-
     String[] sheetNamesToImport = [
             "Core",
             "Breast", "CNS", "Colorectal", "CTYA ", "Gynaecology",
@@ -118,7 +115,6 @@ class COSDExcelLoaderSpec extends Specification {
             }
         }
 
-
         //Create a Errorworkbook Core sheet empty
         wbErrorCoreSheetEmpty = new HSSFWorkbook();
         sheetNamesToImport.eachWithIndex{ String sheetName, int contSheet ->
@@ -129,8 +125,6 @@ class COSDExcelLoaderSpec extends Specification {
                 cell.setCellValue(headerName)
             }
         }
-
-
     }
 
     void "Test that an Excel file is loaded properly"() {
@@ -179,8 +173,6 @@ class COSDExcelLoaderSpec extends Specification {
 
         then: "the message returned should not be empty and contain the message of this header missing"
         assert  msg == "\r\n Data item No."
-
-
     }
 
     void "Test that checkHeaders successfully detects 'Data ITEM No' with capital letters"()
@@ -283,12 +275,6 @@ class COSDExcelLoaderSpec extends Specification {
         logMessage == "Data Item Number:'CR0020' in Sheet:'Core' is duplicated \r\n"
 
     }
-
-    //Test that generateCOSDInfoArray generates the correct arralist format
-
-
-
-
 
 }
 

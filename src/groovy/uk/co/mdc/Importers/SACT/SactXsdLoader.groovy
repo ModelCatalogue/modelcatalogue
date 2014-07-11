@@ -11,17 +11,13 @@ class SactXsdLoader {
 
     protected static fileInputStream
 
-    public SactXsdLoader (String path)
-    {
+    public SactXsdLoader (String path){
         fileInputStream = new FileInputStream(path)
     }
 
-    public SactXsdLoader(InputStream inputStream)
-    {
+    public SactXsdLoader(InputStream inputStream){
         fileInputStream  = inputStream
     }
-
-
 
     def parse( ArrayList<SactXsdElement> sactDataElements,ArrayList<XsdSimpleType> sactSimpleDataTypes,ArrayList<XsdComplexDataType>  sactComplexDataTypes,ArrayList<XsdGroup> sactGroups, ArrayList<SactXsdElement> sactAllDataElements ){
         XmlParser parser = new XmlParser()
@@ -284,8 +280,6 @@ class SactXsdLoader {
         XsdGroup result = new XsdGroup( name:name, sequence: sequence, choice: choice )
         return result
     }
-
-
 
     String readAnnotation(Node annotationNode){
         String dataTypeDescription = ""
