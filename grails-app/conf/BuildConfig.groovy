@@ -108,13 +108,8 @@ grails.project.dependency.resolution = {
         compile ":jquery-ui:1.10.3"
         compile ":famfamfam:1.0.1"
 
-<<<<<<< HEAD
-       // compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.3.1"
-        //compile "org.modelcatalogue.plugins:grails-model-catalogue-elastic-search-plugin:0.2"
-=======
         compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.4.3"
         //compile "org.modelcatalogue.plugins:grails-model-catalogue-elastic-search-plugin:0.3.0"
->>>>>>> develop
 
         compile ':cache:1.0.1'
         compile ':mail:1.0.1', {
