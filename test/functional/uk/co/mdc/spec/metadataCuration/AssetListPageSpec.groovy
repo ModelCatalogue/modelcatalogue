@@ -2,7 +2,9 @@ package uk.co.mdc.spec.metadataCuration
 
 import geb.spock.GebReportingSpec
 import uk.co.mdc.pages.authentication.LoginPage
+import uk.co.mdc.pages.metadataCuration.ListPage.AssetListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ConceptualDomainListPage
+import uk.co.mdc.pages.metadataCuration.ListPage.DataElementListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ModelListPage
 import uk.co.mdc.pages.metadataCuration.ShowPage.ConceptualDomainShowPage
 
@@ -19,119 +21,79 @@ class AssetListPageSpec extends GebReportingSpec {
 		}
 	}
 
-	def "Clicking on conceptualDomain name will lead to its show page"() {
-
-		when: "at conceptualDomainList Page and clicking on a conceptualDomain name"
-		to ConceptualDomainListPage
+	def "Asset list page shows a list of assets and Status filter button"() {
+		when: "at Asset list page"
+		to AssetListPage
 		waitFor {
-			at ConceptualDomainListPage
-		}
-		waitFor {
-			$(ConceptualDomainListPage.elementsTable).displayed
-		}
-		def nameElement = getRow(0)["name"]
-		waitFor {
-			nameElement.displayed
-		}
-		nameElement.click()
-
-		waitFor {
-			at ConceptualDomainShowPage
+			at AssetListPage
 		}
 
-		then: "it redirects to conceptualDomain show page"
+		then:"it shows a list of assets and Status filter button"
 		waitFor {
-			at ConceptualDomainShowPage
-			mainLabel.displayed
+			$(actionListButton).displayed
 		}
-		mainLabel.text().contains("NHIC")
-		description.text() == "NHIC Test Description"
 		waitFor {
-			$(ConceptualDomainShowPage.valueDomainsTab).displayed
+			$(assetList).displayed
 		}
-		waitFor{
-			$(ConceptualDomainShowPage.modelsTab).displayed
+		waitFor {
+			//first row should have name column
+			$(assetList).find("tbody tr td",0).displayed
 		}
-		waitFor{
-			$(ConceptualDomainShowPage.propertiesTab).displayed
+		waitFor {
+			//asset name should be "DraftDefaultLayout"
+			$(assetList).find("tbody tr td",0).text() == "defaultLayout"
 		}
-
 	}
 
 
 
-	def "ConceptualDomain list page has exportButton"() {
-
-		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
-		to ConceptualDomainListPage
-
-		when: "at conceptualDomainList Page"
+	def "Selecting Draft status filter will just show the Draft assets"(){
+		when:"Go to Asset list page"
+		to AssetListPage
 		waitFor {
-			at ConceptualDomainListPage
+			at AssetListPage
+		}
+		waitFor {
+			getStatusActionButton().displayed
 		}
 
-		then: "it should have export button"
+		//click on status Action
+		getStatusActionButton().click()
+		//the list of status filter (Draft,Finalized,..) are displayed
 		waitFor {
-			$(ConceptualDomainListPage.exportButton).displayed
+			$(subActionList).displayed
+		}
+		//DRAFT is shown
+		waitFor {
+			getDraftStatusButton().displayed
+		}
+
+		//DRAFT item has 'DRAFT' as its text
+		waitFor {
+			getDraftStatusButton().text() == "Draft"
+		}
+
+		//its <a> link is accessible
+		waitFor {
+			getDraftStatusButton().find("a",0).displayed
+		}
+
+		getDraftStatusButton().find("a",0).click()
+
+
+
+		then:"Asset table just shows Draft assets"
+		//dataElement list should be displayed
+		waitFor {
+			$(assetList).displayed
+		}
+		waitFor {
+			//first row should have name column
+			$(assetList).find("tbody tr td",0).displayed
+		}
+		waitFor {
+			//asset name should be "DraftDefaultLayout"
+			$(assetList).find("tbody tr td",0).text() == "DraftDefaultLayout"
 		}
 	}
-
-	def "Clicking on exportButton in conceptualDomain list page will show the list of available reports"() {
-
-		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
-		to ConceptualDomainListPage
-
-		when: "at conceptualDomainList Page"
-		waitFor {
-			at ConceptualDomainListPage
-		}
-		waitFor {
-			$(ConceptualDomainListPage.exportButton).displayed
-		}
-
-		$(ConceptualDomainListPage.exportButton).click()
-
-		then: "list of available reports will be displayed in a menu"
-		$(ConceptualDomainListPage.exportButtonItems).displayed
-		$(ConceptualDomainListPage.exportButtonItems).find("li",0).displayed
-	}
-
-	def "ExportButton in conceptualDomain list page will export conceptualDomain list as an excel file"() {
-
-		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
-		to ConceptualDomainListPage
-
-		when: "at conceptualDomainList Page"
-		waitFor {
-			at ConceptualDomainListPage
-		}
-		waitFor {
-			$(ConceptualDomainListPage.exportButton).displayed
-		}
-		$(ConceptualDomainListPage.exportButton).click()
-
-		waitFor {
-			$(ConceptualDomainListPage.exportButtonItems).displayed
-		}
-
-		waitFor {
-			$(ConceptualDomainListPage.exportButtonItems).find("li",1).displayed
-		}
-
-		waitFor {
-			$(ConceptualDomainListPage.exportButtonItems).find("li",1).find("a",0).displayed
-		}
-
-
-		//$("div.export.open ul#exportBtnItems").find("li",0).find("a",0).click()
-		//Instead of clicking on the link, we will get the link href and download the file directly
-		//and make sure that the content of the file is not empty
-		def downloadLink = $(ConceptualDomainListPage.exportButtonItems).find("li",0).find("a",0)
-		def bytes = downloadBytes(downloadLink.@href)
-
-		then: "it downloads the excel file"
-		bytes.size() != 0
-	}
-
-
 }
