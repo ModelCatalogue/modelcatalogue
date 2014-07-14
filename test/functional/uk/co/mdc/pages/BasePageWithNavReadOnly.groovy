@@ -18,6 +18,8 @@ class BasePageWithNavReadOnly extends Page{
 	static String  dataTypeLink    = "li a#dataTypeLink"
 	static String  modelLink       = "li a#modelLink"
 	static String  accountLink 	   = "li a#accountLink"
+	static String assetLink = "li a#assetLink"
+
 	static String  changePasswordLink = "li#changePasswordLink a"
 
 
