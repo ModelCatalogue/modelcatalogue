@@ -27,6 +27,8 @@ class ModelShowPage extends BasePageWithNavReadOnly{
 
 		metadataTab {waitFor { $("div.tabbable ul li[heading='Metadata']")}}
 		parentOfTab {waitFor { $("div.tabbable ul li[heading='Children']")}}
-	}
 
+		draftIcon     {waitFor {$("h3 span.label-warning")}}
+		finalizedIcon {waitFor {$("h3 span.label-primary")}}
+	}
 }

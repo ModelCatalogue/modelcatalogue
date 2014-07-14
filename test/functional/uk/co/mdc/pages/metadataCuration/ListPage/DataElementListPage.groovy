@@ -6,6 +6,10 @@ class DataElementListPage extends ListPage {
 
 	static url = "metadataCurator#/catalogue/dataElement/all"
 
+	static String actionListButton = "span.btn-group button"
+	static String subActionList    = "ul#switch-statusBtnItems"
+	static String dataElementList  = "table[list='list']"
+
 	static at = {
 		url == "metadataCurator#/catalogue/dataElement/all" &&
 		title == "Metadata Registry"
@@ -31,4 +35,14 @@ class DataElementListPage extends ListPage {
 		}
 		return row
 	}
+
+
+	def getStatusActionButton(){
+		$(DataElementListPage.actionListButton,0)
+	}
+
+	def getDraftStatusButton(){
+		$(subActionList).find("li",0)
+	}
+
 }

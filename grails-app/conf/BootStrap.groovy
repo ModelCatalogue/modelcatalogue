@@ -575,6 +575,17 @@ class BootStrap {
 			it.save(failOnError: true)
 		}
 
+
+		def de3 = new DataElement(name: "DE3", modelCatalogueId: "MC_a8ff88a6-d888-8fca-888f-e8c8fc8c8b8d_1",description:"DE3 Desc",status:PublishedElementStatus.DRAFT).save(failOnError: true)
+		def topParentModel_draft = new Model(name: "Draft Datasets",description: "Draft Test Description", modelCatalogueId:"MC_a8ff88a6-d888-4fca-888f-e8c8fc8c8b8d_1",status:PublishedElementStatus.DRAFT).save(failOnError: true)
+		topParentModel_draft.addToHasContextOf(conceptualDomain)
+		topParentModel_draft.addToContains de3
+
+		vd.addToInstantiates(de3)
+		vd.save(failOnError: true)
+
+
+
 	}
 
 }
