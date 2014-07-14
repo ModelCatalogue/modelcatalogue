@@ -6,6 +6,7 @@ import uk.co.mdc.pages.metadataCuration.ListPage.AssetListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ConceptualDomainListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.DataElementListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ModelListPage
+import uk.co.mdc.pages.metadataCuration.ShowPage.AssetShowPage
 import uk.co.mdc.pages.metadataCuration.ShowPage.ConceptualDomainShowPage
 
 /**
@@ -95,5 +96,30 @@ class AssetListPageSpec extends GebReportingSpec {
 			//asset name should be "DraftDefaultLayout"
 			$(assetList).find("tbody tr td",0).text() == "DraftDefaultLayout"
 		}
+	}
+
+
+	def "Clicking on an asset name, will lead us to asset show page"() {
+		when: "Clicking on an asset name"
+		to AssetListPage
+
+		waitFor {
+			at AssetListPage
+		}
+		waitFor {
+			$(assetList).displayed
+		}
+		waitFor {
+			//first row should have name column
+			$(assetList).find("tbody tr td",0).displayed
+		}
+
+		$(assetList).find("tbody tr td",0).click()
+
+		then:"it goes to the asset show page"
+		waitFor {
+			at AssetShowPage
+		}
+
 	}
 }

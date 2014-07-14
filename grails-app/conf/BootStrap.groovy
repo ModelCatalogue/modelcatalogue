@@ -601,6 +601,8 @@ class BootStrap {
 		//Add Draft asset
 		URL layoutResource = this.class.getResource("/excelLayouts/defaultLayout.xlsx")
 		File file = new File(layoutResource.file)
+
+
 		Asset asset = new Asset()
 		asset.name              = "DraftDefaultLayout"
 		asset.description       = "Test asset"
@@ -612,9 +614,10 @@ class BootStrap {
 			return
 		}
 		asset.save()
+
 		DigestInputStream dis = null
 		MessageDigest md5 = MessageDigest.getInstance('MD5')
-		InputStream stream = new FileInputStream(file);
+		InputStream stream = new FileInputStream(layoutResource.file);
 		dis = new DigestInputStream(stream , md5)
 		modelCatalogueStorageService.store('assets', asset.modelCatalogueId, contentType, dis)
 		asset.md5 = DigestUtils.md5DigestAsHex(md5.digest())
@@ -644,14 +647,12 @@ class BootStrap {
 		asset.save()
 		DigestInputStream dis = null
 		MessageDigest md5 = MessageDigest.getInstance('MD5')
-		InputStream stream = new FileInputStream(file);
+		InputStream stream = new FileInputStream(layoutResource.file);
 		dis = new DigestInputStream(stream , md5)
 		modelCatalogueStorageService.store('assets', asset.modelCatalogueId, contentType, dis)
 		asset.md5 = DigestUtils.md5DigestAsHex(md5.digest())
 		asset.save()
 		dis?.close()
-
 	}
-
 }
 	
