@@ -12,6 +12,18 @@ class ConceptualDomainListPage extends ListPage  {
 		 title == "Metadata Registry"
 	}
 
+
+	static content = {
+ 		newButton(required:false) { $("button#create-catalogue-elementBtn")}
+
+		newCDModelDialogue(required:false)      {$("div.modal-dialog",1)}
+		newCDModelDialogueTitle(required:false) {newCDModelDialogue.find("h4",text:"Create Conceptual Domain")}
+		newCDModelDialogueName(required:false)  	   {newCDModelDialogue.find("input#name")}
+		newCDModelDialogueDescription(required:false)  {newCDModelDialogue.find("input#description")}
+		newCDModelDialogueSaveBtn(required:false)      {newCDModelDialogue.find("button.btn-success")}
+	}
+
+
 	@Override
 	def getRow(rowIndex){
 		def row = ["object":null,"name":null,"desc":null];
