@@ -5,6 +5,7 @@ import spock.lang.Stepwise
 import uk.co.mdc.pages.authentication.LoginPage
 import uk.co.mdc.pages.metadataCuration.ListPage.DataElementListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ModelListPage
+import uk.co.mdc.pages.metadataCuration.ShowPage.AssetShowPage
 import uk.co.mdc.pages.metadataCuration.ShowPage.DataElementShowPage
 
 /**
@@ -184,14 +185,12 @@ class DataElementListPageSpec extends GebReportingSpec {
 			$(DataElementListPage.exportButtonItems).find("li", index).find("a",0).displayed
 		}
 
-		//$("div.export.open ul#exportBtnItems").find("li",0).find("a",0).click()
-		//Instead of clicking on the link, we will get the link href and download the file directly
-		//and make sure that the content of the file is not empty
-		def downloadLink = $(DataElementListPage.exportButtonItems).find("li",index).find("a",0)
-		def bytes = downloadBytes(downloadLink.@href)
+		$(DataElementListPage.exportButtonItems).find("li",index).find("a",0).click()
 
 		then: "it downloads the excel file"
-		bytes.size() != 0
+		waitFor {
+			at AssetShowPage
+		}
 
 		where:""
 		index << [1,2,3]

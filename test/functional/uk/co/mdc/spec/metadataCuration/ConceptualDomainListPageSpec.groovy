@@ -4,6 +4,7 @@ import geb.spock.GebReportingSpec
 import uk.co.mdc.pages.authentication.LoginPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ConceptualDomainListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ModelListPage
+import uk.co.mdc.pages.metadataCuration.ShowPage.AssetShowPage
 import uk.co.mdc.pages.metadataCuration.ShowPage.ConceptualDomainShowPage
 
 /**
@@ -122,15 +123,12 @@ class ConceptualDomainListPageSpec extends GebReportingSpec {
 			$(ConceptualDomainListPage.exportButtonItems).find("li",1).find("a",0).displayed
 		}
 
-
-		//$("div.export.open ul#exportBtnItems").find("li",0).find("a",0).click()
-		//Instead of clicking on the link, we will get the link href and download the file directly
-		//and make sure that the content of the file is not empty
-		def downloadLink = $(ConceptualDomainListPage.exportButtonItems).find("li",0).find("a",0)
-		def bytes = downloadBytes(downloadLink.@href)
+		$(ConceptualDomainListPage.exportButtonItems).find("li",1).find("a",0).click()
 
 		then: "it downloads the excel file"
-		bytes.size() != 0
+		waitFor {
+			at AssetShowPage
+		}
 	}
 
 
