@@ -38,8 +38,8 @@ metadataCurator.run ($templateCache) ->
 '''
 
 metadataCurator.controller('metadataCurator.searchCtrl',
-  ['catalogueElementResource', 'modelCatalogueSearch', '$scope', '$log', '$q', '$state', 'names'
-    (catalogueElementResource, modelCatalogueSearch, $scope, $log, $q, $state, names)->
+  ['catalogueElementResource', 'modelCatalogueSearch', '$scope', '$rootScope', '$log', '$q', '$state', 'names'
+    (catalogueElementResource, modelCatalogueSearch, $scope, $rootScope, $log, $q, $state, names)->
       actions = []
 
       $scope.search = (item, model, label) ->
@@ -47,6 +47,11 @@ metadataCurator.controller('metadataCurator.searchCtrl',
           $state.go('mc.search', {q: model })
         else
           item?.action item, model, label
+
+      $scope.clearSelection = ->
+        $state.searchSelect = undefined
+        $rootScope.$stateParams.q = undefined
+        $state.go('.', {q: undefined })
 
       initActions = ->
         actions = []
@@ -69,6 +74,16 @@ metadataCurator.controller('metadataCurator.searchCtrl',
           action: (term) ->
             ->
               $state.go($state.current.name, {q: term})
+          icon: 'search'
+        }
+
+        actions.push {
+          condition: (term) -> term and $state.current.name == 'mc.resource.show.property' and  $state.$current.params.indexOf('q') >= 0 and $rootScope.$$searchContext
+          label: (term) ->
+            "Search current <strong>#{$rootScope.$$searchContext}</strong> for <strong>#{term}</strong>"
+          action: (term) ->
+            ->
+              $state.go('mc.resource.show.property', {q: term})
           icon: 'search'
         }
 
