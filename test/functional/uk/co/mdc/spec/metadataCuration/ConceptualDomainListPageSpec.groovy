@@ -82,71 +82,6 @@ class ConceptualDomainListPageSpec extends GebReportingSpec {
 		}
 	}
 
-	def "Clicking on exportButton in conceptualDomain list page will show the list of available reports"() {
-
-		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
-		loginReadOnlyUser()
-		waitFor {
-			at ModelListPage
-		}
-
-		to ConceptualDomainListPage
-
-		when: "at conceptualDomainList Page"
-		waitFor {
-			at ConceptualDomainListPage
-		}
-		waitFor {
-			$(ConceptualDomainListPage.exportButton).displayed
-		}
-
-		$(ConceptualDomainListPage.exportButton).click()
-
-		then: "list of available reports will be displayed in a menu"
-		$(ConceptualDomainListPage.exportButtonItems).displayed
-		$(ConceptualDomainListPage.exportButtonItems).find("li",0).displayed
-	}
-
-	def "ExportButton in conceptualDomain list page will export conceptualDomain list as an excel file"() {
-
-		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
-		loginReadOnlyUser()
-		waitFor {
-			at ModelListPage
-		}
-
-		to ConceptualDomainListPage
-
-		when: "at conceptualDomainList Page"
-		waitFor {
-			at ConceptualDomainListPage
-		}
-		waitFor {
-			$(ConceptualDomainListPage.exportButton).displayed
-		}
-		$(ConceptualDomainListPage.exportButton).click()
-
-		waitFor {
-			$(ConceptualDomainListPage.exportButtonItems).displayed
-		}
-
-		waitFor {
-			$(ConceptualDomainListPage.exportButtonItems).find("li",1).displayed
-		}
-
-		waitFor {
-			$(ConceptualDomainListPage.exportButtonItems).find("li",1).find("a",0).displayed
-		}
-
-		$(ConceptualDomainListPage.exportButtonItems).find("li",1).find("a",0).click()
-
-		then: "it downloads the excel file"
-		waitFor {
-			at AssetShowPage
-		}
-	}
-
-
 	def "ConceptualDomain list page does not show administrative menus to readonly users"() {
 
 		setup:"Go to conceptualDomain list page as readonly users"
@@ -187,7 +122,6 @@ class ConceptualDomainListPageSpec extends GebReportingSpec {
 		}
 	}
 
-
 	def "ConceptualDomain List Page can add a new conceptual domain"() {
 		setup:"Go to conceptualDomain list page as an admin user and press 'New Conceptual Domain'"
 		loginAsAdmin()
@@ -208,11 +142,10 @@ class ConceptualDomainListPageSpec extends GebReportingSpec {
 		waitFor {
 			newCDModelDialogueTitle.displayed
 		}
-
 		when:"Fill and save the new ConceptualDomain"
 		//fill the model dialogue form
-		newCDModelDialogueName << "NEW-NAME"
-		newCDModelDialogueDescription << "NEW-DESC"
+		newCDModelDialogueName << "ZNEW-NAME"
+		newCDModelDialogueDescription << "ZNEW-DESC"
 		//click on Save button
 		newCDModelDialogueSaveBtn.click()
 
