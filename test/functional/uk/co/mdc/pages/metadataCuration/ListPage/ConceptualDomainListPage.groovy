@@ -14,7 +14,12 @@ class ConceptualDomainListPage extends ListPage  {
 
 
 	static content = {
- 		newButton(required:false) { $("button#create-catalogue-elementBtn")}
+
+
+		exportButtonContent{  $("span button#exportBtn") }
+
+
+		newButton(required:false) { $("button#create-catalogue-elementBtn")}
 
 		newCDModelDialogue(required:false)      {$("div.modal-dialog",1)}
 		newCDModelDialogueTitle(required:false) {newCDModelDialogue.find("h4",text:"Create Conceptual Domain")}
