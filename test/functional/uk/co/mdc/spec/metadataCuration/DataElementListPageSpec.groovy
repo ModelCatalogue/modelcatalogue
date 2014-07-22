@@ -5,6 +5,7 @@ import spock.lang.Stepwise
 import uk.co.mdc.pages.authentication.LoginPage
 import uk.co.mdc.pages.metadataCuration.ListPage.DataElementListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ModelListPage
+import uk.co.mdc.pages.metadataCuration.ShowPage.AssetShowPage
 import uk.co.mdc.pages.metadataCuration.ShowPage.DataElementShowPage
 
 /**
@@ -123,81 +124,6 @@ class DataElementListPageSpec extends GebReportingSpec {
 			relationshipsTab.displayed
 		}
 	}
-
-
-
-	def "ExportButton in dataElement List page contains several default reports"() {
-
-		setup:"Go to dataElement List page as a List page that contains ExportButton"
-		to DataElementListPage
-
-		when: "at DataElementListPage"
-		waitFor {
-			at DataElementListPage
-		}
-		waitFor {
-			$(DataElementListPage.exportButton).displayed
-		}
-
-		$(DataElementListPage.exportButton).click()
-
-
-		then: "list of available reports will be displayed in a menu"
-		waitFor {
-			$(DataElementListPage.exportButtonItems).displayed
-		}
-		waitFor {
-			$(DataElementListPage.exportButtonItems).find("li",index).displayed
-		}
-		$(DataElementListPage.exportButtonItems).find("li",index).find("a").size() == 1
-		$(DataElementListPage.exportButtonItems).find("li",index).find("a")[0].text() == label
-
-		where:
-		index | label
-		1	  | "Catalogue Elements to Excel"
-		2	  | "Data Elements XLSX"
-		3	  | "COSD"
-		4	  | "NHIC"
-	}
-
-	def "ExportButton in dataElement list page will export dataElement list as an excel file"() {
-
-		setup:"Go to dataElement page as a List page that contains ExportButton"
-		to DataElementListPage
-
-		when: "at dataElementList Page"
-		waitFor {
-			at DataElementListPage
-		}
-		waitFor {
-			$(DataElementListPage.exportButton).displayed
-		}
-		$(DataElementListPage.exportButton).click()
-
-		waitFor {
-			$(DataElementListPage.exportButtonItems).displayed
-		}
-		waitFor {
-			$(DataElementListPage.exportButtonItems).find("li",index).displayed
-		}
-		waitFor {
-			$(DataElementListPage.exportButtonItems).find("li", index).find("a",0).displayed
-		}
-
-		//$("div.export.open ul#exportBtnItems").find("li",0).find("a",0).click()
-		//Instead of clicking on the link, we will get the link href and download the file directly
-		//and make sure that the content of the file is not empty
-		def downloadLink = $(DataElementListPage.exportButtonItems).find("li",index).find("a",0)
-		def bytes = downloadBytes(downloadLink.@href)
-
-		then: "it downloads the excel file"
-		bytes.size() != 0
-
-		where:""
-		index << [1,2,3]
-	}
-
-
 
 	def "Status action button is displayed"() {
 		when:"Go to dataElement page as a List page"

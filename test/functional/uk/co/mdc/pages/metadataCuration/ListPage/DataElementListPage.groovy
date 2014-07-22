@@ -10,6 +10,10 @@ class DataElementListPage extends ListPage {
 	static String subActionList    = "ul#switch-statusBtnItems"
 	static String dataElementList  = "table[list='list']"
 
+	static content = {
+		exportButtonContent{  $("span button#exportBtn") }
+	}
+
 	static at = {
 		url == "metadataCurator#/catalogue/dataElement/all" &&
 		title == "Metadata Registry"

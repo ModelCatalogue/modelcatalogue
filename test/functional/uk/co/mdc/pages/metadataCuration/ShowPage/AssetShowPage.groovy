@@ -19,6 +19,9 @@ class AssetShowPage extends BasePageWithNavReadOnly{
 	static content = {
 		mainLabel   {waitFor { $("h3.ce-name") }}
 		description {waitFor { $("blockquote.ce-description")}}
+
+		propertiesTab {waitFor {$("div.tabbable ul li[heading='Properties']")}}
+		metadataTab {waitFor { $("div.tabbable ul li[heading='Metadata']")}}
 	}
 
 }

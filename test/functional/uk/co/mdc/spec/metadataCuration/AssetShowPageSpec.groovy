@@ -46,6 +46,12 @@ class AssetShowPageSpec extends GebReportingSpec {
 			at AssetShowPage
 		}
 		waitFor {
+			propertiesTab.displayed
+		}
+		waitFor {
+			metadataTab.displayed
+		}
+		waitFor {
 			$(actionButtons, text: "Download").displayed
 		}
 	}
