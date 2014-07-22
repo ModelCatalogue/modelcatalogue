@@ -10,4 +10,5 @@ class XsdSequence{
     ArrayList <XsdSequence> sequenceElements
     ArrayList <XsdGroup> groupElements
     ArrayList <XsdChoice> choiceElements
+    XsdAny any
 }

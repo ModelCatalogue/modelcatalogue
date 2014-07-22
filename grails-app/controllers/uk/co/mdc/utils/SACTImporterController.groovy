@@ -4,8 +4,10 @@ import org.modelcatalogue.core.ConceptualDomain
 import org.modelcatalogue.core.DataType
 import org.modelcatalogue.core.Model
 import org.modelcatalogue.core.ValueDomain
+import org.modelcatalogue.core.dataarchitect.DataImport
 import org.modelcatalogue.core.dataarchitect.HeadersMap
 import org.modelcatalogue.core.dataarchitect.Importer
+import org.relaxng.datatype.Datatype
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
@@ -14,6 +16,7 @@ import uk.co.mdc.Importers.SACT.SactXsdLoader
 import uk.co.mdc.Importers.SACT.XsdComplexDataType
 import uk.co.mdc.Importers.SACT.XsdElement
 import uk.co.mdc.Importers.SACT.XsdGroup
+import uk.co.mdc.Importers.SACT.XsdPattern
 import uk.co.mdc.Importers.SACT.XsdSimpleType
 
 /**
@@ -25,14 +28,19 @@ class SACTImporterController {
     def dataImportService
 
     String sactRootElement = "SACT"
-    String sactTypeRootElement = "SACTStructure"
+    String sactTypeRootElement = "SACTSACTType"
     String sactDescription = "Systemic Anti-Cancer Therapy"
-    String sactSectionsNotToImport = ["root", "SACTStructure", "SACTRecordType"]
+    String sactSectionsNotToImport = ["root", "SACTSACTType", "SACTSACTRecordType"]
     ArrayList<SactXsdElement> sactDataElements = []
     ArrayList<XsdSimpleType> sactSimpleDataTypes = []
     ArrayList<XsdComplexDataType> sactComplexDataTypes = []
     ArrayList<XsdGroup> sactGroups = []
     ArrayList<SactXsdElement> sactAllDataElements = []
+    ArrayList<SactXsdElement> sactDataElements2 = []
+    ArrayList<XsdSimpleType> sactSimpleDataTypes2 = []
+    ArrayList<XsdComplexDataType> sactComplexDataTypes2 = []
+    ArrayList<XsdGroup> sactGroups2 = []
+    ArrayList<SactXsdElement> sactAllDataElements2 = []
     ConceptualDomain conceptualDomain
     def sactHeaders =  ["Data Element Name","Data Element Description",
                         "Parent Model", "Containing Model", "DataType",
@@ -62,9 +70,15 @@ class SACTImporterController {
                 def logErrorCommonTypes
 
                 SactXsdLoader parserSACT = new SactXsdLoader(fileSACT.inputStream)
-                (sactDataElements, sactSimpleDataTypes, sactComplexDataTypes, sactGroups, sactAllDataElements, logErrorsSACT) = parserSACT.parse(sactDataElements, sactSimpleDataTypes, sactComplexDataTypes, sactGroups, sactAllDataElements)
+                (sactDataElements, sactSimpleDataTypes, sactComplexDataTypes, sactGroups, sactAllDataElements, logErrorsSACT) = parserSACT.parse()
                 SactXsdLoader parserCommonTypesSACT = new SactXsdLoader(fileCommonTypes.inputStream)
-                (sactDataElements, sactSimpleDataTypes, sactComplexDataTypes, sactGroups, sactAllDataElements, logErrorCommonTypes) = parserCommonTypesSACT.parse(sactDataElements, sactSimpleDataTypes, sactComplexDataTypes, sactGroups, sactAllDataElements)
+                (sactDataElements2, sactSimpleDataTypes2, sactComplexDataTypes2, sactGroups2, sactAllDataElements2, logErrorCommonTypes) = parserCommonTypesSACT.parse()
+
+                sactDataElements.addAll(sactDataElements2)
+                sactSimpleDataTypes.addAll(sactSimpleDataTypes2)
+                sactComplexDataTypes.addAll(sactComplexDataTypes2)
+                sactGroups.addAll(sactGroups2)
+                sactAllDataElements.addAll(sactAllDataElements2)
 
                 //Validate results
                 validateSACTFiles(logErrorCommonTypes, logErrorsSACT)
@@ -83,7 +97,8 @@ class SACTImporterController {
 
                 //Create Rows
                 def rows = createDataElementRows()
-                dataImportService.importData(sactHeaders, rows, "SACT", sactRootElement, sactDescription, headersMap)
+                DataImport newImporter = dataImportService.importData(sactHeaders, rows, "SACT", sactRootElement, sactDescription, headersMap)
+                dataImportService.resolveAll(newImporter)
                 flash.message = "DataElements have been created.\n"
             }
             catch(Exception ex)
@@ -214,16 +229,25 @@ class SACTImporterController {
     private addMetadataToValueDomain (vd, XsdSimpleType simpleType)
     {
 
+        String pattern=""
+        simpleType.restriction?.patterns?.each { XsdPattern xsdPattern ->
+            if (pattern == "") {
+                pattern += xsdPattern.value
+            } else {
+                pattern += ("|" + xsdPattern.value)
+
+            }
+        }
         def metadata = [minOccurs: simpleType.minOccurs,
                         maxOccurs: simpleType.maxOccurs,
-                        minLength: simpleType.restriction.minLength,
-                        maxLength: simpleType.restriction.maxLength,
-                        lenght: simpleType.restriction.length,
-                        minInclusive: simpleType.restriction.minInclusive,
-                        maxInclusive: simpleType.restriction.maxInclusive,
-                        minExclusive: simpleType.restriction.minExclusive,
-                        maxExclusive: simpleType.restriction.maxExclusive,
-                        pattern: simpleType.restriction.pattern
+                        minLength: simpleType.restriction?.minLength,
+                        maxLength: simpleType.restriction?.maxLength,
+                        lenght: simpleType.restriction?.length,
+                        minInclusive: simpleType.restriction?.minInclusive,
+                        maxInclusive: simpleType.restriction?.maxInclusive,
+                        minExclusive: simpleType.restriction?.minExclusive,
+                        maxExclusive: simpleType.restriction?.maxExclusive,
+                        pattern: pattern
         ]
 
 
@@ -236,69 +260,102 @@ class SACTImporterController {
     {
         //Check the rules/patterns that apply to this type
         String rule = ""
-        if (simpleType.restriction.pattern != "") {
-            rule = simpleType.restriction.pattern
-            def patternLength = simpleType.restriction.pattern.length()
-            if (simpleType.restriction.minLength != "" && simpleType.restriction.maxLength == "" && simpleType.restriction.pattern.charAt(patternLength - 1) == "]") {
-                rule += ("{" + simpleType.restriction.minLength + "," + simpleType.restriction.maxLength + "}")
+        simpleType.restriction?.patterns?.each { XsdPattern pattern ->
+            def patternLength = pattern.value.length()
+            if (simpleType.restriction.minLength != "" && simpleType.restriction.maxLength == "" && pattern.value.charAt(patternLength - 1) == "]") {
+                if (rule =="") rule += pattern.value ("{" + simpleType.restriction.minLength + "," + simpleType.restriction.maxLength + "}")
+                else rule += ("|" + pattern.value ("{" + simpleType.restriction.minLength + "," + simpleType.restriction.maxLength + "}"))
             }
-
-            vd.setRegexDef(rule)
-            vd.save()
-
         }
+        vd.setRegexDef(rule)
+        vd.save()
     }
 
     private createSimpleType(Importer sactImporter, ConceptualDomain cd, XsdSimpleType simpleType)
     {
-        String type = simpleType.restriction.base
+        String type
         String description= simpleType.description
         ValueDomain vd
         DataType dataType
         String name = simpleType.name
-        if (simpleType.restriction.base.contains("xs:"))
-        {
-            dataType = DataType.findByName(simpleType.restriction.base)
-            if (dataType==null) {
-                dataType =sactImporter.importDataType(simpleType.restriction.base,  "")
-            }
-            vd = sactImporter.importValueDomain(name, description, dataType,"",cd)
-            addMetadataToValueDomain(vd, simpleType)
-            vd.save()
-            return [vd, dataType]
-        }
-        else {
-
-            //Check if the value domain already exists
-            vd = ValueDomain.findByNameAndDescription(name, description)
-            if (vd==null){
-                XsdSimpleType simpleDataType = sactSimpleDataTypes.find {it.name == type}
-                (vd, dataType) = createSimpleType( sactImporter,  cd,  simpleDataType)
-                ValueDomain vd2 = sactImporter.importValueDomain(name, description, dataType,"",cd)
-                addMetadataToValueDomain(vd2, simpleType)
-                vd2.addToBasedOn(vd)
-                vd.addToIsBaseFor(vd2)
+        if (simpleType.restriction!= null && simpleType.restriction.base != null) {
+            type = simpleType.restriction.base
+            if (simpleType.restriction.base.contains("xs:")) {
+                dataType = DataType.findByName(simpleType.restriction.base)
+                if (dataType == null) {
+                    dataType = new DataType(name: simpleType.restriction.base).save()
+                }
+                vd = sactImporter.importValueDomain(name, description, dataType, "", cd)
+                addMetadataToValueDomain(vd, simpleType)
                 vd.save()
-                vd2.save()
+                return [vd, dataType]
+            }
+            else {
 
-                // Check enumerated elements
-                if (simpleType.restriction.enumeration != ""){
-                    DataType enumeratedDataType = sactImporter.importDataType(simpleType.name, simpleType.restriction.enumeration)
-                    ValueDomain vd3 = sactImporter.importValueDomain(simpleType.name, simpleType.description, enumeratedDataType, "", cd)
-                    vd3.save()
-                    vd2.addToBasedOn(vd3)
-                    vd3.addToIsBaseFor(vd2)
+                //Check if the value domain already exists
+                vd = ValueDomain.findByNameAndDescription(name, description)
+                if (vd == null) {
+                    XsdSimpleType simpleDataType = sactSimpleDataTypes.find { it.name == type }
+                    (vd, dataType) = createSimpleType(sactImporter, cd, simpleDataType)
+                    ValueDomain vd2 = sactImporter.importValueDomain(name, description, dataType, "", cd)
+                    addMetadataToValueDomain(vd2, simpleType)
+                    vd2.addToBasedOn(vd)
+                    vd.addToIsBaseFor(vd2)
+                    vd.save()
                     vd2.save()
-                    vd3.save()
+
+                    // Check enumerated elements
+                    if (simpleType.restriction.enumeration != "") {
+                        DataType enumeratedDataType = sactImporter.importDataType(simpleType.name, simpleType.restriction.enumeration)
+                        ValueDomain vd3 = sactImporter.importValueDomain(simpleType.name, simpleType.description, enumeratedDataType, "", cd)
+                        vd3.save()
+                        vd2.addToBasedOn(vd3)
+                        vd3.addToIsBaseFor(vd2)
+                        vd2.save()
+                        vd3.save()
+                    }
+
+
+                    return [vd2, dataType]
+                } else {
+                        return [vd, vd.dataType]
                 }
 
-
-                return [vd2,dataType]
             }
-            else{
-                return [vd, vd.dataType]
+        }
+        else
+        {
+            //Check for union
+            if (simpleType.union!=null)
+            {
+                //TODO: FIX THIS, NEEDS TO SUPPORT UNIONS IN A STRUCTURED WAY
+                //get datatypes of union
+                //String [] dataTypes =  simpleType.union.memberTypes.split(" ")
+                String base = simpleType.union.memberTypes
+                dataType = DataType.findByName(base)
+                if (dataType == null) {
+                    dataType = new DataType(name: base).save()
+                }
+                vd = sactImporter.importValueDomain(name, description, dataType, "", cd)
+                vd.save()
+                return [vd, dataType]
             }
-
+            else
+            {
+                //Check for list
+                if ( simpleType.list != null)
+                {
+                    //TODO: FIX THIS, MAY NEED TO SUPPORT LIST IN A STRUCTURED WAY
+                    String base = simpleType.list.itemType
+                    dataType = DataType.findByName(base)
+                    if (dataType == null) {
+                        dataType = new DataType(name: base).save()
+                    }
+                    vd = sactImporter.importValueDomain(name, description, dataType, "", cd)
+                    vd.save()
+                    return [vd, dataType]
+                }
+            }
         }
 
     }
@@ -319,6 +376,7 @@ class SACTImporterController {
         sactComplexDataTypes.each { XsdComplexDataType complexDataType ->
             //Create Model for each Group, Choice and Sequence.
             Model model = sactImporter.matchOrCreateModel([name:complexDataType.name, description: complexDataType.description], cd).save()
+            if (model != null) println("Model: " + complexDataType.name)
         }
 
         sactGroups.each{ XsdGroup group ->

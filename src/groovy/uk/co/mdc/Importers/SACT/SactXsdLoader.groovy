@@ -8,6 +8,12 @@ class SactXsdLoader {
 
     ArrayList< SactXsdElement> allElements = []
     String logErrors =""
+    ArrayList<SactXsdElement> sactDataElements =[]
+    ArrayList<XsdSimpleType> sactSimpleDataTypes =[]
+    ArrayList<XsdComplexDataType>  sactComplexDataTypes =[]
+    ArrayList<XsdGroup> sactGroups =[]
+    ArrayList<SactXsdElement> sactAllDataElements =[]
+
 
     protected static fileInputStream
 
@@ -19,35 +25,35 @@ class SactXsdLoader {
         fileInputStream  = inputStream
     }
 
-    def parse( ArrayList<SactXsdElement> sactDataElements,ArrayList<XsdSimpleType> sactSimpleDataTypes,ArrayList<XsdComplexDataType>  sactComplexDataTypes,ArrayList<XsdGroup> sactGroups, ArrayList<SactXsdElement> sactAllDataElements ){
+    def parse(){
         XmlParser parser = new XmlParser()
         def sact = parser.parse (fileInputStream)
-        sact.eachWithIndex{ Node sactNode, int nodeIndex ->
-            switch (sactNode.name().localPart)
+        sact.eachWithIndex{ Node valueNode, int nodeIndex ->
+            switch (valueNode.name().localPart)
             {
                 case "schema":
                     break
                 case "include":
                     break
                 case "element":
-                    SactXsdElement element =  readSACTElement(sactNode, "root")
+                    SactXsdElement element =  readSACTElement(valueNode, "root")
                     sactDataElements << element
                     allElements << element
                     break
                 case "complexType":
-                    XsdComplexDataType complexDataType = readComplexType (sactNode)
+                    XsdComplexDataType complexDataType = readComplexType (valueNode, "")
                     sactComplexDataTypes << complexDataType
                     break
                 case "simpleType":
-                    XsdSimpleType sactSimpleType =  readSACTSimpleType(sactNode)
+                    XsdSimpleType sactSimpleType =  readSACTSimpleType(valueNode, "")
                     sactSimpleDataTypes << sactSimpleType
                     break
                 case "group":
-                    XsdGroup sactGroup = readGroup(sactNode, "")
+                    XsdGroup sactGroup = readGroup(valueNode, "")
                     sactGroups << sactGroup
                     break
                 default:
-                    logErrors += sactNode.name().localPart  // minExclusiveGroup
+                    logErrors += valueNode.name().localPart
                     break
             }
         }
@@ -79,70 +85,179 @@ class SactXsdLoader {
                 case "maxOccurs": dataItemMaxOccurs  = attribute.value
                     break
                 default:
+                    logErrors += attribute.key
                     break
             }
         }
 
         NodeList values = node.value()
 
+        XsdSimpleType simpleType
         String dataElementAnnotation
-        XsdRestriction sactRestriction
+        XsdComplexDataType complexDataType
+
         values.eachWithIndex{ Node valueNode, int valueNodeIndex ->
             switch (valueNode.name().localPart){
                 case "annotation": dataItemDescription = readAnnotation(valueNode)
                     break
-
+                case "simpleType":
+                    simpleType =  readSACTSimpleType(valueNode, dataItemName)
+                    sactSimpleDataTypes << simpleType
+                    break
+                case "complexType":
+                    complexDataType = readComplexType (valueNode, dataItemName)
+                    sactComplexDataTypes << complexDataType
+                    break
                 default:
+                    logErrors += valueNode.name().localPart
                     break
             }
         }
-        SactXsdElement result = new SactXsdElement(name: dataItemName, description: dataItemDescription, type: dataItemType, minOccurs: dataItemMinOccurs, maxOccurs: dataItemMaxOccurs, section: section )
+        SactXsdElement result = new SactXsdElement(name: dataItemName, description: dataItemDescription, type: dataItemType, minOccurs: dataItemMinOccurs, maxOccurs: dataItemMaxOccurs, section: section, simpleType: simpleType, complexType: complexDataType )
         return result
     }
-    def readSACTSimpleType(Node simpleTypeNode){
+    def readSACTSimpleType(Node node, String elementName){
         // data type can be enumeration
         // have restriction
         // minInclusive
         // restriction base => look into CommonTypes_20110810.xsd
 
-
+        String sactElementAnnotation
+        XsdRestriction sactRestriction
+        XsdList list
+        XsdUnion union
         String dataTypeName = ""
-        def attributes = simpleTypeNode.attributes()
+        def attributes = node.attributes()
         attributes.eachWithIndex{ def attribute, int attributeIndex ->
             switch (attribute.key){
                 case "name": dataTypeName = attribute.value
                     break
 
                 default:
+                    logErrors += attribute.key
                     break
             }
         }
 
-        String sactElementAnnotation
-        XsdRestriction sactRestriction
-        def values = simpleTypeNode.value()
+        def values = node.value()
         values.eachWithIndex{ Node valueNode, int valueNodeIndex ->
             switch (valueNode.name().localPart){
                 case "annotation":
                     sactElementAnnotation =  readAnnotation(valueNode)
                     break
-                case "restriction": sactRestriction = readRestriction(valueNode)
+                case "restriction":
+                    sactRestriction = readRestriction(valueNode, elementName)
+                    break
+                case "list":
+                    list = readList(valueNode,elementName)
+                    break
+                case "union":
+                    union = readUnion(valueNode,elementName)
                     break
                 default:
+                    logErrors +=  valueNode.name().localPart + " : " + dataTypeName
                     break
             }
         }
+        if (dataTypeName=="") dataTypeName = elementName
 
-        XsdSimpleType result = new XsdSimpleType(name: dataTypeName,description: sactElementAnnotation, restriction: sactRestriction )
+        XsdSimpleType result = new XsdSimpleType(name: dataTypeName,description: sactElementAnnotation, restriction: sactRestriction, list: list, union: union )
     }
-    def readComplexType(Node complexNode) {
+
+    def readUnion (Node node, String elementName){
+        String id
+        String memberTypes
+        String description //annotation
+        ArrayList<XsdSimpleType> simpleTypes
+
+        def attributeList = node.attributes()
+        attributeList.eachWithIndex { def attribute, int attributeIndex ->
+            switch (attribute.key) {
+                case "id":
+                    id = attribute.value
+                    break
+                case "memberTypes":
+                    memberTypes = attribute.value
+                    break
+                default:
+                    logErrors += attribute.key
+                    break
+            }
+        }
+        def values = node.value()
+        values.eachWithIndex{ Node valueNode, int valueNodeIndex ->
+            switch (valueNode.name().localPart){
+                case "annotation":
+                    description =  readAnnotation(valueNode)
+                    break
+                case "simpleType":
+                    XsdSimpleType simpleType = readSACTSimpleType(valueNode, dataItemName)
+                    simpleTypes<<simpleType
+                    sactSimpleDataTypes << simpleType
+                    break
+                default:
+                    logErrors +=  valueNode.name().localPart + " : " + dataTypeName
+                    break
+            }
+        }
+        XsdUnion result = new XsdUnion(id: id, memberTypes: memberTypes, description: description, simpleTypes: simpleTypes)
+        return result
+
+    }
+
+    def readList(Node node, String elementName){
+        String id
+        String itemType
+        String description
+        XsdSimpleType simpleType
+        def attributeList = node.attributes()
+        attributeList.eachWithIndex { def attribute, int attributeIndex ->
+            switch (attribute.key) {
+                case "id":
+                    id = attribute.value
+                    break
+                case "itemType":
+                    itemType = attribute.value
+                    break
+                default:
+                    logErrors += attribute.key
+                    break
+            }
+        }
+        def values = node.value()
+        values.eachWithIndex{ Node valueNode, int valueNodeIndex ->
+            switch (valueNode.name().localPart){
+                case "annotation":
+                    description =  readAnnotation(valueNode)
+                    break
+                case "simpleType":
+                    simpleType = readSACTSimpleType(valueNode, elementName)
+                    break
+                default:
+                    logErrors +=  valueNode.name().localPart + " : "
+                    break
+            }
+        }
+        XsdList result = new XsdList(id: id, itemType: itemType, description: description, simpleType: simpleType)
+        return result
+    }
+
+
+    def readComplexType(Node node, String elementName) {
 //        XsdSequenceComplexDataType sequenceElements =[]
         String dataTypeName = ""
         String minOccurs = ""
         String maxOccurs = ""
+        String description =""
         XsdSequence  sequence
-        def attributes = complexNode.attributes()
-        attributes.eachWithIndex{ def attribute, int attributeIndex ->
+        XsdComplexContent complexContent
+        XsdRestriction restriction
+        String abstractAttr
+        String mixed
+        ArrayList<XsdAttribute> attributes =[]
+
+        def attributeList = node.attributes()
+        attributeList.eachWithIndex{ def attribute, int attributeIndex ->
             switch (attribute.key){
                 case "name":
                     dataTypeName = attribute.value
@@ -153,18 +268,37 @@ class SactXsdLoader {
                 case "maxOccurs":
                     maxOccurs  = attribute.value
                     break
+                case "abstract":
+                    abstractAttr = attribute.value
+                    break
+                case "mixed":
+                    mixed = attribute.value
+                    break
                 default:
                     logErrors += attribute.key
                     break
             }
         }
 
-        def values = complexNode.value()
+
+        if (dataTypeName=="") dataTypeName = elementName
+
+        def values = node.value()
         values.eachWithIndex{ Node valueNode, int valueNodeIndex ->
             switch (valueNode.name().localPart){
-                case "sequence": sequence= readSequence(valueNode,dataTypeName)
+                case "sequence": sequence = readSequence(valueNode,dataTypeName)
                     break
-
+                case "annotation":
+                    description =  readAnnotation(valueNode)
+                    break
+                case "complexContent": complexContent= readComplexContent(valueNode,dataTypeName, dataTypeName)
+                    break
+                case "restriction": restriction = readRestriction(valueNode, dataTypeName)
+                    break
+                case "attribute":
+                    XsdAttribute attribute = readAttribute(valueNode, dataTypeName)
+                    attributes << attribute
+                    break
                 default:
                     logErrors += valueNode.name().localPart
                     break
@@ -172,14 +306,224 @@ class SactXsdLoader {
             }
         }
 
-
-        XsdComplexDataType result = new XsdComplexDataType(name: dataTypeName, sequence: sequence)
+        XsdComplexDataType result = new XsdComplexDataType(name: dataTypeName, description: description, abstractAttr: abstractAttr, restriction: restriction, sequence: sequence, complexContent: complexContent, mixed: mixed, attributes:attributes)
 
     }
+
+
+    def readExtension (Node node, String section, String elementName){
+        String name
+        String description
+        String base
+        String id
+        XsdRestriction restriction
+        XsdSequence sequence
+        ArrayList<XsdAttribute> attributes =[]
+        XsdChoice choice
+        XsdGroup group
+
+        def attributesList = node.attributes()
+        attributesList.eachWithIndex{ def attribute, int attributeIndex ->
+            switch (attribute.key){
+                case "name":
+                    name = attribute.value
+                    break
+                case "base":
+                    base = attribute.value
+                    break
+                case "id":
+                    id= attribute.value
+                    break
+                default:
+                    logErrors += attribute.key
+                    break
+            }
+        }
+
+        def values = node.value()
+        values.eachWithIndex{ Node valueNode, int valueNodeIndex ->
+            switch (valueNode.name().localPart){
+
+                case "annotation":
+                    description =  readAnnotation(valueNode)
+                    break
+                case "restriction": restriction = readRestriction(valueNode, elementName)
+                    break
+                case "attribute":
+                    XsdAttribute attribute = readAttribute(valueNode,elementName)
+                    attributes << attribute
+                    break
+                case "choice" :
+                    choice = readChoice (valueNode, section)
+                    break
+                case "group" :
+                    group = readGroup (valueNode, section)
+                    break
+                case "sequence":
+                    sequence = readSequence(valueNode, section)
+                    break
+                default:
+                    logErrors += valueNode.name().localPart
+                    break
+
+            }
+        }
+
+        XsdExtension result = new XsdExtension(name:name, description: description, base:base, id: id, restriction: restriction, choice: choice, sequence: sequence, group: group, attributes: attributes )
+        return result
+
+    }
+
+    def readComplexContent (Node node, String section, String elementName){
+
+        String name= ""
+        String description = ""
+        XsdRestriction restriction
+        ArrayList <XsdAttribute> attributes = []
+        XsdExtension extension
+
+
+        def attributesList = node.attributes()
+        attributesList.eachWithIndex{ def attribute, int attributeIndex ->
+            switch (attribute.key){
+                case "name":
+                    name = attribute.value
+                    break
+                default:
+                    logErrors += attribute.key
+                    break
+            }
+        }
+
+        def values = node.value()
+        values.eachWithIndex{ Node valueNode, int valueNodeIndex ->
+            switch (valueNode.name().localPart){
+
+                case "annotation":
+                    description =  readAnnotation(valueNode)
+                    break
+                case "restriction": restriction = readRestriction(valueNode,elementName)
+                    break
+                case "attribute":
+                    XsdAttribute attribute = readAttribute(valueNode, elementName)
+                    attributes << attribute
+                    break
+                case "extension": extension = readExtension(valueNode, section, elementName)
+                    break
+                default:
+                    logErrors += valueNode.name().localPart
+                    break
+
+            }
+        }
+
+        XsdComplexContent result = new XsdComplexContent (name:name, description: description, restriction: restriction, attributes: attributes, extension: extension)
+
+        return result
+    }
+
+    def readAttribute(Node node, String elementName){
+        String name
+        String defaultValue
+        String fixed
+        String form
+        String id
+        String ref
+        String type
+        String use
+        String description
+        XsdSimpleType simpleType
+
+        def attributesList = node.attributes()
+        attributesList.eachWithIndex{ def attribute, int attributeIndex ->
+            switch (attribute.key){
+                case "name":
+                    name = attribute.value
+                    break
+                case "default":
+                    defaultValue = attribute.value
+                    break
+                case "fixed":
+                    fixed = attribute.value
+                    break
+                case "form":
+                    form = attribute.value
+                    break
+                case "id":
+                    id = attribute.value
+                    break
+                case "ref":
+                    ref = attribute.value
+                    break
+                case "type":
+                    type = attribute.value
+                    break
+                case "use":
+                    use = attribute.value
+                    break
+                default:
+                    logErrors += attribute.key
+                    break
+            }
+        }
+
+        def values = node.value()
+        values.eachWithIndex{ Node valueNode, int valueNodeIndex ->
+            switch (valueNode.name().localPart){
+                case "annotation":
+                    description =  readAnnotation(valueNode)
+                    break
+                case "simpleType":
+                    simpleType =  readSACTSimpleType(valueNode, elementName)
+                    sactSimpleDataTypes << simpleType
+                    break
+                default:
+                    logErrors += valueNode.name().localPart
+                    break
+            }
+        }
+        XsdAttribute result = new XsdAttribute (name:name, defaultValue: defaultValue, fixed: fixed, form: form, id: id, ref: ref, type: type, use:use, description: description, simpleType: simpleType )
+        return result
+    }
+
+
+    def readPattern (Node node) {
+        String value
+        String description
+
+        def attributesList = node.attributes()
+        attributesList.eachWithIndex{ def attribute, int attributeIndex ->
+            switch (attribute.key){
+                case "value":
+                    value = attribute.value
+                    break
+                default:
+                    logErrors += attribute.key
+                    break
+            }
+        }
+
+        def values = node.value()
+        values.eachWithIndex { Node valueNode, int valueNodeIndex ->
+            switch (valueNode.name().localPart) {
+                case "annotation":
+                    description = readAnnotation(valueNode)
+                    break
+                default:
+                    logErrors += attribute.key
+                    break
+
+            }
+        }
+        XsdPattern result = new XsdPattern (value: value, description: description)
+        return result
+    }
+
     def readSequence (Node node, String section){
         ArrayList<SactXsdElement> elements =[]
         ArrayList<XsdChoice> choices = []
         ArrayList<XsdGroup> groups = []
+        XsdAny any
         def values = node.value()
         values.eachWithIndex{ Node valueNode, int valueNodeIndex ->
             switch (valueNode.name().localPart){
@@ -198,6 +542,9 @@ class SactXsdLoader {
                     XsdGroup group = readGroup (valueNode, section)
                     groups << group
                     break
+                case "any":
+                    any = readAny(valueNode)
+                    break
                 default:
                     logErrors += valueNode.name().localPart
                     break
@@ -205,9 +552,39 @@ class SactXsdLoader {
 
         }
 
-        XsdSequence result = new XsdSequence (elements:  elements, choiceElements: choices, groupElements: groups)
+        XsdSequence result = new XsdSequence (elements:  elements, choiceElements: choices, groupElements: groups, any:any)
 
         return result
+    }
+
+    def readAny(Node node)
+    {
+        String namespace
+        String processContents
+        String minOccurs
+        String maxOccurs
+        def attributes = node.attributes()
+        attributes.eachWithIndex { def attribute, int attributeIndex ->
+            switch (attribute.key) {
+                case "namespace":
+                    namespace = attribute.value
+                    break
+                case "processContents":
+                    processContents = attribute.value
+                    break
+                case "minOccurs":
+                    minOccurs = attribute.value
+                    break
+                case "maxOccurs":
+                    maxOccurs = attribute.value
+                    break
+                default:
+                    logErrors += attribute.key
+                    break
+            }
+
+        }
+
     }
 
     def readChoice(Node node, String section){
@@ -255,6 +632,9 @@ class SactXsdLoader {
                 case "name":
                     name = attribute.value
                     break
+                default:
+                    logErrors += attribute.key
+                    break
             }
 
         }
@@ -292,15 +672,19 @@ class SactXsdLoader {
                     break
                 case "documentation":
                     dataTypeDescription = valueNode.value()[0]
+                    break
+                default:
+                    logErrors += attribute.key
+                    break
             }
         }
         //SactElementAnnotation result = new SactElementAnnotation(dataItemDescription: dataItemDescription, dataTypeDescription: dataTypeDescription)
         return dataTypeDescription
     }
 
-    def readRestriction (Node restrictionNode){
+    def readRestriction (Node node, String elementName){
         String restrictionBase = ""
-        String restrictionPattern = ""
+        ArrayList<XsdPattern> patterns = []
         String restrictionMinLength = ""
         String restrictionMaxLength = ""
         String restrictionLength = ""
@@ -309,9 +693,11 @@ class SactXsdLoader {
         String restrictionMinExclusive = ""
         String restrictionMaxExclusive = ""
         String restrictionEnumeration = ""
+        XsdSequence sequence
+        ArrayList <XsdAttribute> attributes=[]
 
-        def attributes = restrictionNode.attributes()
-        attributes.eachWithIndex{ def attribute, int attributeIndex ->
+        def attributeList = node.attributes()
+        attributeList.eachWithIndex{ def attribute, int attributeIndex ->
             switch (attribute.key){
                 case "base": restrictionBase = attribute.value
                     break
@@ -320,19 +706,12 @@ class SactXsdLoader {
                     break
             }
         }
-        NodeList values = restrictionNode.value()
+        NodeList values = node.value()
         values.each { Node valueNode ->
             switch (valueNode.name().localPart) {
                 case "pattern":
-                    String pattern = valueNode.attributes().get("value")
-                    if (restrictionPattern=="")
-                    {
-                        restrictionPattern = pattern
-                    }
-                    else
-                    {
-                        restrictionPattern += ("|" + pattern)
-                    }
+                    XsdPattern pattern = readPattern(valueNode)
+                    patterns << pattern
                     break
                 case "minLength":
                     restrictionMinLength = valueNode.attributes().get("value")
@@ -359,6 +738,13 @@ class SactXsdLoader {
                     String key = valueNode.attributes().get("value")
                     restrictionEnumeration += ((key + ":" + key + "\r\n"))
                     break
+                case "attribute":
+                    XsdAttribute attribute = readAttribute(valueNode, elementName)
+                    attributes << attribute
+                    break
+                case "sequence":
+                    sequence = readSequence(valueNode, "")
+                    break
                 default:
                     logErrors += (valueNode.name().localPart  + ": " + valueNode.attributes().get("value") +  "\r\n")   // minExclusive
                     break
@@ -366,7 +752,7 @@ class SactXsdLoader {
         }
 
         XsdRestriction result = new XsdRestriction(base: restrictionBase,
-                pattern: restrictionPattern,
+                patterns: patterns,
                 length: restrictionLength,
                 minLength: restrictionMinLength,
                 maxLength: restrictionMaxLength,
@@ -374,7 +760,9 @@ class SactXsdLoader {
                 maxInclusive: restrictionMaxInclusive,
                 minExclusive: restrictionMinExclusive,
                 maxExclusive: restrictionMaxExclusive,
-                enumeration: restrictionEnumeration)
+                enumeration: restrictionEnumeration,
+                attributes: attributes,
+                sequence: sequence)
 
         return  result
     }

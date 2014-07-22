@@ -11,4 +11,6 @@ class SactXsdElement {
     String section
     String minOccurs
     String maxOccurs
+    XsdSimpleType simpleType
+    XsdComplexDataType complexType
 }

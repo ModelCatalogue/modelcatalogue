@@ -12,6 +12,7 @@ import uk.co.mdc.Importers.SACT.SactXsdElement
 import uk.co.mdc.Importers.SACT.XsdComplexDataType
 import uk.co.mdc.Importers.SACT.XsdElement
 import uk.co.mdc.Importers.SACT.XsdGroup
+import uk.co.mdc.Importers.SACT.XsdPattern
 import uk.co.mdc.Importers.SACT.XsdRestriction
 import uk.co.mdc.Importers.SACT.XsdSimpleType
 
@@ -22,48 +23,53 @@ import uk.co.mdc.Importers.SACT.XsdSimpleType
 
 class SactXsdlLoaderSpec extends Specification {
 
+
     //SimpleDataTypes
-     XsdRestriction restriction_A = new XsdRestriction(base:"AlphaNumericType",
-                                                    pattern: "",
-                                                    enumeration: "A:A\n" +
-                                                            "N:N\n" +
-                                                            "C:C\n" +
-                                                            "P:P\n" +
-                                                            "9:9")
-
-    XsdSimpleType simpleType_A = new XsdSimpleType(name:"DrugTreatmentIntentType", description: "", restriction: restriction)
-
-    XsdRestriction restriction_A_1 = new XsdRestriction(base:"RestrictedStringType",
-            pattern: "[A-Za-z0-9]+")
-
-    XsdSimpleType simpleType_A_1 = new XsdSimpleType(name:"AlphaNumericType",
-    description: "Only allows letters and numbers. Empty string disallowed. Whitespace disallowed.",
-    restriction: restriction_A_1)
-
-    XsdRestriction restriction_A_1_1 = new XsdRestriction(base:"PopulatedStringType",
-            pattern: "[[A-Za-z0-9\\s~!\"@#\$%&'\\(\\)\\*\\+,\\-\\./:;<=>\\?\\[\\\\\\]_\\{\\}\\^£€†]*")
-
-    XsdSimpleType simpleType_A_1_1 = new XsdSimpleType(name:"RestrictedStringType",
-            description: "Only allows letters, numbers and common punctuation and symbols. Empty string disallowed. Definition as GDSC plus dagger symbol to support ICD-10",
-            restriction: restriction_A_1_1)
-
-    XsdRestriction restriction_A_1_1 = new XsdRestriction(base:"xs:string", minLength: "1")
-
-    XsdSimpleType simpleType_A_1_1 = new XsdSimpleType(name:"PopulatedStringType",
-            description: "A non-empty string",
-            restriction: restriction_A_1_1)
-
-
-    XsdComplexDataType complexType_A = new XsdComplexDataType(name:"SACTStructure", description: "")
-    XsdComplexDataType complexType_B = new XsdComplexDataType(name: "DemographicsAndConsultantStructure")
-
-    XsdGroup group = new XsdGroup(name: "Group A", description: "Description Group A")
-
-    SactXsdElement element = new SactXsdElement(name: "NHSNumber", description: "NHS Number", type:"NHSNumberType", section: "DemographicsAndConsultantStructure" )
-
-
-
     def setup(){
+        XsdRestriction restriction_A = new XsdRestriction(base:"AlphaNumericType",
+                enumeration: "A:A\n" +
+                        "N:N\n" +
+                        "C:C\n" +
+                        "P:P\n" +
+                        "9:9")
+
+        XsdSimpleType simpleType_A = new XsdSimpleType(name:"DrugTreatmentIntentType", description: "", restriction: restriction_A)
+
+        XsdPattern patternB = new XsdPattern(value:  "[A-Za-z0-9]+")
+        ArrayList<XsdPattern> patternsB = []
+        patternsB<<patternB
+        XsdRestriction restriction_B = new XsdRestriction(base:"RestrictedStringType",
+                patterns: patternsB)
+
+        XsdSimpleType simpleType_B = new XsdSimpleType(name:"AlphaNumericType",
+                description: "Only allows letters and numbers. Empty string disallowed. Whitespace disallowed.",
+                restriction: restriction_B)
+
+        XsdPattern pattern_C = new XsdPattern(value:"[[A-Za-z0-9\\s~!\"@#\$%&'\\(\\)\\*\\+,\\-\\./:;<=>\\?\\[\\\\\\]_\\{\\}\\^£€†]*", description: "" )
+        ArrayList<XsdPattern> patterns_C = []
+        patterns_C << pattern_C
+        XsdRestriction restriction_C = new XsdRestriction(base:"PopulatedStringType",
+                patterns:patterns_C )
+
+        XsdSimpleType simpleType_C = new XsdSimpleType(name:"RestrictedStringType",
+                description: "Only allows letters, numbers and common punctuation and symbols. Empty string disallowed. Definition as GDSC plus dagger symbol to support ICD-10",
+                restriction: restriction_C)
+
+        XsdRestriction restriction_D = new XsdRestriction(base:"xs:string", minLength: "1")
+
+        XsdSimpleType simpleType_D = new XsdSimpleType(name:"PopulatedStringType",
+                description: "A non-empty string",
+                restriction: restriction_D)
+
+
+        XsdComplexDataType complexType_A = new XsdComplexDataType(name:"SACTStructure", description: "")
+        XsdComplexDataType complexType_B = new XsdComplexDataType(name: "DemographicsAndConsultantStructure")
+
+        XsdGroup group = new XsdGroup(name: "Group A", description: "Description Group A")
+
+        SactXsdElement element = new SactXsdElement(name: "NHSNumber", description: "NHS Number", type:"NHSNumberType", section: "DemographicsAndConsultantStructure" )
+
+
 
     }
 

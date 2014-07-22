@@ -9,5 +9,7 @@ class XsdSimpleType{
     String minOccurs
     String maxOccurs
     XsdRestriction restriction
+    XsdList list
+    XsdUnion union
 
 }

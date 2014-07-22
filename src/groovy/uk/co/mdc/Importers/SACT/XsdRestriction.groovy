@@ -5,7 +5,6 @@ package uk.co.mdc.Importers.SACT
  */
 class XsdRestriction{
     String base
-    String pattern
     String minLength
     String maxLength
     String length
@@ -13,5 +12,8 @@ class XsdRestriction{
     String maxInclusive
     String minExclusive
     String maxExclusive
-    String enumeration = []
+    String enumeration
+    ArrayList<XsdPattern> patterns
+    ArrayList <XsdAttribute> attributes
+    XsdSequence sequence
 }

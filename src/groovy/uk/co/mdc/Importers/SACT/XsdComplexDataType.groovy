@@ -1,14 +1,19 @@
 package uk.co.mdc.Importers.SACT
 
+import java.lang.reflect.Array
+
 /**
  * Created by sus_avi on 17/06/2014.
  */
 class XsdComplexDataType {
     String name
     String description
+    String abstractAttr
     String minOccurs
     String maxOccurs
-    XsdGroup group
-    XsdChoice choice
+    String mixed
+    XsdRestriction restriction
+    XsdComplexContent complexContent
     XsdSequence sequence
+    ArrayList<XsdAttribute> attributes
 }
