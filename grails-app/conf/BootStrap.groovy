@@ -1,8 +1,8 @@
 import grails.rest.render.RenderContext
+import org.modelcatalogue.core.Asset
 import org.modelcatalogue.core.ConceptualDomain
 import org.modelcatalogue.core.DataElement
 import org.modelcatalogue.core.DataType
-import org.modelcatalogue.core.EnumeratedType
 import org.modelcatalogue.core.MeasurementUnit
 import org.modelcatalogue.core.Model
 import org.modelcatalogue.core.PublishedElement
@@ -11,7 +11,6 @@ import org.modelcatalogue.core.Relationship
 import org.modelcatalogue.core.RelationshipType
 import org.modelcatalogue.core.ValueDomain
 import org.modelcatalogue.core.reports.ReportsRegistry
-import org.modelcatalogue.core.dataarchitect.ImportRow
 
 import org.modelcatalogue.core.util.ListWrapper
 import org.modelcatalogue.core.util.marshalling.xlsx.XLSXListRenderer
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder as SCH
+import org.springframework.util.DigestUtils
 import org.springframework.web.context.support.WebApplicationContextUtils
 import uk.co.mdc.Requestmap
 import uk.co.mdc.SecAuth
@@ -29,10 +29,14 @@ import uk.co.mdc.pathways.Node
 import uk.co.mdc.pathways.Pathway
 import org.springframework.security.acls.domain.BasePermission
 
+import java.security.DigestInputStream
+import java.security.MessageDigest
+
 
 class BootStrap {
 
 	def aclService, aclUtilService, sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService, dataArchitectService
+	def modelCatalogueStorageService
 
     XLSXListRenderer xlsxListRenderer
 
@@ -575,7 +579,80 @@ class BootStrap {
 			it.save(failOnError: true)
 		}
 
+
+		//add Draft dataElement
+		def de3 = new DataElement(name: "DE3", modelCatalogueId: "MC_a8ff88a6-d888-8fca-888f-e8c8fc8c8b8d_1",description:"DE3 Desc",status:PublishedElementStatus.DRAFT).save(failOnError: true)
+		def topParentModel_draft = new Model(name: "Draft Datasets",description: "Draft Test Description", modelCatalogueId:"MC_a8ff88a6-d888-4fca-888f-e8c8fc8c8b8d_1",status:PublishedElementStatus.DRAFT).save(failOnError: true)
+		topParentModel_draft.addToHasContextOf(conceptualDomain)
+		topParentModel_draft.addToContains de3
+
+		vd.addToInstantiates(de3)
+		vd.save(failOnError: true)
+
+		//add an asset
+		addDraftAsset();
+		addFinalizedAsset();
 	}
 
+	private addDraftAsset(){
+
+		String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+		//Add Draft asset
+		URL layoutResource = this.class.getResource("/excelLayouts/defaultLayout.xlsx")
+		File file = new File(layoutResource.file)
+
+
+		Asset asset = new Asset()
+		asset.name              = "DraftDefaultLayout"
+		asset.description       = "Test asset"
+		asset.contentType       = contentType
+		asset.size              = file.size()
+		asset.originalFileName  = file.name
+		asset.validate()
+		if (asset.hasErrors()) {
+			return
+		}
+		asset.save()
+
+		DigestInputStream dis = null
+		MessageDigest md5 = MessageDigest.getInstance('MD5')
+		InputStream stream = new FileInputStream(layoutResource.file);
+		dis = new DigestInputStream(stream , md5)
+		modelCatalogueStorageService.store('assets', asset.modelCatalogueId, contentType, dis)
+		asset.md5 = DigestUtils.md5DigestAsHex(md5.digest())
+		asset.save()
+		dis?.close()
+	}
+
+	private addFinalizedAsset(){
+
+		String contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+		//Add Draft asset
+		URL layoutResource = this.class.getResource("/excelLayouts/defaultLayout.xlsx")
+		File file = new File(layoutResource.file)
+		Asset asset = new Asset()
+		asset.name              = "defaultLayout"
+		asset.description       = "Test asset"
+		asset.contentType       = contentType
+		asset.size              = file.size()
+		asset.originalFileName  = file.name
+		asset.status = PublishedElementStatus.FINALIZED
+
+		asset.validate()
+		if (asset.hasErrors()) {
+			return
+		}
+		asset.save()
+		DigestInputStream dis = null
+		MessageDigest md5 = MessageDigest.getInstance('MD5')
+		InputStream stream = new FileInputStream(layoutResource.file);
+		dis = new DigestInputStream(stream , md5)
+		modelCatalogueStorageService.store('assets', asset.modelCatalogueId, contentType, dis)
+		asset.md5 = DigestUtils.md5DigestAsHex(md5.digest())
+		asset.save()
+		dis?.close()
+	}
 }
 	

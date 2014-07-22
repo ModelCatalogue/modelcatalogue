@@ -98,7 +98,7 @@ class ModelListPageSpec extends GebReportingSpec{
 		descriptionLabel.text().contains("Test Description")
 	}
 
- 	def "Clicking on a model name, its dataElements will be displayed on the table"(){
+	def "Clicking on a model name, its dataElements will be displayed on the table"(){
 
 		when: "Click on a model"
 		to ModelListPage
@@ -178,7 +178,7 @@ class ModelListPageSpec extends GebReportingSpec{
 		at ModelShowPage
 	}
 
- 	def "Clicking on a dataElement, will redirect us to dataElement show page"(){
+	def "Clicking on a dataElement, will redirect us to dataElement show page"(){
 
 		when: "Click on a dataElement in dataElement table"
 		to ModelListPage
@@ -220,7 +220,7 @@ class ModelListPageSpec extends GebReportingSpec{
 		}
 	}
 
- 	def "Conceptual Domains subMenu will redirect us to ConceptualDomain List page"(){
+	def "Conceptual Domains subMenu will redirect us to ConceptualDomain List page"(){
 
 		when: "Click on ConceptualDomain List sub-menu"
 		to ModelListPage
@@ -245,7 +245,7 @@ class ModelListPageSpec extends GebReportingSpec{
 		}
 	}
 
- 	def "DataElements subMenu will redirect us to DataElements List page"(){
+	def "DataElements subMenu will redirect us to DataElements List page"(){
 
 		when: "Click on DataElements List sub-menu"
 		to ModelListPage
@@ -273,7 +273,7 @@ class ModelListPageSpec extends GebReportingSpec{
 
 	}
 
- 	def "DataType subMenu will redirect us to DataType List page"(){
+	def "DataType subMenu will redirect us to DataType List page"(){
 
 		when: "Click on DataType List sub-menu"
 		to ModelListPage
@@ -298,7 +298,7 @@ class ModelListPageSpec extends GebReportingSpec{
 		}
 	}
 
- 	def "Model subMenu will redirect us to ModelShowPage"(){
+	def "Model subMenu will redirect us to ModelShowPage"(){
 
 		when: "Click on ModelList page sub-menu"
 		to ModelListPage
@@ -318,5 +318,43 @@ class ModelListPageSpec extends GebReportingSpec{
 		waitFor {
 			at ModelListPage
 		}
+	}
+
+
+
+	def "Clicking on Draft action, will just show draft models"(){
+
+		when: "Click on ModelList page sub-menu"
+		to ModelListPage
+		waitFor {
+			at ModelListPage
+		}
+		waitFor {
+			//the first button is Status Filter(Draft,Finalized,....)
+			$(ModelListPage.leftActionList)[0].displayed
+		}
+
+		//click on Status button
+		($(ModelListPage.leftActionList)[0]).click()
+
+		//sub action list should be shown
+		waitFor {
+			$(ModelListPage.leftSubActionList).displayed
+		}
+
+		//Draft item should be displayed
+		waitFor {
+			$(ModelListPage.leftSubActionList).find("li a",0)
+		}
+
+		//click on Draft item
+		$(ModelListPage.leftSubActionList).find("li a",0).click()
+
+		then:"it will redirect us to ModelListPage"
+		waitFor {
+			at ModelListPage
+		}
+		Draft_Model_Item.displayed
+		Draft_Model_Item_Name.text() == "Draft Datasets"
 	}
 }

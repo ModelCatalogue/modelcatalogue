@@ -197,4 +197,64 @@ class DataElementListPageSpec extends GebReportingSpec {
 		index << [1,2,3]
 	}
 
+
+
+	def "Status action button is displayed"() {
+		when:"Go to dataElement page as a List page"
+		to DataElementListPage
+		waitFor {
+			at DataElementListPage
+		}
+		then: "it should contain Status action button"
+		//the first item is status filter button
+		waitFor {
+			getStatusActionButton().displayed
+		}
+	}
+
+	def "Selecting Draft status filter will just show the Draft dataElements"(){
+		when:"Go to dataElement page as a List page and clicking on Draft status"
+		to DataElementListPage
+		waitFor {
+			at DataElementListPage
+		}
+		waitFor {
+			getStatusActionButton().displayed
+		}
+
+		//click on status Action
+		getStatusActionButton().click()
+		//the list of status filter (Draft,Finalized,..) are displayed
+		waitFor {
+			$(subActionList).displayed
+		}
+		//DRAFT is shown
+		waitFor {
+			getDraftStatusButton().displayed
+		}
+
+		//DRAFT item has 'DRAFT' as its text
+		waitFor {
+			getDraftStatusButton().text() == "Draft"
+		}
+
+		//its <a> link is accessible
+		waitFor {
+			getDraftStatusButton().find("a",0).displayed
+		}
+
+		getDraftStatusButton().find("a",0).click()
+
+
+
+		then:"DataElement table just shows Draft DataElements"
+		//dataElement list should be displayed
+		waitFor {
+			$(dataElementList).displayed
+		}
+		//first row should have name column
+		$(dataElementList).find("tbody tr td",1).displayed
+		//dataElement name should be "DE3"
+		$(dataElementList).find("tbody tr td",1).text() == "DE3"
+	}
 }
