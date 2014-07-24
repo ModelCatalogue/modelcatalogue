@@ -81,6 +81,44 @@ class SactXsdlLoaderSpec extends Specification {
 
     }
 
+    void "Test that readSACTElement successfully reads an element with attributes only"(){
+//<xs:element name="SACTRecord" type="SACTSACTRecordType" minOccurs="1" maxOccurs="unbounded"/>
+        when: "I have a valueNode for an Element and I call the readSACTElement"
+
+        then: "I get the associated XsdElement structure for the given valueNode"
+    }
+
+    void "Test that readSACTSimpleType read an element properly"(){
+
+        when: "I have a valueNode for an SimpleType and I call the readSACTSimpleType"
+
+        then: "I get the associated SimpleType structure for the given valueNode"
+    }
+
+    void "Test that readUnion read an element properly"(){
+
+        when: "I have a valueNode for an Element and I call the readUnion"
+
+        then: "I get the associated XsdElement structure for the given valueNode"
+    }
+
+    void "Test that readList read an element properly"(){
+
+        when: "I have a valueNode for an Element and I call the readList"
+
+        then: "I get the associated XsdElement structure for the given valueNode"
+    }
+
+    void "Test that readComplexType read an element properly"(){
+
+        when: "I have a valueNode for an Element and I call the readComplexType"
+
+        then: "I get the associated XsdElement structure for the given valueNode"
+    }
+
+
+
+
 
 }
 

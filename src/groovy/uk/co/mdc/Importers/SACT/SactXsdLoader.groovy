@@ -57,15 +57,12 @@ class SactXsdLoader {
                     break
             }
         }
-//        sactAllDataElements<<allElements
-
         sactAllDataElements.addAll(allElements)
         [sactDataElements, sactSimpleDataTypes, sactComplexDataTypes, sactGroups, sactAllDataElements, logErrors]
     }
 
 
     def readSACTElement(Node node, String section){
-      def element = []
         String dataItemName=""
         String dataItemType = ""
         String dataItemMinOccurs = ""
@@ -76,16 +73,20 @@ class SactXsdLoader {
         def attributes = node.attributes()
         attributes.eachWithIndex{ def attribute, int attributeIndex ->
             switch (attribute.key){
-                case "name": dataItemName = attribute.value
+                case "name":
+                    dataItemName = attribute.value
                     break
-                case "type": dataItemType = attribute.value
+                case "type":
+                    dataItemType = attribute.value
                     break
-                case "minOccurs": dataItemMinOccurs  = attribute.value
+                case "minOccurs":
+                    dataItemMinOccurs  = attribute.value
                     break
-                case "maxOccurs": dataItemMaxOccurs  = attribute.value
+                case "maxOccurs":
+                    dataItemMaxOccurs  = attribute.value
                     break
                 default:
-                    logErrors += attribute.key
+                    logErrors += ("Loader does not loads this attribute: " + attribute.key + "\r\n")
                     break
             }
         }
@@ -93,12 +94,12 @@ class SactXsdLoader {
         NodeList values = node.value()
 
         XsdSimpleType simpleType
-        String dataElementAnnotation
         XsdComplexDataType complexDataType
 
         values.eachWithIndex{ Node valueNode, int valueNodeIndex ->
             switch (valueNode.name().localPart){
-                case "annotation": dataItemDescription = readAnnotation(valueNode)
+                case "annotation":
+                    dataItemDescription = readAnnotation(valueNode)
                     break
                 case "simpleType":
                     simpleType =  readSACTSimpleType(valueNode, dataItemName)
@@ -109,7 +110,7 @@ class SactXsdLoader {
                     sactComplexDataTypes << complexDataType
                     break
                 default:
-                    logErrors += valueNode.name().localPart
+                    logErrors += ("Loader does not loads this valueNode: " + valueNode.name().localPart + "\r\n")
                     break
             }
         }
