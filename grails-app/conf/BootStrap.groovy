@@ -1,4 +1,5 @@
 import grails.rest.render.RenderContext
+import org.apache.commons.io.input.CountingInputStream
 import org.modelcatalogue.core.Asset
 import org.modelcatalogue.core.ConceptualDomain
 import org.modelcatalogue.core.DataElement
@@ -615,11 +616,17 @@ class BootStrap {
 		}
 		asset.save()
 
+
+
+
+
+
 		DigestInputStream dis = null
 		MessageDigest md5 = MessageDigest.getInstance('MD5')
 		InputStream stream = new FileInputStream(layoutResource.file);
 		dis = new DigestInputStream(stream , md5)
-		modelCatalogueStorageService.store('assets', asset.modelCatalogueId, contentType, dis)
+        CountingInputStream countingInputStream = new CountingInputStream(dis)
+		modelCatalogueStorageService.store('assets', asset.modelCatalogueId, contentType, { OutputStream it -> it << countingInputStream })
 		asset.md5 = DigestUtils.md5DigestAsHex(md5.digest())
 		asset.save()
 		dis?.close()
@@ -649,7 +656,8 @@ class BootStrap {
 		MessageDigest md5 = MessageDigest.getInstance('MD5')
 		InputStream stream = new FileInputStream(layoutResource.file);
 		dis = new DigestInputStream(stream , md5)
-		modelCatalogueStorageService.store('assets', asset.modelCatalogueId, contentType, dis)
+        CountingInputStream countingInputStream = new CountingInputStream(dis)
+        modelCatalogueStorageService.store('assets', asset.modelCatalogueId, contentType, { OutputStream it -> it << countingInputStream })
 		asset.md5 = DigestUtils.md5DigestAsHex(md5.digest())
 		asset.save()
 		dis?.close()
