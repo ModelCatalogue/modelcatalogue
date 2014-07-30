@@ -96,7 +96,7 @@ class DataTypeListPageSpec extends GebReportingSpec {
 		when:"Fill and save the new Relationship"
 
 		//select "is synonym for"
-		relationDialogueReltSelector = 1
+		relationDialogueReltSelector = "1"
 
 		//type the target element
 		relationDialogueItemSelector << "String"
@@ -130,16 +130,21 @@ class DataTypeListPageSpec extends GebReportingSpec {
 		}
 		//Synonyms Tab is displayed
 		waitFor {
-			synonymsTab.displayed
+			$("div.tabbable ul li[heading='Synonyms']").displayed
 		}
 
 
-		synonymsTab.find("a",0).click()
+		waitFor {
+			$("div.tabbable ul li[heading='Synonyms']").find("a",0).displayed
+		}
+
+		$("div.tabbable ul li[heading='Synonyms']").find("a",0).click()
 
 
 		then:"it should add a new relationship and add it in Synonyms tab"
 		//Synonyms Table is shown
-		waitFor {
+		//wait about 20 second in this case, as it usually fails due to the delay
+		waitFor(20) {
 			$("table#-synonyms").displayed
 		}
 		waitFor {
