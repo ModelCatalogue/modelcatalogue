@@ -8,6 +8,7 @@ import uk.co.mdc.pages.metadataCuration.ListPage.DataElementListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.DataTypeListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ModelListPage
 import uk.co.mdc.pages.metadataCuration.ShowPage.ConceptualDomainShowPage
+import uk.co.mdc.pages.metadataCuration.ShowPage.DataElementShowPage
 import uk.co.mdc.pages.metadataCuration.ShowPage.DataTypeShowPage
 
 /**
@@ -125,7 +126,7 @@ class DataTypeListPageSpec extends GebReportingSpec {
 
 		//now it returns to dataType show page
 		waitFor {
-			DataTypeListPage
+			at DataTypeShowPage
 		}
 		//Synonyms Tab is displayed
 		waitFor {
