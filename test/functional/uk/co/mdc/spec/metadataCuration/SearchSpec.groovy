@@ -50,7 +50,7 @@ class SearchSpec  extends GebReportingSpec{
 		}
  		$(nav.searchResultUl).find("li").size() == 3
 		$(nav.searchResultUl).find("li",0).text().trim().contains("Search Catalogue Element for DE1")
-		$(nav.searchResultUl).find("li",1).text().trim().contains("Search Model for DE1")
+		$(nav.searchResultUl).find("li",1).text().trim().contains("Search any Model for DE1")
 		$(nav.searchResultUl).find("li",2).text().trim().contains("DE1")
 
 	}
