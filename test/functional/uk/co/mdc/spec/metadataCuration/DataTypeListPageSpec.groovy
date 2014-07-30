@@ -133,28 +133,27 @@ class DataTypeListPageSpec extends GebReportingSpec {
 			synonymsTab.displayed
 		}
 
-		//click on Synonyms tab
-		waitFor {
-			synonymsTab.find("a",0).click()
-		}
+
+		synonymsTab.find("a",0).click()
+
 
 		then:"it should add a new relationship and add it in Synonyms tab"
 		//Synonyms Table is shown
 		waitFor {
-			synonymsTable.displayed
+			$("table#-synonyms").displayed
 		}
 		waitFor {
-			synonymsTable.find("tbody tr td",0).displayed
+			$("table#-synonyms").find("tbody tr td",0).displayed
 		}
 		waitFor {
-			synonymsTable.find("tbody tr td",0).text() == "is synonym for"
+			$("table#-synonyms").find("tbody tr td",0).text() == "is synonym for"
 		}
 
 		waitFor {
-			synonymsTable.find("tbody tr td",1).displayed
+			$("table#-synonyms").find("tbody tr td",1).displayed
 		}
 		waitFor {
-			synonymsTable.find("tbody tr td",1).text() == "String"
+			$("table#-synonyms").find("tbody tr td",1).text() == "String"
 		}
 
 	}
