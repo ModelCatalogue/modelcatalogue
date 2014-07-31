@@ -78,6 +78,10 @@ data/**
 /web-app/bower_components/
 /node_modules/
 
+
+# MC asset folder
+/storage/assets
+
 # OS generated files #
 ######################
 .DS_Store

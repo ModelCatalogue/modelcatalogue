@@ -5,6 +5,7 @@ import spock.lang.Stepwise
 import uk.co.mdc.pages.authentication.LoginPage
 import uk.co.mdc.pages.metadataCuration.ListPage.DataElementListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ModelListPage
+import uk.co.mdc.pages.metadataCuration.ShowPage.AssetShowPage
 import uk.co.mdc.pages.metadataCuration.ShowPage.DataElementShowPage
 
 /**
@@ -60,7 +61,7 @@ class DataElementListPageSpec extends GebReportingSpec {
 			at DataElementShowPage
 			mainLabel.displayed
 		}
-		mainLabel.text().contains("DE1 (Data Element:")
+		mainLabel.text().contains("DE1 FINALIZED (Data Element:")
 		description.text() ==  "DE1 Desc"
 		waitFor {
 			propertiesTab.displayed
@@ -104,7 +105,7 @@ class DataElementListPageSpec extends GebReportingSpec {
 			at DataElementShowPage
 			mainLabel.displayed
 		}
-		mainLabel.text().contains("DE1 (Data Element:")
+		mainLabel.text().contains("DE1 FINALIZED (Data Element:")
 		description.text() == "DE1 Desc"
 		waitFor {
 			propertiesTab.displayed
@@ -124,77 +125,62 @@ class DataElementListPageSpec extends GebReportingSpec {
 		}
 	}
 
-
-
-	def "ExportButton in dataElement List page contains several default reports"() {
-
-		setup:"Go to dataElement List page as a List page that contains ExportButton"
+	def "Status action button is displayed"() {
+		when:"Go to dataElement page as a List page"
 		to DataElementListPage
+		waitFor {
+			at DataElementListPage
+		}
+		then: "it should contain Status action button"
+		//the first item is status filter button
+		waitFor {
+			getStatusActionButton().displayed
+		}
+	}
 
-		when: "at DataElementListPage"
+	def "Selecting Draft status filter will just show the Draft dataElements"(){
+		when:"Go to dataElement page as a List page and clicking on Draft status"
+		to DataElementListPage
 		waitFor {
 			at DataElementListPage
 		}
 		waitFor {
-			$(DataElementListPage.exportButton).displayed
+			getStatusActionButton().displayed
 		}
 
-		$(DataElementListPage.exportButton).click()
-
-
-		then: "list of available reports will be displayed in a menu"
+		//click on status Action
+		getStatusActionButton().click()
+		//the list of status filter (Draft,Finalized,..) are displayed
 		waitFor {
-			$(DataElementListPage.exportButtonItems).displayed
+			$(subActionList).displayed
 		}
+		//DRAFT is shown
 		waitFor {
-			$(DataElementListPage.exportButtonItems).find("li",0).displayed
+			getDraftStatusButton().displayed
 		}
-		$(DataElementListPage.exportButtonItems).find("li",0).find("a").size() == 4
-		$(DataElementListPage.exportButtonItems).find("li",0).find("a")[index].text() == label
 
-		where:
-		index | label
-		0	  | "Catalogue Elements to Excel"
-		1	  | "Data Elements XLSX"
-		2	  | "COSD"
-		3	  | "NHIC"
+		//DRAFT item has 'DRAFT' as its text
+		waitFor {
+			getDraftStatusButton().text() == "Draft"
+		}
+
+		//its <a> link is accessible
+		waitFor {
+			getDraftStatusButton().find("a",0).displayed
+		}
+
+		getDraftStatusButton().find("a",0).click()
+
+
+
+		then:"DataElement table just shows Draft DataElements"
+		//dataElement list should be displayed
+		waitFor {
+			$(dataElementList).displayed
+		}
+		//first row should have name column
+		$(dataElementList).find("tbody tr td",1).displayed
+		//dataElement name should be "DE3"
+		$(dataElementList).find("tbody tr td",1).text() == "DE3"
 	}
-
-	def "ExportButton in dataElement list page will export dataElement list as an excel file"() {
-
-		setup:"Go to dataElement page as a List page that contains ExportButton"
-		to DataElementListPage
-
-		when: "at dataElementList Page"
-		waitFor {
-			at DataElementListPage
-		}
-		waitFor {
-			$(DataElementListPage.exportButton).displayed
-		}
-		$(DataElementListPage.exportButton).click()
-
-		waitFor {
-			$(DataElementListPage.exportButtonItems).displayed
-		}
-		waitFor {
-			$(DataElementListPage.exportButtonItems).find("li",0).displayed
-		}
-		waitFor {
-			$(DataElementListPage.exportButtonItems).find("li",0).find("a",index).displayed
-		}
-
-		//$("div.export.open ul#exportBtnItems").find("li",0).find("a",0).click()
-		//Instead of clicking on the link, we will get the link href and download the file directly
-		//and make sure that the content of the file is not empty
-		def downloadLink = $(DataElementListPage.exportButtonItems).find("li",0).find("a",index)
-		def bytes = downloadBytes(downloadLink.@href)
-
-		then: "it downloads the excel file"
-		bytes.size() != 0
-
-		where:""
-		index << [0,1,2]
-	}
-
 }

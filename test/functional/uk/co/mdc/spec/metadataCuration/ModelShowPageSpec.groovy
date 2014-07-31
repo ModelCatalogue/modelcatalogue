@@ -50,5 +50,31 @@ class ModelShowPageSpec extends GebReportingSpec {
 		waitFor {
 			parentOfTab.displayed
 		}
+		waitFor {
+			finalizedIcon.displayed
+		}
+		waitFor {
+			finalizedIcon.text() == "FINALIZED"
+		}
 	}
+
+	def "At modelShowPage for a Draft Model, it shows Draft icon" (){
+		when: "Click on a model"
+		waitFor {
+			at ModelListPage
+		}
+		goToDraftModelShowPage()
+
+		then: "Draft icon is displayed"
+		waitFor {
+			at ModelShowPage
+		}
+		waitFor {
+			draftIcon.displayed
+		}
+		waitFor {
+			draftIcon.text() == "DRAFT"
+		}
+	}
+
 }

@@ -1,9 +1,11 @@
 package uk.co.mdc.spec.metadataCuration
 
 import geb.spock.GebReportingSpec
+import uk.co.mdc.pages.DashboardPage
 import uk.co.mdc.pages.authentication.LoginPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ConceptualDomainListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ModelListPage
+import uk.co.mdc.pages.metadataCuration.ShowPage.AssetShowPage
 import uk.co.mdc.pages.metadataCuration.ShowPage.ConceptualDomainShowPage
 
 /**
@@ -13,15 +15,16 @@ class ConceptualDomainListPageSpec extends GebReportingSpec {
 
 	def setup() {
 		to LoginPage
-		loginReadOnlyUser()
-		waitFor {
-			at ModelListPage
-		}
 	}
 
 	def "Clicking on conceptualDomain name will lead to its show page"() {
 
 		when: "at conceptualDomainList Page and clicking on a conceptualDomain name"
+		loginReadOnlyUser()
+		waitFor {
+			at ModelListPage
+		}
+
 		to ConceptualDomainListPage
 		waitFor {
 			at ConceptualDomainListPage
@@ -58,11 +61,14 @@ class ConceptualDomainListPageSpec extends GebReportingSpec {
 
 	}
 
-
-
 	def "ConceptualDomain list page has exportButton"() {
 
 		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
+		loginReadOnlyUser()
+		waitFor {
+			at ModelListPage
+		}
+
 		to ConceptualDomainListPage
 
 		when: "at conceptualDomainList Page"
@@ -76,62 +82,88 @@ class ConceptualDomainListPageSpec extends GebReportingSpec {
 		}
 	}
 
-	def "Clicking on exportButton in conceptualDomain list page will show the list of available reports"() {
+	def "ConceptualDomain list page does not show administrative menus to readonly users"() {
 
-		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
+		setup:"Go to conceptualDomain list page as readonly users"
+		loginReadOnlyUser()
+		waitFor {
+			at ModelListPage
+		}
 		to ConceptualDomainListPage
 
-		when: "at conceptualDomainList Page"
+		when:"at conceptualDomain list page"
+		waitFor {
+			at ConceptualDomainListPage
+		}
+
+		then:"it should not show administrative menus"
+		!(newButton.displayed)
+	}
+
+	def "ConceptualDomain list page shows administrative menus to admin users"() {
+
+		setup:"Go to conceptualDomain list page as an admin user"
+		loginAsAdmin()
+
+		to ConceptualDomainListPage
+		waitFor {
+			at ConceptualDomainListPage
+		}
+
+		when:"at conceptualDomain list page"
+		waitFor {
+			at ConceptualDomainListPage
+		}
+
+		then:"it should show administrative menus"
+		waitFor {
+			newButton
+			newButton.displayed
+		}
+	}
+
+	def "ConceptualDomain List Page can add a new conceptual domain"() {
+		setup:"Go to conceptualDomain list page as an admin user and press 'New Conceptual Domain'"
+		loginAsAdmin()
+
+		to ConceptualDomainListPage
 		waitFor {
 			at ConceptualDomainListPage
 		}
 		waitFor {
-			$(ConceptualDomainListPage.exportButton).displayed
+			newButton.displayed
 		}
+		newButton.click()
 
-		$(ConceptualDomainListPage.exportButton).click()
 
-		then: "list of available reports will be displayed in a menu"
-		$(ConceptualDomainListPage.exportButtonItems).displayed
-		$(ConceptualDomainListPage.exportButtonItems).find("li",0).displayed
+		waitFor {
+			newCDModelDialogue.displayed
+		}
+		waitFor {
+			newCDModelDialogueTitle.displayed
+		}
+		when:"Fill and save the new ConceptualDomain"
+		//fill the model dialogue form
+		newCDModelDialogueName << "ZNEW-NAME"
+		newCDModelDialogueDescription << "ZNEW-DESC"
+		//click on Save button
+		newCDModelDialogueSaveBtn.click()
+
+		then:"it should add a new ConceptualDomain and show conceptualDomain show page"
+		waitFor {
+			ConceptualDomainShowPage
+		}
 	}
 
-	def "ExportButton in conceptualDomain list page will export conceptualDomain list as an excel file"() {
-
-		setup:"Go to conceptualDomain page as a List page that contains ExportButton"
-		to ConceptualDomainListPage
-
-		when: "at conceptualDomainList Page"
+	private  def loginAsAdmin(){
+		loginAdminUser()
 		waitFor {
-			at ConceptualDomainListPage
+			at DashboardPage
 		}
-		waitFor {
-			$(ConceptualDomainListPage.exportButton).displayed
+		go "metadataCurator"
+		waitFor (30){
+			at ModelListPage
 		}
-		$(ConceptualDomainListPage.exportButton).click()
-
-		waitFor {
-			$(ConceptualDomainListPage.exportButtonItems).displayed
-		}
-
-		waitFor {
-			$(ConceptualDomainListPage.exportButtonItems).find("li",0).displayed
-		}
-
-		waitFor {
-			$(ConceptualDomainListPage.exportButtonItems).find("li",0).find("a",0).displayed
-		}
-
-
-		//$("div.export.open ul#exportBtnItems").find("li",0).find("a",0).click()
-		//Instead of clicking on the link, we will get the link href and download the file directly
-		//and make sure that the content of the file is not empty
-		def downloadLink = $(ConceptualDomainListPage.exportButtonItems).find("li",0).find("a",0)
-		def bytes = downloadBytes(downloadLink.@href)
-
-		then: "it downloads the excel file"
-		bytes.size() != 0
 	}
-
 
 }

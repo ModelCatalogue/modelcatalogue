@@ -77,7 +77,7 @@ class DataElementShowPageSpec extends GebReportingSpec {
 			mainLabel.displayed
 		}
 
-		mainLabel.text().contains("DE1 (Data Element:")
+		mainLabel.text().contains("DE1 FINALIZED (Data Element:")
 		description.text() == "DE1 Desc"
 		waitFor {
 			propertiesTab.displayed

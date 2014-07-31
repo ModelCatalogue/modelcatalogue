@@ -16,6 +16,9 @@ class ModelListPage extends BasePageWithNavReadOnly {
 
 
 	static String modelTree = "div.catalogue-element-treeview-list-container[list='list']"
+	static String leftActionList     = "h2 span.btn-group button"
+	static String leftSubActionList  = "ul#switch-statusBtnItems"
+
 
 
 	static content = {
@@ -37,7 +40,14 @@ class ModelListPage extends BasePageWithNavReadOnly {
 		Model1_Item_Show { Model1_Item.find("a.btn[title='Show']") }
 		Model1_Item_Name { Model1_Item.find("span.catalogue-element-treeview-name") }
 
-		dataElementsTable { $("table[list='contained.elements']") }
+
+		Draft_Model_Item { $(modelTree).find("span.catalogue-element-treeview-labels", 0) }
+		Draft_Model_Item_Icon { NHIC_Model_Item.find("span.glyphicon-folder-close") }
+		Draft_Model_Item_Show { NHIC_Model_Item.find("a.btn[title='Show']") }
+		Draft_Model_Item_Name { NHIC_Model_Item.find("span.catalogue-element-treeview-name") }
+
+
+		dataElementsTable { $("table[list='contained.list']") }
 	}
 
 
@@ -81,5 +91,36 @@ class ModelListPage extends BasePageWithNavReadOnly {
 		}
 	}
 
+
+	def goToDraftModelShowPage(){
+		waitFor {
+			//the first button is Status Filter(Draft,Finalized,....)
+			$(ModelListPage.leftActionList)[0].displayed
+		}
+
+		//click on Status button
+		($(ModelListPage.leftActionList)[0]).click()
+
+		//sub action list should be shown
+		waitFor {
+			$(ModelListPage.leftSubActionList).displayed
+		}
+
+		//Draft item should be displayed
+		waitFor {
+			$(ModelListPage.leftSubActionList).find("li a",0)
+		}
+
+		//click on Draft item
+		$(ModelListPage.leftSubActionList).find("li a",0).click()
+
+		waitFor {
+			Draft_Model_Item.displayed
+		}
+
+		interact {
+			click(Draft_Model_Item_Show)
+		}
+	}
 }
 
