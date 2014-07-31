@@ -1,3 +1,4 @@
+
 #= require jquery/dist/jquery
 #= require bootstrap/dist/js/bootstrap
 #= require ng-file-upload-shim/angular-file-upload-shim
@@ -27,7 +28,6 @@ metadataCurator = angular.module('metadataCurator', [
 
 metadataCurator.config ['$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider)->
   $urlRouterProvider.otherwise("/catalogue/model/all")
-
 ]
 
 metadataCurator.run ['$templateCache', ($templateCache) ->
