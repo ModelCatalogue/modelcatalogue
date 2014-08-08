@@ -20,7 +20,7 @@
     <asset:javascript src="angular/metaDataCurator.js"/>
     <script type="text/javascript">
         var demoConfig = angular.module('demo.config', ['mc.core.modelCatalogueApiRoot', 'mc.util.security'])
-        demoConfig.config(function (securityProvider) {
+        demoConfig.config(['securityProvider',function (securityProvider) {
             securityProvider.springSecurity({
                 contextPath: '${request.contextPath ?: ''}',
                 roles: {
@@ -35,7 +35,7 @@
                 }
                 </sec:ifLoggedIn>
             })
-        })
+        }])
         demoConfig.value('modelCatalogueApiRoot', '${request.contextPath ?: ''}/api/modelCatalogue/core')
     </script>
 
@@ -153,7 +153,7 @@
 
     <div class="container">
         <div class="row">
-            <messages-panel max="3"></messages-panel>
+            <messages-panel max="3" growl="true"></messages-panel>
         </div>
         <div class="row">
             <div class="col-md-12">

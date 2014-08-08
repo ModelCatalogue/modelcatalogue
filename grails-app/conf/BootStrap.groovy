@@ -623,10 +623,11 @@ class BootStrap {
 
 
 
-		InputStream inputStream = new FileInputStream(layoutResource.file);
-		MessageDigest md5     = MessageDigest.getInstance('MD5')
-		DigestInputStream dis = new DigestInputStream(inputStream, md5)
-		CountingInputStream countingInputStream = new CountingInputStream(dis)
+		DigestInputStream dis = null
+		MessageDigest md5 = MessageDigest.getInstance('MD5')
+		InputStream stream = new FileInputStream(layoutResource.file);
+		dis = new DigestInputStream(stream , md5)
+        CountingInputStream countingInputStream = new CountingInputStream(dis)
 		modelCatalogueStorageService.store('assets', asset.modelCatalogueId, contentType, { OutputStream it -> it << countingInputStream })
 
 		asset.md5 = DigestUtils.md5DigestAsHex(md5.digest())
@@ -656,11 +657,13 @@ class BootStrap {
 		}
 		asset.save()
 
-		InputStream inputStream = new FileInputStream(layoutResource.file);
-		MessageDigest md5     = MessageDigest.getInstance('MD5')
-		DigestInputStream dis = new DigestInputStream(inputStream, md5)
-		CountingInputStream countingInputStream = new CountingInputStream(dis)
-		modelCatalogueStorageService.store('assets', asset.modelCatalogueId, contentType, { OutputStream it -> it << countingInputStream })
+		DigestInputStream dis = null
+		MessageDigest md5 = MessageDigest.getInstance('MD5')
+		InputStream stream = new FileInputStream(layoutResource.file);
+		dis = new DigestInputStream(stream , md5)
+        CountingInputStream countingInputStream = new CountingInputStream(dis)
+        modelCatalogueStorageService.store('assets', asset.modelCatalogueId, contentType, { OutputStream it -> it << countingInputStream })
+
 		asset.md5 = DigestUtils.md5DigestAsHex(md5.digest())
 		asset.size = countingInputStream.byteCount
 		asset.save()
