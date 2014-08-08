@@ -87,7 +87,10 @@ class BootStrap {
 				element.ext.get("Data Dictionary Element"),
 				element.ext.get("Link to existing definition"),
 				element.ext.get("Anonymizing Rules"),
-				element.ext.get("File Name (COSD XSD)")
+				element.ext.get("File Name (COSD XSD)"),
+                element.ext.get("XSD Element Name"),
+                element.ext.get("Original Data Item Name (COSD v1.2 xls)"),
+                element.ext.get("Pathway Group")
 		]]
     }
 
@@ -140,7 +143,7 @@ class BootStrap {
 
         xlsxListRenderer.registerRowWriter('NHIC') {
             title: "NHIC XLSX"
-            headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata", "NHIC_Identifier","Link_to_existing_definition", "Notes_from_GD_JCIS" ,"Optional_Local_Identifier","A" ,"B","C" ,"D" ,"E" ,"F" ,"G","H","E2", "System", "Comments", "Group","More-comments","Multiplicity","Temp","Index","NIHR Code","Section_0","Section_1","Section_2","Section_3","Supporting","Associated date and time","Given Data type","Template"	,"List content"	,"Timing of Data Collection","Source UCH","label1 - UCH","label2 - UCH","More metadata1","Reference","ranges - UCH","Cambridge"	,"Source Cambridge","Type of Anonymisation","Data Dictionary Element","Link to existing definition","Anonymizing Rules","File Name (COSD XSD)"
+            headers "Parent Model Unique Code",	"Parent Model",	"Model Unique Code", "Model", "Data Item Unique Code", "Data Item Name", "Data Item Description", "Measurement Unit", "Data type",	"Metadata", "NHIC_Identifier","Link_to_existing_definition", "Notes_from_GD_JCIS" ,"Optional_Local_Identifier","A" ,"B","C" ,"D" ,"E" ,"F" ,"G","H","E2", "System", "Comments", "Group","More-comments","Multiplicity","Temp","Index","NIHR Code","Section_0","Section_1","Section_2","Section_3","Supporting","Associated date and time","Given Data type","Template"	,"List content"	,"Timing of Data Collection","Source UCH","label1 - UCH","label2 - UCH","More metadata1","Reference","ranges - UCH","Cambridge"	,"Source Cambridge","Type of Anonymisation","Data Dictionary Element","Link to existing definition","Anonymizing Rules","File Name (COSD XSD)", "XSD Element Name","Original Data Item Name (COSD v1.2 xls)", "Pathway Group"
 			when { ListWrapper container, RenderContext context ->
                 context.actionName in ['index', 'search', 'metadataKeyCheck', 'uninstantiatedDataElements', 'getSubModelElements'] && container.itemType && DataElement.isAssignableFrom(container.itemType)
             } then { DataElement element ->

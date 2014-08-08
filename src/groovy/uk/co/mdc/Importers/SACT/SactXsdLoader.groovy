@@ -25,6 +25,8 @@ class SactXsdLoader {
         fileInputStream  = inputStream
     }
 
+
+
     def parse(){
         XmlParser parser = new XmlParser()
         def sact = parser.parse (fileInputStream)
@@ -558,8 +560,7 @@ class SactXsdLoader {
         return result
     }
 
-    def readAny(Node node)
-    {
+    def readAny(Node node){
         String namespace
         String processContents
         String minOccurs

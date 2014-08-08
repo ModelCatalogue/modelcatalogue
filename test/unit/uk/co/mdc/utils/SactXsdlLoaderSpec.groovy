@@ -1,5 +1,6 @@
 package uk.co.mdc.utils
 
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Row
@@ -9,12 +10,18 @@ import spock.lang.Specification
 import uk.co.mdc.Importers.COSDExcelLoader
 import uk.co.mdc.Importers.ExcelSheet
 import uk.co.mdc.Importers.SACT.SactXsdElement
+import uk.co.mdc.Importers.SACT.SactXsdLoader
+import uk.co.mdc.Importers.SACT.XsdAttribute
 import uk.co.mdc.Importers.SACT.XsdComplexDataType
 import uk.co.mdc.Importers.SACT.XsdElement
 import uk.co.mdc.Importers.SACT.XsdGroup
 import uk.co.mdc.Importers.SACT.XsdPattern
 import uk.co.mdc.Importers.SACT.XsdRestriction
+import uk.co.mdc.Importers.SACT.XsdSequence
 import uk.co.mdc.Importers.SACT.XsdSimpleType
+import uk.co.mdc.Importers.SACT.XsdUnion
+
+import javax.xml.namespace.QName
 
 /**
  * Created by sus_avi on 11/07/2014.
@@ -24,6 +31,7 @@ import uk.co.mdc.Importers.SACT.XsdSimpleType
 class SactXsdlLoaderSpec extends Specification {
 
 
+    String filename = "test/unit/resources/SACT/SACT_Short_Example.xsd"
     //SimpleDataTypes
     def setup(){
         XsdRestriction restriction_A = new XsdRestriction(base:"AlphaNumericType",
@@ -88,35 +96,150 @@ class SactXsdlLoaderSpec extends Specification {
         then: "I get the associated XsdElement structure for the given valueNode"
     }
 
-    void "Test that readSACTSimpleType read an element properly"(){
+    void "Test that readSACTSimpleType reads an element properly"(){
 
         when: "I have a valueNode for an SimpleType and I call the readSACTSimpleType"
 
         then: "I get the associated SimpleType structure for the given valueNode"
     }
 
-    void "Test that readUnion read an element properly"(){
+    void "Test that readUnion reads an element properly"(){
 
         when: "I have a valueNode for an Element and I call the readUnion"
+        String unionXsdText = "<union memberTypes=\"xs:decimal xs:double\"/>"
+
+        SactXsdLoader loader = new SactXsdLoader(filename)
+        XmlParser parser = new XmlParser()
+        def unionParser = parser.parseText(unionXsdText)
+        XsdUnion union = loader.readUnion(unionParser, "")
+
+
+
 
         then: "I get the associated XsdElement structure for the given valueNode"
+        assert union.memberTypes == "xs:decimal xs:double"
     }
 
-    void "Test that readList read an element properly"(){
+    void "Test that readList reads an element properly"(){
 
         when: "I have a valueNode for an Element and I call the readList"
 
         then: "I get the associated XsdElement structure for the given valueNode"
     }
 
-    void "Test that readComplexType read an element properly"(){
+    void "Test that readComplexType reads an element properly"(){
 
         when: "I have a valueNode for an Element and I call the readComplexType"
 
         then: "I get the associated XsdElement structure for the given valueNode"
     }
 
+    void "Test that readAnnotation reads an element properly"(){
 
+        when: "I have a valueNode for an Element and I call the readAnnotation"
+
+
+        SactXsdLoader loader = new SactXsdLoader(filename)
+        String description = "NHS NUMBER"
+        Node node = createAnnotation(null, description)
+        String sactDescription = loader.readAnnotation(node)
+
+        then: "I get the associated XsdElement structure for the given valueNode"
+        assert  description == sactDescription
+    }
+
+//    void "Test that readRestriction reads an element properly"(){
+//        when: "I have a valueNode for an Element and I call the readRestriction"
+//
+//        String restrictionBase = "st"
+//        ArrayList<XsdPattern> patterns = []
+//        String restrictionMinLength = "1"
+//        String restrictionMaxLength = "2"
+//        String restrictionLength = "2"
+//        String restrictionMinInclusive = "1"
+//        String restrictionMaxInclusive = "2"
+//        String restrictionMinExclusive = "1"
+//        String restrictionMaxExclusive = "2"
+//        String restrictionEnumeration = "01:01\r\n02:02\r\n03:03"
+//        XsdSequence sequence
+//        ArrayList <XsdAttribute> attributes=[]
+//
+//        XsdRestriction result = new XsdRestriction(base: restrictionBase,
+//                patterns: patterns,
+//                length: restrictionLength,
+//                minLength: restrictionMinLength,
+//                maxLength: restrictionMaxLength,
+//                minInclusive: restrictionMinInclusive,
+//                maxInclusive: restrictionMaxInclusive,
+//                minExclusive: restrictionMinExclusive,
+//                maxExclusive: restrictionMaxExclusive,
+//                enumeration: restrictionEnumeration,
+//                attributes: attributes,
+//                sequence: sequence)
+//
+//        SactXsdLoader loader = new SactXsdLoader(filename)
+//        String description = "NHS NUMBER"
+//        Node node = createRestriction(null)
+//        String sactDescription = loader.readRestriction(node, "")
+//
+//        then: "I get the associated XsdElement structure for the given valueNode"
+//        assert  description == sactDescription
+//    }
+//
+
+    def createAnnotation(Node parent, String description){
+        QName name = new QName("http://www.w3.org/2001/XMLSchema", "appinfo", "xs" )
+
+        Node annotationNode = new Node(parent,"annotation")
+        Node appinfoNode = new Node(annotationNode, name)
+
+
+        NodeList appinfoNodeList = []
+        appinfoNodeList << description
+        appinfoNode.value = appinfoNodeList
+
+        NodeList nodeList = []
+        nodeList << appinfoNode
+        annotationNode.value = nodeList
+
+        return annotationNode
+    }
+
+
+    def createRestriction(Node parent){
+
+//        String base
+//        String minLength
+//        String maxLength
+//        String length
+//        String minInclusive
+//        String maxInclusive
+//        String minExclusive
+//        String maxExclusive
+//        String enumeration
+//        ArrayList<XsdPattern> patterns
+//        ArrayList <XsdAttribute> attributes
+//        XsdSequence sequence
+
+
+
+        String enumerateValues = ["01", "02", "03"]
+
+        QName name = new QName("http://www.w3.org/2001/XMLSchema", "restriction", "xs" )
+        Node restrictionNode = new Node(parent, name,[key:"base", value:"st"] )
+
+        NodeList values = []
+        enumerateValues.each{
+            String value ->
+                QName nodeName = new QName("http://www.w3.org/2001/XMLSchema", "enumeration", "xs" )
+                Map attributes = [key:"value", value:value]
+                Node node = new Node(restrictionNode, nodeName, attributes)
+                values << node
+        }
+        restrictionNode.value = values
+        return restrictionNode
+
+    }
 
 
 
