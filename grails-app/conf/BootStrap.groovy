@@ -39,6 +39,8 @@ class BootStrap {
 	def aclService, aclUtilService, sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService, dataArchitectService
 	def modelCatalogueStorageService
 
+	def publishedElementService
+
     XLSXListRenderer xlsxListRenderer
 
     def catalogueElementService
@@ -454,7 +456,7 @@ class BootStrap {
             Node node1 = new Node(
                     name: 'Guard Patient',
                     x: '250',
-                    y: '0px',
+                    y: '0',
                     description: 'guard patient on recovery',
             ).save(failOnError: true, flush:true)
 
@@ -577,11 +579,11 @@ class BootStrap {
 		new Relationship(source: de1, destination: de2, relationshipType: relType).save(failOnError: true)
 
 
-		PublishedElement.list().each {
-			it.status = PublishedElementStatus.FINALIZED
-			it.save(failOnError: true)
-		}
-
+//		PublishedElement.list().each {
+//			it.status = PublishedElementStatus.FINALIZED
+//			it.save(failOnError: true)
+//		}
+		publishedElementService.finalizeTree(topParentModel)
 
 		//add Draft dataElement
 		def de3 = new DataElement(name: "DE3", modelCatalogueId: "MC_a8ff88a6-d888-8fca-888f-e8c8fc8c8b8d_1",description:"DE3 Desc",status:PublishedElementStatus.DRAFT).save(failOnError: true)
