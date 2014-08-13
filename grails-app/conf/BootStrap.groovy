@@ -28,7 +28,7 @@ import uk.co.mdc.SecUserSecAuth
 import uk.co.mdc.pathways.Link
 import uk.co.mdc.pathways.Node
 import uk.co.mdc.pathways.Pathway
-import org.springframework.security.acls.domain.BasePermission
+//import org.springframework.security.acls.domain.BasePermission
 
 import java.security.DigestInputStream
 import java.security.MessageDigest
@@ -36,7 +36,7 @@ import java.security.MessageDigest
 
 class BootStrap {
 
-	def aclService, aclUtilService, sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService, dataArchitectService
+	def sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService, dataArchitectService
 	def modelCatalogueStorageService
 
 	def publishedElementService
@@ -307,7 +307,7 @@ class BootStrap {
             sessionFactory.currentSession.flush()
 
 			//grant relevant permissions (i.e. admin user has admin on everything)
-			grantPermissions()
+			//grantPermissions()
 
 			sessionFactory.currentSession.flush()
 
@@ -382,42 +382,42 @@ class BootStrap {
 
 	}
 
-	private void grantPermissions() {
-		def dataElements = []
+//	private void grantPermissions() {
+//		def dataElements = []
+//
+//		// grant ROLE_ADMIN on everything
+//
+//		grantAdminPermissions(Node.list())
+//		grantAdminPermissions(Link.list())
+//
+//        // We don't need to add permissions for nodes and links
+//		grantAdminPermissions(Pathway.list())
+//
+//
+//		// Grant ROLE_USER on everything
+//
+//        // We don't need to add permissions for nodes and links
+//		grantUserPermissions(Pathway.list())
+//
+//	}
 
-		// grant ROLE_ADMIN on everything
 
-		grantAdminPermissions(Node.list())
-		grantAdminPermissions(Link.list())
-
-        // We don't need to add permissions for nodes and links
-		grantAdminPermissions(Pathway.list())
-
-
-		// Grant ROLE_USER on everything
-
-        // We don't need to add permissions for nodes and links
-		grantUserPermissions(Pathway.list())
-
-	}
-
-
-	def grantAdminPermissions(objectList){
-		for (object in objectList) {
-			aclUtilService.addPermission object, 'ROLE_ADMIN', BasePermission.ADMINISTRATION
-			
-		}
-	}
-	
-	
-	def grantUserPermissions(objectList){
-		for (object in objectList) {
-			//FIX me - by default user will have the 
-            aclUtilService.addPermission object, 'ROLE_USER', BasePermission.READ
-            aclUtilService.addPermission object, 'ROLE_USER', BasePermission.WRITE
-            aclUtilService.addPermission object, 'ROLE_USER', BasePermission.DELETE
-		}
-	}
+//	def grantAdminPermissions(objectList){
+//		for (object in objectList) {
+//			aclUtilService.addPermission object, 'ROLE_ADMIN', BasePermission.ADMINISTRATION
+//
+//		}
+//	}
+//
+//
+//	def grantUserPermissions(objectList){
+//		for (object in objectList) {
+			//FIX me - by default user will have the
+//            aclUtilService.addPermission object, 'ROLE_USER', BasePermission.READ
+//            aclUtilService.addPermission object, 'ROLE_USER', BasePermission.WRITE
+//            aclUtilService.addPermission object, 'ROLE_USER', BasePermission.DELETE
+//		}
+//	}
 	
 	
 	
