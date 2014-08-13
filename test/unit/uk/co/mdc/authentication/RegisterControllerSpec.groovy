@@ -1,11 +1,11 @@
 package uk.co.mdc.authentication
 
-import grails.plugins.springsecurity.SpringSecurityService
-import grails.plugins.springsecurity.ui.SpringSecurityUiService
+import grails.plugin.springsecurity.SpringSecurityService
+import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.ui.SpringSecurityUiService
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import spock.lang.Specification
+ import spock.lang.Specification
 import uk.co.mdc.SecAuth
 import uk.co.mdc.SecUser
 import uk.co.mdc.SecUserSecAuth

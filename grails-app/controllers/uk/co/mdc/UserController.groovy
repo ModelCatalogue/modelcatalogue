@@ -1,9 +1,9 @@
 package uk.co.mdc
 
-import org.codehaus.groovy.grails.plugins.springsecurity.NullSaltSource
-import org.codehaus.groovy.grails.plugins.springsecurity.ui.RegistrationCode
+import grails.plugin.springsecurity.authentication.dao.NullSaltSource
+import grails.plugin.springsecurity.ui.RegistrationCode
 
-class UserController extends grails.plugins.springsecurity.ui.UserController {
+class UserController extends grails.plugin.springsecurity.ui.UserController {
 
 
     def pendingRole = SecAuth.findByAuthority('ROLE_READONLY_PENDING')

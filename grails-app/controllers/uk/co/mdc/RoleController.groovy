@@ -1,6 +1,6 @@
 package uk.co.mdc
 
-class RoleController extends grails.plugins.springsecurity.ui.RoleController {
+class RoleController extends grails.plugin.springsecurity.ui.RoleController {
 
 
     def pendingRole = SecAuth.findByAuthority('ROLE_READONLY_PENDING')
