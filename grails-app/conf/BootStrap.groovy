@@ -446,29 +446,29 @@ class BootStrap {
                     description: 'transfer patient to the Operating Room',
                     userVersion: '0.1',
                     isDraft: true,
-                    x: '325px',
-                    y: '330px',
+                    x: '325',
+                    y: '330',
                     parent: pathway1,
             ).save(failOnError:true, flush:true)
 
             Node node1 = new Node(
                     name: 'Guard Patient',
-                    x: '250px',
+                    x: '250',
                     y: '0px',
                     description: 'guard patient on recovery',
             ).save(failOnError: true, flush:true)
 
             Node node2 = new Node(
                     name: 'Recovery',
-                    x: '150px',
-                    y: '100px',
+                    x: '150',
+                    y: '100',
                     description: 'recover',
             ).save(failOnError: true, flush:true)
 
             Node node3 = new Node(
                     name: 'Transfer to nursing ward',
-                    x: '250px',
-                    y: '300px',
+                    x: '250',
+                    y: '300',
                     description: 'transfer patient to the nursing ward',
             ).save(failOnError: true, flush:true)
 
@@ -494,16 +494,16 @@ class BootStrap {
 
             def node21 = new Node(
                     name: 'transfer to O.R.',
-                    x: '455px',
-                    y: '0px',
+                    x: '455',
+                    y: '0',
                     description: 'transfer patient to the Operating Room',
             ).save(flush:true)
 
 
             def node22 = new Node(
                     name: 'Anaesthesia and Operating Procedure',
-                    x: '115px',
-                    y: '110px',
+                    x: '115',
+                    y: '110',
                     description: 'perform the operation',
             ).save(flush:true)
 
