@@ -19,7 +19,7 @@ grails.project.fork = [
 ]
 
 
-//grails.plugin.location.'ModelCatalogueCorePlugin' = "../ModelCataloguePlugin/ModelCatalogueCorePlugin"
+grails.plugin.location.'ModelCatalogueCorePlugin' = "../ModelCataloguePlugin/ModelCatalogueCorePlugin"
 //grails.plugin.location.'ModelCatalogueElasticSearchPlugin' = "../ModelCataloguePlugin/ModelCatalogueElasticSearchPlugin"
 
 // Grails 2.3 uses Aether by default
@@ -95,29 +95,29 @@ grails.project.dependency.resolution = {
 
         runtime 'org.springframework:spring-test:3.2.8.RELEASE'
 
-        runtime "org.modelcatalogue:spring-security-ajax-aware:0.1.1"
+        runtime "org.modelcatalogue:spring-security-ajax-aware:0.1.2"
 
     }
 
     plugins {
-        //compile ":searchable:0.6.5" // removed search for 0.1
-        compile ":spring-security-ui:0.2"
-        compile ':spring-security-core:1.2.7.4'
-        compile ":spring-security-acl:1.1.1"
-        compile ":jquery-ui:1.10.3"
-        compile ":famfamfam:1.0.1"
+		compile ":spring-security-acl:2.0-RC1"
+		compile ":spring-security-ui:1.0-RC2"
+		compile ':spring-security-core:2.0-RC4'
+		compile ":jquery-ui:1.10.3"
+		compile ":famfamfam:1.0.1"
+		compile ':cache:1.0.1'
+		compile ':mail:1.0.7', {
+			excludes 'spring-test'
+		}
 
-        compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.5.0"
+        //compile "org.modelcatalogue.plugins:grails-model-catalogue-core-plugin:0.5.0"
         //compile "org.modelcatalogue.plugins:grails-model-catalogue-elastic-search-plugin:0.3.0"
 
-        compile ':cache:1.0.1'
-        compile ':mail:1.0.1', {
-            excludes 'spring-test'
-        }
+        compile ':cache:1.1.7'
 
         //as suggested on http://grails.org/2.3.5+Release+Notes to use    build ':tomcat:7.0.50'
         //build ":tomcat:7.0.47"
-        build ':tomcat:7.0.52.1'
+        build ':tomcat:7.0.55'
 
         test ":geb:0.9.2"
 
@@ -128,9 +128,9 @@ grails.project.dependency.resolution = {
 
         //as suggested on http://grails.org/2.3.5+Release+Notes to use  runtime ':hibernate:3.6.10.7'
         //runtime ":hibernate:3.6.10.6"
-        runtime ":hibernate:3.6.10.13"
-        runtime ":jquery:1.8.3"
-        runtime ":resources:1.1.6"
+        runtime ":hibernate:3.6.10.17"
+        runtime ":jquery:1.11.1"
+        runtime ":resources:1.2.8"
 
         compile ":asset-pipeline:1.8.8"
         compile ":coffee-asset-pipeline:1.8.0"
