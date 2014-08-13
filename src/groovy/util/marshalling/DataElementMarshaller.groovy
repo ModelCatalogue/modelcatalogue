@@ -1,7 +1,6 @@
 package util.marshalling
 
 import grails.converters.XML
-import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import org.modelcatalogue.core.CatalogueElement
 import org.modelcatalogue.core.DataElement
@@ -53,7 +52,7 @@ class DataElementMarshaller extends PublishedElementMarshallers {
 
     @Override
     protected getRelationshipTypesFor(Class elementClass){
-        RelationshipTypeService relationshipTypeService = ApplicationHolder.application.mainContext.getBean("relationshipTypeService")
+        RelationshipTypeService relationshipTypeService = grails.util.Holders.applicationContext.getBean("relationshipTypeService")
         relationshipTypeService.getRelationshipTypesFor(elementClass)
     }
 
