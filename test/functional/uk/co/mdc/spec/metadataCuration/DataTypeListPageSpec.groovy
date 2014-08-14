@@ -59,7 +59,7 @@ class DataTypeListPageSpec extends GebReportingSpec {
 			mainLabel.displayed
 			description.displayed
 		}
-		mainLabel.text() == "Boolean (Data Type: 4)"
+		mainLabel.text().contains("Boolean (Data Type: ")
 		description.text() == "java.lang.Boolean"
 	}
 

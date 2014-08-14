@@ -181,7 +181,7 @@ class PathwayService {
 	@Transactional
     void delete(Pathway pathway){
         pathway.delete()
-        aclUtilService.deleteAcl pathway
+        //aclUtilService.deleteAcl pathway
     }
 
 	/**
@@ -198,9 +198,9 @@ class PathwayService {
 
 
         // Update permissions for owner (read for all, write + delete for owner
-        addPermission pathway, springSecurityService.authentication.name, BasePermission.READ
-        addPermission pathway, springSecurityService.authentication.name, BasePermission.WRITE
-        addPermission pathway, springSecurityService.authentication.name, BasePermission.DELETE
+        //addPermission pathway, springSecurityService.authentication.name, BasePermission.READ
+        //addPermission pathway, springSecurityService.authentication.name, BasePermission.WRITE
+        //addPermission pathway, springSecurityService.authentication.name, BasePermission.DELETE
         return pathway
 	}
 
