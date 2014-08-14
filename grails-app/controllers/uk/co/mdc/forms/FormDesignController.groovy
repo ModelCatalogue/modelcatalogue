@@ -2,7 +2,6 @@ package uk.co.mdc.forms
 
 import org.springframework.dao.DataIntegrityViolationException
 import grails.converters.*
-import org.springframework.security.acls.model.Permission
 import org.codehaus.groovy.grails.web.json.*
 import groovy.json.StringEscapeUtils
 
@@ -442,20 +441,20 @@ class FormDesignController {
 	 *********************************************************************************** */
 	
 	
-	def grant = {
-		
-				def formDesign = findInstance()
-				
-				if (!formDesign) return
-		
-				if (!request.post) {
-					return [formDesignInstance: formDesign]
-				}
-		
-				formDesignService.addPermission(formDesign, params.recipient, params.int('permission'))
-		
-				redirectShow "Permission $params.permission granted on Report $formDesign.id " + "to $params.recipient", formDesign.id
-			}
+//	def grant = {
+//
+//				def formDesign = findInstance()
+//
+//				if (!formDesign) return
+//
+//				if (!request.post) {
+//					return [formDesignInstance: formDesign]
+//				}
+//
+//				formDesignService.addPermission(formDesign, params.recipient, params.int('permission'))
+//
+//				redirectShow "Permission $params.permission granted on Report $formDesign.id " + "to $params.recipient", formDesign.id
+//			}
 	
 	/* **********************************************************************************
 	 * this function uses the formDesign service to get the form design so that

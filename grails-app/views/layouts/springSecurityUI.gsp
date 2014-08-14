@@ -1,4 +1,4 @@
-<%@ page import="grails.plugins.springsecurity.SecurityConfigType; org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils; org.codehaus.groovy.grails.plugins.PluginManagerHolder" %>
+<%@ page import="grails.plugin.springsecurity.SecurityConfigType; grails.plugin.springsecurity.SpringSecurityUtils; grails.util.Holders.*" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 
@@ -8,11 +8,12 @@
 
 <title><g:layoutTitle default='Security Management Console'/></title>
 
-<link rel="shortcut icon" href="${resource(dir:'images',file:'favicon.ico')}" type="image/x-icon"/>
 
 <s2ui:resources module='spring-security-ui' />
-<%--
 
+
+
+<%--
 The 'resources' tag in SecurityUiTagLib renders these tags if you're not using the resources plugin:
 
    <link rel="stylesheet" media="screen" href="${resource(dir:'css',file:'reset.css',plugin:'spring-security-ui')}"/>
@@ -103,7 +104,7 @@ the explicit tags above and edit those, not the taglib code.
 						<li><g:link controller="registrationCode" action='search'><g:message code="spring.security.ui.search"/></g:link></li>
 					</ul>
 				</li>
-				<g:if test="${PluginManagerHolder.pluginManager.hasGrailsPlugin('springSecurityAcl')}">
+				<g:if test="${grails.util.Holders.pluginManager.hasGrailsPlugin('springSecurityAcl')}">
 				<li><a class="accessible"><g:message code="spring.security.ui.menu.acl"/></a>
 					<ul>
 						<li><g:message code="spring.security.ui.menu.aclClass"/> &raquo;
@@ -180,17 +181,7 @@ the explicit tags above and edit those, not the taglib code.
 		<div id="s2ui_main">
 			<div id="s2ui_content">
 				<s2ui:layoutResources module='spring-security-ui' />
-				<g:layoutBody/>
-<%--
-<g:javascript src='jquery/jquery.jgrowl.js' plugin='spring-security-ui'/>
-<g:javascript src='jquery/jquery.checkbox.js' plugin='spring-security-ui'/>
-<g:javascript src='jquery/jquery.date_input.js' plugin='spring-security-ui'/>
-<g:javascript src='jquery/jquery.positionBy.js' plugin='spring-security-ui'/>
-<g:javascript src='jquery/jquery.bgiframe.js' plugin='spring-security-ui'/>
-<g:javascript src='jquery/jquery.jdMenu.js' plugin='spring-security-ui'/>
-<g:javascript src='jquery/jquery.dataTables.min.js' plugin='spring-security-ui'/>
-<g:javascript src='spring-security-ui.js' plugin='spring-security-ui'/>
---%>
+                <g:layoutBody/>
 			</div>
 		</div>
 

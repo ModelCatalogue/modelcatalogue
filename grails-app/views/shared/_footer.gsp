@@ -75,6 +75,9 @@
 
   <asset:javascript src="jiraIssueTracker.js"></asset:javascript>
 
+  <asset:javascript src="main/modernizr-2.6.2-respond-1.1.0.min.js"/>
+  <asset:javascript src="main/main.js"/>
+
   <r:layoutResources />
   </body>
 </html>

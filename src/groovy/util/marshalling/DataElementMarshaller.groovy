@@ -43,7 +43,7 @@ class DataElementMarshaller extends PublishedElementMarshallers {
 	@Override
 	protected getAvailableReports(CatalogueElement el) {
 		def reports = []
-		def reportsRegistry = ApplicationHolder.application.mainContext.getBean("reportsRegistry")
+		def reportsRegistry = grails.util.Holders.applicationContext.getBean("reportsRegistry")
 		for (ReportDescriptor descriptor in reportsRegistry.getAvailableReports(el)) {
 			reports << [title: descriptor.title, url: descriptor.getLink(el)]
 		}

@@ -91,7 +91,7 @@ environments {
 					"mail.smtp.socketFactory.fallback":"false"]
 			}
 
-			plugins{
+			plugin{
 				springsecurity{
 					//This will ask server to use HTTPS when accessing login page
 					//after login, communication channel remains in HTTPS as  WE HAVE NOT DEFINED channel status for other pages
@@ -155,13 +155,13 @@ grails.views.javascript.library="jquery"
 grails{
     assets{
 		excludes = ["**/*.less","**/*.coffee"]
-	    includes = ["**/application.less","**/metaDataCurator.less","**/app.coffee","**/list.coffee","**/metaDataCurator.coffee"]
+	    includes = ["**/application.less","**/metaDataCurator.less","**/app.coffee","**/list.coffee","**/metaDataCurator.coffee","**/main.js","**/modernizr-2.6.2-respond-1.1.0.min.js"]
 		less.compiler='less4j' // faster than the default
         minifyJs=false
         minifyCss =false
         bundle=false
     }
-    plugins{
+    plugin{
         springsecurity{
 
             // Added by the Spring Security Core plugin:

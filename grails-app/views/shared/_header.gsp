@@ -18,10 +18,11 @@
 </g:javascript>
 
 
-<r:require modules="application"/>
 
+<asset:stylesheet href="datatables/media/css/jquery.dataTables.css"/>
 
-
+<asset:stylesheet href="angular-xeditable/dist/css/xeditable.css"/>
+<asset:stylesheet href="application.css"/>
 
 <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
 <!--[if lt IE 9]>
@@ -33,10 +34,7 @@
 <g:layoutHead />
 <r:layoutResources />
 
-    <asset:stylesheet href="datatables/media/css/jquery.dataTables.css"/>
 
-    <asset:stylesheet href="angular-xeditable/dist/css/xeditable.css"/>
-    <asset:stylesheet href="application.css"/>
 </head>
 <body>
 

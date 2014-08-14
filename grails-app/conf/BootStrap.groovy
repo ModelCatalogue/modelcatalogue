@@ -320,7 +320,7 @@ class BootStrap {
      */
     private createBaseRoles(){
         SecAuth.findByAuthority('ROLE_ADMIN') ?: new SecAuth(authority: 'ROLE_ADMIN').save(failOnError: true)
-        SecAuth.findByAuthority('ROLE_METADATA_CURATOR') ?: new SecAuth(authority: 'ROLE_METADATA_CURATOR').save(failOnError: true)
+			SecAuth.findByAuthority('ROLE_METADATA_CURATOR') ?: new SecAuth(authority: 'ROLE_METADATA_CURATOR').save(failOnError: true)
         SecAuth.findByAuthority('ROLE_PENDING') ?: new SecAuth(authority: 'ROLE_PENDING').save(failOnError: true)
         SecAuth.findByAuthority('ROLE_USER') ?: new SecAuth(authority: 'ROLE_USER').save(failOnError: true)
         SecAuth.findByAuthority('ROLE_READONLY_USER') ?: new SecAuth(authority: 'ROLE_READONLY_USER').save(failOnError: true)
@@ -352,7 +352,7 @@ class BootStrap {
         def roleAdmin = SecAuth.findByAuthority('ROLE_ADMIN') ?: new SecAuth(authority: 'ROLE_ADMIN').save(failOnError: true)
         def roleUser = SecAuth.findByAuthority('ROLE_USER') ?: new SecAuth(authority: 'ROLE_USER').save(failOnError: true)
         def roleReadOnlyUser = SecAuth.findByAuthority('ROLE_READONLY_USER') ?: new SecAuth(authority: 'ROLE_READONLY_USER').save(failOnError: true)
-
+		def metadataCurator = SecAuth.findByAuthority('ROLE_METADATA_CURATOR') ?: new SecAuth(authority: 'ROLE_METADATA_CURATOR').save(failOnError: true)
 
 		if(!SecUser.findByUsername('user1') ){
 			def user = new SecUser(username: "user1", enabled: true, emailAddress: "user1@example.org", password: "password1@").save(failOnError: true)
@@ -370,6 +370,7 @@ class BootStrap {
 
 		if (!admin.authorities.contains(roleAdmin)) {
 			SecUserSecAuth.create admin, roleUser
+			SecUserSecAuth.create admin, metadataCurator
 			SecUserSecAuth.create admin, roleAdmin, true
 		}
 

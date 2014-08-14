@@ -18,7 +18,7 @@
 </g:javascript>
 
 
-<r:require modules="application"/>
+
 
 
 

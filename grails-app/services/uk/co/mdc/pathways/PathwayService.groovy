@@ -1,30 +1,30 @@
 package uk.co.mdc.pathways
 
 import grails.validation.ValidationException
-import org.springframework.security.access.prepost.PostAuthorize
-import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.acls.domain.BasePermission
-import org.springframework.security.acls.model.Permission
+//import org.springframework.security.access.prepost.PostAuthorize
+//import org.springframework.security.access.prepost.PreAuthorize
+//import org.springframework.security.acls.domain.BasePermission
+//import org.springframework.security.acls.model.Permission
 import org.springframework.transaction.annotation.Transactional
 
 class PathwayService {
 
    	static transactional = false
 	
-	def aclPermissionFactory
-	def aclService
-	def aclUtilService
-	def springSecurityService
+//	def aclPermissionFactory
+//	def aclService
+//	def aclUtilService
+//	def springSecurityService
+//
+//	void addPermission(Pathway pathway, String roleOrUsername, int permission){
+//		addPermission pathway, roleOrUsername, aclPermissionFactory.buildFromMask(permission)
+//	}
 
-	void addPermission(Pathway pathway, String roleOrUsername, int permission){
-		addPermission pathway, roleOrUsername, aclPermissionFactory.buildFromMask(permission)
-	}
-
-    @PreAuthorize("hasPermission(#pathway, admin)")
-    @Transactional
-    void addPermission(Pathway pathway, String roleOrUsername, Permission permission) {
-        aclUtilService.addPermission pathway, roleOrUsername, permission
-    }
+//    @PreAuthorize("hasPermission(#pathway, admin)")
+//    @Transactional
+//    void addPermission(Pathway pathway, String roleOrUsername, Permission permission) {
+//        aclUtilService.addPermission pathway, roleOrUsername, permission
+//    }
 
     /**
      *
@@ -34,8 +34,8 @@ class PathwayService {
      * @param nodesToCreate a map defining the nodes to be created, with the frontend ID as a key and the Node as the value
      * @return
      */
-    @Transactional
-    @PreAuthorize("hasPermission(#pathway, write) or hasPermission(#pathway, admin)")
+//    @PreAuthorize("hasPermission(#pathway, write) or hasPermission(#pathway, admin)")
+	@Transactional
     Pathway update(Pathway pathway, def clientPathway, def idMappings) {
 
         assert clientPathway.id == pathway.id
@@ -176,8 +176,9 @@ class PathwayService {
      * Deletes a pathway, all it's associated links and sub-pathways, and its associated ACL
      * @param pathway The pathway to delete
      */
-    @Transactional
-    @PreAuthorize("hasPermission(#pathway, delete) or hasPermission(#pathway, admin)")
+
+//    @PreAuthorize("hasPermission(#pathway, delete) or hasPermission(#pathway, admin)")
+	@Transactional
     void delete(Pathway pathway){
         pathway.delete()
         aclUtilService.deleteAcl pathway
@@ -188,8 +189,8 @@ class PathwayService {
 	 * @param pathwayParams
 	 * @throws ValidationException if the passed params are invalid
 	 */
+//	@PreAuthorize("hasRole('ROLE_USER')")
 	@Transactional
-	@PreAuthorize("hasRole('ROLE_USER')")
 	Pathway create(Map pathwayParams) {
 		Pathway pathway = new Pathway(pathwayParams)
 
@@ -215,7 +216,7 @@ class PathwayService {
      * @param searchCriteria The search criteria
      * @return a list of pathways (top level only)
      */
-    @PreAuthorize("hasRole('ROLE_USER')")
+//    @PreAuthorize("hasRole('ROLE_USER')")
     List<Pathway> topLevelPathways(Map searchCriteria) {
 
         List<Pathway> pathways
@@ -241,7 +242,7 @@ class PathwayService {
     }
 
 
-	@PostAuthorize("hasPermission(returnObject, read) or hasPermission(returnObject, admin)")
+//	@PostAuthorize("hasPermission(returnObject, read) or hasPermission(returnObject, admin)")
 	Pathway get(def id) {
 	   Pathway.get id
 	}

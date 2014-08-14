@@ -20,6 +20,8 @@ grails.project.fork = [
 
 
 grails.plugin.location.'ModelCatalogueCorePlugin' = "../ModelCataloguePlugin/ModelCatalogueCorePlugin"
+grails.plugin.location.'ModelCatalogueSpringSecurity2xPlugin' = "../ModelCataloguePlugin/ModelCatalogueSpringSecurity2xPlugin"
+
 //grails.plugin.location.'ModelCatalogueElasticSearchPlugin' = "../ModelCataloguePlugin/ModelCatalogueElasticSearchPlugin"
 
 // Grails 2.3 uses Aether by default
@@ -100,7 +102,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-		compile ":spring-security-acl:2.0-RC1"
+		//compile ":spring-security-acl:2.0-RC1"
 		compile ":spring-security-ui:1.0-RC2"
 		compile ':spring-security-core:2.0-RC4'
 		compile ":jquery-ui:1.10.3"

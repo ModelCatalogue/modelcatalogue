@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" defaultCodec="none" %>
 <!DOCTYPE html>
 <html lang="en" >
 <head>
@@ -6,31 +6,26 @@
     <meta name="layout" content="metadata_curation">
     <title>Metadata Registry </title>
 
-    %{--<!-- example of customization -->--}%
-    %{--<script type="text/ng-template" id="modelcatalogue/core/ui/decoratedList.html">--}%
-    %{--<div>--}%
-    %{--<p ng-hide="list.list">No data</p>--}%
-    %{--<ul>--}%
-    %{--<li ng-repeat="item in list.list">{{item.name}}</li>--}%
-    %{--</ul>--}%
-    %{--</div>--}%
-    %{--</script>--}%
+    <asset:javascript src="jquery/dist/jquery.js"/>
+    <asset:javascript src="jquery-ui/ui/jquery-ui.js"/>
+    <asset:javascript src="main/modernizr-2.6.2-respond-1.1.0.min.js"/>
+    <asset:javascript src="main/main.js"/>
 
     <asset:stylesheet href="metaDataCurator.css"/>
     <asset:javascript src="angular/metaDataCurator.js"/>
     <script type="text/javascript">
         var demoConfig = angular.module('demo.config', ['mc.core.modelCatalogueApiRoot', 'mc.util.security'])
-        demoConfig.config(['securityProvider',function (securityProvider) {
+        demoConfig.config(['securityProvider', function (securityProvider) {
             securityProvider.springSecurity({
                 contextPath: '${request.contextPath ?: ''}',
                 roles: {
-                    VIEWER:     ['ROLE_METADATA_CURATOR', 'ROLE_ADMIN','ROLE_READONLY_USER'],
-                    CURATOR:    ['ROLE_METADATA_CURATOR', 'ROLE_ADMIN','ROLE_USER'],
+                    VIEWER:     ['ROLE_USER', 'ROLE_METADATA_CURATOR', 'ROLE_ADMIN'],
+                    CURATOR:    ['ROLE_METADATA_CURATOR', 'ROLE_ADMIN'],
                     ADMIN:      ['ROLE_ADMIN']
                 },
                 <sec:ifLoggedIn>
                 currentUser: {
-                    roles: ${org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils.getPrincipalAuthorities()*.authority.encodeAsJSON()},
+                    roles: ${grails.plugin.springsecurity.SpringSecurityUtils.getPrincipalAuthorities()*.authority.encodeAsJSON()},
                     username: '${sec.username()}'
                 }
                 </sec:ifLoggedIn>
