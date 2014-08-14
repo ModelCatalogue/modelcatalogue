@@ -7,6 +7,8 @@ package uk.co.mdc.Importers.SACT
 
 class XsdChoice{
     String description
+    String minOccurs
+    String maxOccurs
     ArrayList <XsdElement> elements
     ArrayList <XsdChoice> choiceElements
     ArrayList <XsdSequence> sequenceElements

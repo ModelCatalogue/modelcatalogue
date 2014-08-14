@@ -6,30 +6,37 @@ package uk.co.mdc.Importers.SACT
 
 class SactXsdLoader {
 
-    ArrayList< SactXsdElement> allElements = []
+    ArrayList< XsdElement> allElements = []
     String logErrors =""
-    ArrayList<SactXsdElement> sactDataElements =[]
+    ArrayList<XsdElement> sactDataElements =[]
     ArrayList<XsdSimpleType> sactSimpleDataTypes =[]
-    ArrayList<XsdComplexDataType>  sactComplexDataTypes =[]
+    ArrayList<XsdComplexType>  sactComplexDataTypes =[]
     ArrayList<XsdGroup> sactGroups =[]
-    ArrayList<SactXsdElement> sactAllDataElements =[]
-
+    ArrayList<XsdElement> sactAllDataElements =[]
+    XmlParser parser
+    def sact
 
     protected static fileInputStream
 
     public SactXsdLoader (String path){
         fileInputStream = new FileInputStream(path)
+        parser = new XmlParser()
+        sact = parser.parse (fileInputStream)
     }
 
     public SactXsdLoader(InputStream inputStream){
         fileInputStream  = inputStream
+        parser = new XmlParser()
+        sact = parser.parse (fileInputStream)
     }
 
-
+    public SactXsdLoader(String xsdText, Boolean test)
+    {
+        parser = new XmlParser()
+        sact = parser.parse (xsdText)
+    }
 
     def parse(){
-        XmlParser parser = new XmlParser()
-        def sact = parser.parse (fileInputStream)
         sact.eachWithIndex{ Node valueNode, int nodeIndex ->
             switch (valueNode.name().localPart)
             {
@@ -38,12 +45,12 @@ class SactXsdLoader {
                 case "include":
                     break
                 case "element":
-                    SactXsdElement element =  readSACTElement(valueNode, "root")
+                    XsdElement element =  readSACTElement(valueNode, "root")
                     sactDataElements << element
                     allElements << element
                     break
                 case "complexType":
-                    XsdComplexDataType complexDataType = readComplexType (valueNode, "")
+                    XsdComplexType complexDataType = readComplexType (valueNode, "")
                     sactComplexDataTypes << complexDataType
                     break
                 case "simpleType":
@@ -96,7 +103,7 @@ class SactXsdLoader {
         NodeList values = node.value()
 
         XsdSimpleType simpleType
-        XsdComplexDataType complexDataType
+        XsdComplexType complexDataType
 
         values.eachWithIndex{ Node valueNode, int valueNodeIndex ->
             switch (valueNode.name().localPart){
@@ -116,7 +123,7 @@ class SactXsdLoader {
                     break
             }
         }
-        SactXsdElement result = new SactXsdElement(name: dataItemName, description: dataItemDescription, type: dataItemType, minOccurs: dataItemMinOccurs, maxOccurs: dataItemMaxOccurs, section: section, simpleType: simpleType, complexType: complexDataType )
+        XsdElement result = new XsdElement(name: dataItemName, description: dataItemDescription, type: dataItemType, minOccurs: dataItemMinOccurs, maxOccurs: dataItemMaxOccurs, section: section, simpleType: simpleType, complexType: complexDataType )
         return result
     }
     def readSACTSimpleType(Node node, String elementName){
@@ -309,7 +316,7 @@ class SactXsdLoader {
             }
         }
 
-        XsdComplexDataType result = new XsdComplexDataType(name: dataTypeName, description: description, abstractAttr: abstractAttr, restriction: restriction, sequence: sequence, complexContent: complexContent, mixed: mixed, attributes:attributes)
+        XsdComplexType result = new XsdComplexType(name: dataTypeName, description: description, abstractAttr: abstractAttr, restriction: restriction, sequence: sequence, complexContent: complexContent, mixed: mixed, attributes:attributes)
 
     }
 
@@ -523,7 +530,7 @@ class SactXsdLoader {
     }
 
     def readSequence (Node node, String section){
-        ArrayList<SactXsdElement> elements =[]
+        ArrayList<XsdElement> elements =[]
         ArrayList<XsdChoice> choices = []
         ArrayList<XsdGroup> groups = []
         XsdAny any
@@ -531,7 +538,7 @@ class SactXsdLoader {
         values.eachWithIndex{ Node valueNode, int valueNodeIndex ->
             switch (valueNode.name().localPart){
                 case "element":
-                    SactXsdElement element= readSACTElement(valueNode, section)
+                    XsdElement element= readSACTElement(valueNode, section)
                     elements << element
                     allElements << element
                     break
@@ -593,13 +600,31 @@ class SactXsdLoader {
         def values = node.value()
         ArrayList<XsdChoice> choices = []
         ArrayList <XsdSequence> sequences = []
-        ArrayList <SactXsdElement> elements = []
+        ArrayList <XsdElement> elements = []
+
+
+        String minOccurs = ""
+        String maxOccurs = ""
+        def attributes = node.attributes()
+        attributes.eachWithIndex { def attribute, int attributeIndex ->
+            switch (attribute.key) {
+                case "minOccurs":
+                    minOccurs = attribute.value
+                    break
+                case "maxOccurs":
+                    maxOccurs = attribute.value
+                    break
+                default:
+                    logErrors += attribute.key
+                    break
+            }
+        }
 
 
         values.eachWithIndex{ Node valueNode, int valueNodeIndex ->
             switch (valueNode.name().localPart){
                 case "element":
-                    SactXsdElement element= readSACTElement(valueNode, section)
+                    XsdElement element= readSACTElement(valueNode, section)
                     elements << element
                     allElements << element
                     break
@@ -617,7 +642,7 @@ class SactXsdLoader {
             }
         }
 
-        XsdChoice result = new XsdChoice( elements: elements, sequenceElements: sequences, choiceElements: choices )
+        XsdChoice result = new XsdChoice(minOccurs: minOccurs, maxOccurs: maxOccurs, elements: elements, sequenceElements: sequences, choiceElements: choices )
         return result
     }
 
@@ -768,6 +793,9 @@ class SactXsdLoader {
 
         return  result
     }
+
+
+
 
 
 

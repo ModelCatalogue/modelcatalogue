@@ -6,8 +6,6 @@ package uk.co.mdc.Importers.SACT
 class XsdSimpleType{
     String name
     String description
-    String minOccurs
-    String maxOccurs
     XsdRestriction restriction
     XsdList list
     XsdUnion union
