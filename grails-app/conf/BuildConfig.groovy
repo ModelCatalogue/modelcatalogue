@@ -134,9 +134,9 @@ grails.project.dependency.resolution = {
         runtime ":jquery:1.11.1"
         runtime ":resources:1.2.8"
 
-        compile ":asset-pipeline:1.9.6"
+        compile ":asset-pipeline:1.8.8"
         compile ":coffee-asset-pipeline:1.8.0"
-        compile ":less-asset-pipeline:1.10.0"
+        compile ":less-asset-pipeline:1.7.0"
 
         // The following are dead, we shouldn't use them!
         compile ":csv:0.3.1"
