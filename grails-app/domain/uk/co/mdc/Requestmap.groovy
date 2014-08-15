@@ -8,9 +8,7 @@ class Requestmap {
 	String configAttribute
 	HttpMethod httpMethod
 
-	static mapping = {
-		cache true
-	}
+
 
 	static constraints = {
 		url blank: false, unique: 'httpMethod'
