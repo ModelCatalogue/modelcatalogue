@@ -275,19 +275,26 @@ class BootStrap {
         //only permit metadatacurator users access to the api
 
 		//add ROLE_READONLY_USER for metadataCurator
-		new Requestmap(url: '/api/modelCatalogue/core/**', configAttribute: 'ROLE_READONLY_USER,ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
-		new Requestmap(url: '/api/modelCatalogue/core/*/*/outgoing/**', configAttribute: 'ROLE_READONLY_USER,ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/*/incoming/**', configAttribute: 'ROLE_READONLY_USER,ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
-        new Requestmap(url: '/api/modelCatalogue/core/search/**', configAttribute: 'ROLE_READONLY_USER,ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+//		new Requestmap(url: '/api/modelCatalogue/core/**', configAttribute: 'ROLE_READONLY_USER,ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+//		new Requestmap(url: '/api/modelCatalogue/core/*/*/outgoing/**', configAttribute: 'ROLE_READONLY_USER,ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
+//        new Requestmap(url: '/api/modelCatalogue/core/*/*/incoming/**', configAttribute: 'ROLE_READONLY_USER,ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
+//        new Requestmap(url: '/api/modelCatalogue/core/search/**', configAttribute: 'ROLE_READONLY_USER,ROLE_USER, ROLE_ADMIN, ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+//
+//
+//		new Requestmap(url: '/api/modelCatalogue/core/*/create', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+//        new Requestmap(url: '/api/modelCatalogue/core/*/edit', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
+//        new Requestmap(url: '/api/modelCatalogue/core/*/save', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
+//        new Requestmap(url: '/api/modelCatalogue/core/*/update', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.PUT).save()
+//        new Requestmap(url: '/api/modelCatalogue/core/*/delete', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.DELETE).save()
+
+		new Requestmap(url: '/api/modelCatalogue/core/*/**', configAttribute: 'IS_AUTHENTICATED_ANONYMOUSLY',   httpMethod: org.springframework.http.HttpMethod.GET).save(failOnError: true)
+		new Requestmap(url: '/asset/download/*',             configAttribute: 'IS_AUTHENTICATED_ANONYMOUSLY',   httpMethod: org.springframework.http.HttpMethod.GET).save(failOnError: true)
+		new Requestmap(url: '/api/modelCatalogue/core/*/**', configAttribute: 'ROLE_METADATA_CURATOR',          httpMethod: org.springframework.http.HttpMethod.POST).save(failOnError: true)
+		new Requestmap(url: '/api/modelCatalogue/core/*/**', configAttribute: 'ROLE_METADATA_CURATOR',          httpMethod: org.springframework.http.HttpMethod.PUT).save(failOnError: true)
 
 
-		new Requestmap(url: '/api/modelCatalogue/core/*/create', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/edit', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.GET).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/save', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.POST).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/update', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.PUT).save()
-        new Requestmap(url: '/api/modelCatalogue/core/*/delete', configAttribute: 'ROLE_ADMIN,ROLE_METADATA_CURATOR', httpMethod: org.springframework.http.HttpMethod.DELETE).save()
 
-    }
+	}
 
 	private importDevData(){
 
@@ -539,9 +546,15 @@ class BootStrap {
 
 		def de1  = new DataElement(name: "DE1",  modelCatalogueId: "MC_a6ff28a6-d214-4fca-824f-e5c8fc8c6b5d_1",description:"DE1 Desc" ).save(failOnError: true)
 		def de2 = new DataElement(name: "DE2", modelCatalogueId: "MC_a7ff77a6-d777-7fca-777f-e7c7fc7c7b7d_1",description:"DE2 Desc").save(failOnError: true)
-		de1.ext["NHIC_Identifier"] = "123"
+		de1.ext["NHIC_Identifier"] = "NHIC_2323"
+		de1.ext["local_Identifier"] = "123"
+		de1.ext["sample_Identifier"] = "123"
 		de1.ext["Multiplicity"]	   = "2"
 		de1.ext["Comment"] 		   = "SimpleComment"
+
+
+		de2.ext["NHIC_Identifier"] = ""
+		de2.ext["local_Identifier"] = "NHIC_234"
 
 
 		def topParentModel = new Model(name: "NHIC Datasets",description: "Test Description", modelCatalogueId:"MC_a6ff28a6-d214-4fca-811f-e7c8fc8c6b5d_1").save(failOnError: true)
