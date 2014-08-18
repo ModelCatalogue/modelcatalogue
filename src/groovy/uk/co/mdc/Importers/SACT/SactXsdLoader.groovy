@@ -112,10 +112,12 @@ class SactXsdLoader {
                     break
                 case "simpleType":
                     simpleType =  readSACTSimpleType(valueNode, dataItemName)
+                    dataItemType = simpleType.name
                     sactSimpleDataTypes << simpleType
                     break
                 case "complexType":
                     complexDataType = readComplexType (valueNode, dataItemName)
+                    dataItemType = complexDataType.name
                     sactComplexDataTypes << complexDataType
                     break
                 default:
@@ -148,6 +150,7 @@ class SactXsdLoader {
                     break
             }
         }
+
 
         def values = node.value()
         values.eachWithIndex{ Node valueNode, int valueNodeIndex ->
