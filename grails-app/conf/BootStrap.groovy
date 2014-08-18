@@ -36,7 +36,7 @@ import java.security.MessageDigest
 
 class BootStrap {
 
-	def aclService, aclUtilService, sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService, dataArchitectService
+	def aclService, aclUtilService, sessionFactory, springSecurityService, grailsApplication, domainModellerService, initCatalogueService, publishedElementService
 	def modelCatalogueStorageService
 
     XLSXListRenderer xlsxListRenderer
@@ -580,11 +580,6 @@ class BootStrap {
 		new Relationship(source: de1, destination: de2, relationshipType: relType).save(failOnError: true)
 
 
-		PublishedElement.list().each {
-			it.status = PublishedElementStatus.FINALIZED
-			it.save(failOnError: true)
-		}
-
 
 		//add Draft dataElement
 		def de3 = new DataElement(name: "DE3", modelCatalogueId: "MC_a8ff88a6-d888-8fca-888f-e8c8fc8c8b8d_1",description:"DE3 Desc",status:PublishedElementStatus.DRAFT).save(failOnError: true)
@@ -594,6 +589,12 @@ class BootStrap {
 
 		vd.addToInstantiates(de3)
 		vd.save(failOnError: true)
+
+
+        Model.list().each {
+            publishedElementService.finalizeTree(it)
+            it.save(failOnError: true)
+        }
 
 		//add an asset
 		addDraftAsset();
