@@ -178,22 +178,6 @@ class SACTImporterControllerSpec extends Specification {
         exception.message == ("SACT xsd file has no complexTypes defined")
     }
 
-    void "Test that the validateSACTFiles validates all the section elements are present"()
-    {
-        when:"the validateSACTFiles functions is called and not all the default sections of the dataset are included in the sactComplexDataTypes Arraylist"
-        def exception
-        ArrayList<XsdElement> sactAllDataElements = []
-
-        try {
-            controller.validateSACTFiles(logCommonTypesErrors,logSACTErrors,sactDataElements, sactSimpleDataTypes,sactComplexDataTypes, sactAllDataElements, sactRootElement,  sactTypeRootElement)
-        }
-        catch (Exception ex)
-        {
-            exception = ex;
-        }
-        then:"It should send an exception to indicate that there are errors in the file"
-        exception.message == ("Section/ComplexType: DemographicsAndConsultant not found in file. \r\n")
-    }
 
 
     void "Test that the 'rows' arrayList is created correctly" ()

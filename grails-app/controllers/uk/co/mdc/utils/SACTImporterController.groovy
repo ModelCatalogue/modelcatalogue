@@ -111,9 +111,6 @@ class SACTImporterController {
     private validateSACTFiles(String logErrorCommonTypes, String logErrorsSACT, ArrayList<XsdElement> sactDataElements, ArrayList<XsdSimpleType> sactSimpleDataTypes,
                                 ArrayList<XsdComplexType> sactComplexDataTypes, ArrayList<XsdElement> sactAllDataElements, String  sactRootElement, String sactTypeRootElement ) {
 
-        def sactSections = ["DemographicsAndConsultant", "ClinicalStatus", "ProgrammeAndRegimen",
-                            "Cycle", "DrugDetails", "Outcome"]
-
         if (logErrorCommonTypes != "" )
         {
             log.error(logErrorCommonTypes)
@@ -127,30 +124,17 @@ class SACTImporterController {
         }
 
 
-        // Check that the root element is SACT
-        // Check that the Type is SACTReacordType and has the types defined in sactSections.
-
-        if ((sactDataElements.size() != 1)) {
-            log.error("Wrong SACT file format")
-            throw new Exception("SACT xsd file has more than one top element")
-        }
-
-
         // Check if the root element exists and the type is correct.
-        if (sactDataElements.size() ==1)
+        if (sactDataElements[0].name != sactRootElement)
         {
-            // Check if the root element exists and the type is correct.
-            if (sactDataElements[0].name != sactRootElement)
-            {
-                log.error("Wrong SACT file format: root element is not " + sactRootElement)
-                throw new Exception("Wrong SACT file format: root element is not " + sactRootElement)
-            }
-            // Check if the root element exists and the type is correct.
-            if (sactDataElements[0].type != sactTypeRootElement)
-            {
-                log.error("Wrong SACT file format: root element is not type: " + sactTypeRootElement)
-                throw  new Exception ("Wrong SACT file format: root element is not type: " + sactTypeRootElement)
-            }
+            log.error("Wrong SACT file format: root element is not " + sactRootElement)
+            throw new Exception("Wrong SACT file format: root element is not " + sactRootElement)
+        }
+        // Check if the root element exists and the type is correct.
+        if (sactDataElements[0].type != sactTypeRootElement)
+        {
+            log.error("Wrong SACT file format: root element is not type: " + sactTypeRootElement)
+            throw  new Exception ("Wrong SACT file format: root element is not type: " + sactTypeRootElement)
         }
 
         if ((sactSimpleDataTypes.size()==0)) {
@@ -162,20 +146,6 @@ class SACTImporterController {
             log.error("Wrong SACT file format, no complexTypes found")
             throw new Exception("SACT xsd file has no complexTypes defined")
         }
-
-        // Validate sact section
-
-        Boolean sectionsOK = true
-        sactSections.each { def section ->
-            def indexSactSection = sactAllDataElements.findIndexOf { it.name == section }
-            if (indexSactSection == -1) {
-                log.error("Section: " + section + " not found in file. \r\n")
-                throw new Exception ("Section/ComplexType: " + section + " not found in file. \r\n")
-                sectionsOK = false
-            }
-        }
-
-
     }
 
     private createDataElementRows(def sactHeaders, ArrayList<XsdElement> sactAllDataElements, def sactSectionsNotToImport){
@@ -289,32 +259,25 @@ class SACTImporterController {
                 //Check if the value domain already exists
                 vd = ValueDomain.findByNameAndDescription(name, description)
                 if (vd == null) {
+
                     XsdSimpleType simpleDataType = sactSimpleDataTypes.find { it.name == type }
                     (vd, dataType) = createSimpleType(sactImporter, cd, simpleDataType)
-                    ValueDomain vd2 = sactImporter.importValueDomain(name, description, dataType, "", cd)
-                    addMetadataToValueDomain(vd2, simpleType)
-                    vd2.addToBasedOn(vd)
-                    vd.addToIsBaseFor(vd2)
-                    vd.save()
-                    vd2.save()
-
                     // Check enumerated elements
                     if (simpleType.restriction.enumeration != "") {
                         DataType enumeratedDataType = sactImporter.importDataType(simpleType.name, simpleType.restriction.enumeration)
-                        ValueDomain vd3 = sactImporter.importValueDomain(simpleType.name, simpleType.description, enumeratedDataType, "", cd)
-                        vd3.save()
-                        vd2.addToBasedOn(vd3)
-                        vd3.addToIsBaseFor(vd2)
-                        vd2.save()
-                        vd3.save()
+                        ValueDomain enumeratedVD = sactImporter.importValueDomain(simpleType.name, simpleType.description, enumeratedDataType, "", cd)
+                        addMetadataToValueDomain(enumeratedVD, simpleType)
+                        enumeratedVD.save()
+                        enumeratedVD.addToBasedOn(vd)
+                        vd.addToIsBaseFor(enumeratedVD)
+                        vd.save()
+                        enumeratedVD.save()
+                        return [enumeratedVD, dataType]
                     }
-
-
-                    return [vd2, dataType]
+                    else return [vd,dataType]
                 } else {
                         return [vd, vd.dataType]
                 }
-
             }
         }
         else
