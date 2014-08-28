@@ -245,6 +245,7 @@ class SactXsdLoader {
                     break
                 case "simpleType":
                     simpleType = readSACTSimpleType(valueNode, elementName)
+                    sactSimpleDataTypes << simpleType
                     break
                 default:
                     logErrors +=  valueNode.name().localPart + " : "
