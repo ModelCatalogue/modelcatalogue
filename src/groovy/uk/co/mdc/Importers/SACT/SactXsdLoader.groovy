@@ -50,15 +50,15 @@ class SactXsdLoader {
                     allElements << element
                     break
                 case "complexType":
-                    XsdComplexType complexDataType = readComplexType (valueNode, "")
+                    XsdComplexType complexDataType = readComplexType (valueNode, "root")
                     sactComplexDataTypes << complexDataType
                     break
                 case "simpleType":
-                    XsdSimpleType sactSimpleType =  readSACTSimpleType(valueNode, "")
+                    XsdSimpleType sactSimpleType =  readSACTSimpleType(valueNode, "root")
                     sactSimpleDataTypes << sactSimpleType
                     break
                 case "group":
-                    XsdGroup sactGroup = readGroup(valueNode, "")
+                    XsdGroup sactGroup = readGroup(valueNode, "root")
                     sactGroups << sactGroup
                     break
                 default:

@@ -23,12 +23,12 @@ import uk.co.mdc.Importers.SACT.XsdSimpleType
 @Secured(['ROLE_ADMIN'])
 class SACTImporterController {
 
-    def dataImportService
+    def dataImportService, publishedElementService
 
     String sactRootElement = "SACT"
     String sactTypeRootElement = "SACTSACTType"
     String sactDescription = "Systemic Anti-Cancer Therapy"
-    String sactSectionsNotToImport = ["root", "SACTSACTType", "SACTSACTRecordType"]
+  //  String sactSectionsNotToImport = ["root", "SACTSACTType", "SACTSACTRecordType"]
     ArrayList<XsdElement> sactDataElements = []
     ArrayList<XsdSimpleType> sactSimpleDataTypes = []
     ArrayList<XsdComplexType> sactComplexDataTypes = []
@@ -87,6 +87,7 @@ class SACTImporterController {
                 //Create DataTypes and ValueDomains for SimpleTypes
                 createDataTypesAndValueDomains(sactImporter, conceptualDomain, sactSimpleDataTypes)
 
+
                 // Create Models for ComplexTypes and Groups
                 createModels(sactImporter, conceptualDomain, sactComplexDataTypes, sactGroups)
 
@@ -94,7 +95,7 @@ class SACTImporterController {
                 HeadersMap headersMap = createHeaderMap ()
 
                 //Create Rows
-                def rows = createDataElementRows(sactHeaders,sactAllDataElements,sactSectionsNotToImport)
+                def rows = createDataElementRows(sactImporter,conceptualDomain, sactHeaders,sactAllDataElements)
                 newImporter = dataImportService.importData(sactHeaders, rows, "SACT", sactRootElement, sactDescription, headersMap)
                 dataImportService.resolveAll(newImporter)
                 flash.message = "DataElements have been created.\n"
@@ -148,7 +149,7 @@ class SACTImporterController {
         }
     }
 
-    private createDataElementRows(def sactHeaders, ArrayList<XsdElement> sactAllDataElements, def sactSectionsNotToImport){
+    private createDataElementRows(def sactImporter, def cd, def sactHeaders, ArrayList<XsdElement> sactAllDataElements){
 
         // Extract all the DataElements
         def rows = []
@@ -162,19 +163,38 @@ class SACTImporterController {
         def indexMaxOccurs = sactHeaders.findIndexOf {it =="maxOccurs"}
         sactAllDataElements.each { XsdElement element ->
             def row = []
-
-            if (!sactSectionsNotToImport.contains(element.section)) {
+            Model complexTypeModel = Model.findByName(element.type)
+            if  (complexTypeModel == null) {
 
                 row[indexName] = element.name
                 row[indexDescription] = element.description
                 row[indexDataType] = element.type
-                row[indexParentModel] = "SACT_Record" //element.section
+                row[indexParentModel] = "" //element.section
                 row[indexContainingModel] = element.section
                 row[indexMinOccurs] = element.minOccurs
                 row[indexMaxOccurs] = element.maxOccurs
                 rows << row
             }
-        }
+            else
+            {
+                Model model = Model.findByName(element.section)
+                if (model ==null) model = sactImporter.matchOrCreateModel([name:element.name, description: element.description], cd).save(failOnError: true)
+                Model parentNode = Model.findByName(element.section)
+                if (parentNode!=null && model !=null) {
+                        parentNode.addToParentOf(model)
+                        model.addToParentOf(complexTypeModel)
+                        model.save()
+                        complexTypeModel.save()
+                        parentNode.save()
+                        println("ParentModel: " + element.section +  " Model: " + element.name + " ComplexModel: " + element.type)
+                    }
+                }
+            }
+
+//        Model.list().each {
+//            publishedElementService.finalizeTree(it)
+//            it.save(failOnError: true)
+//        }
         return rows
     }
 
@@ -345,12 +365,17 @@ class SACTImporterController {
         }
     }
 
-    private createModels(Importer sactImporter, ConceptualDomain cd, ArrayList<XsdComplexType> sactComplexDataTypes, ArrayList<XsdGroup> sactGroups){
+    def createModels(Importer sactImporter, ConceptualDomain cd, ArrayList<XsdComplexType> sactComplexDataTypes, ArrayList<XsdGroup> sactGroups){
+
+        Model rootModel = sactImporter.matchOrCreateModel([name:sactRootElement, description: sactRootElement], cd).save()
+        if (rootModel != null) println("Model: " + sactRootElement)
+
 
         sactComplexDataTypes.each { XsdComplexType complexDataType ->
             //Create Model for each Group, Choice and Sequence.
             Model model = sactImporter.matchOrCreateModel([name:complexDataType.name, description: complexDataType.description], cd).save()
             if (model != null) println("Model: " + complexDataType.name)
+
         }
 
         sactGroups.each{ XsdGroup group ->
