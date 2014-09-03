@@ -2,6 +2,7 @@ package uk.co.mdc.spec.metadataCuration
 
 import geb.spock.GebReportingSpec
 import spock.lang.Stepwise
+import spock.lang.Unroll
 import uk.co.mdc.pages.authentication.LoginPage
 import uk.co.mdc.pages.metadataCuration.ListPage.DataElementListPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ModelListPage
@@ -40,6 +41,7 @@ import uk.co.mdc.pages.metadataCuration.ShowPage.DataElementShowPage
 	}
 
 
+	@Unroll
 	def "ExportButton in dataElement list page contains several default reports"() {
 
 		setup:"Go to dataElement List page as a List page that contains ExportButton"

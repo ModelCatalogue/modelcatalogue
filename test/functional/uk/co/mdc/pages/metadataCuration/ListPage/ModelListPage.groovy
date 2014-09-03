@@ -47,7 +47,7 @@ class ModelListPage extends BasePageWithNavReadOnly {
 		Draft_Model_Item_Name { NHIC_Model_Item.find("span.catalogue-element-treeview-name") }
 
 
-		dataElementsTable { $("table[list='contained.list']") }
+		dataElementsTable { $("table.dl-table.table") }
 	}
 
 

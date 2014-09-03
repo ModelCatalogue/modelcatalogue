@@ -8,7 +8,7 @@ class AssetListPage extends ListPage {
 
 	static String actionListButton = "span.btn-group button"
 	static String subActionList    = "ul#switch-statusBtnItems"
-	static String assetList  = "table[list='list']"
+	static String assetList  = "table.dl-table.table"
 
 	static at = {
 		url == "metadataCurator#/catalogue/asset/all" &&

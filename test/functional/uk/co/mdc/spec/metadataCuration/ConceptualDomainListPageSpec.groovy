@@ -50,13 +50,13 @@ class ConceptualDomainListPageSpec extends GebReportingSpec {
 		mainLabel.text().contains("NHIC")
 		description.text() == "NHIC Test Description"
 		waitFor {
-			$(ConceptualDomainShowPage.valueDomainsTab).displayed
+			valueDomainsTab.displayed
 		}
 		waitFor{
-			$(ConceptualDomainShowPage.modelsTab).displayed
+			modelsTab.displayed
 		}
 		waitFor{
-			$(ConceptualDomainShowPage.propertiesTab).displayed
+			propertiesTab.displayed
 		}
 
 	}

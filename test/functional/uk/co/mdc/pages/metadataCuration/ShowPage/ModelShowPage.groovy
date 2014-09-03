@@ -19,14 +19,15 @@ class ModelShowPage extends BasePageWithNavReadOnly{
 	static content = {
 		mainLabel(wait:true) { $("h3.ce-name") }
 
-		propertiesTab {waitFor {$("div.tabbable ul li[heading='Properties']")}}
-		childOfTab{waitFor { $("div.tabbable ul li[heading='Parent']")}}
+		propertiesTab {waitFor { $("div.tabbable ul li.ng-isolate-scope a",text:contains('Properties'))}}
+		childOfTab {waitFor { $("div.tabbable ul li.ng-isolate-scope a",text:contains('Parent'))}}
 
-		conceptualDomainTab {waitFor { $("div.tabbable ul li[heading='Conceptual Domains']")}}
-		dataElementsTab {waitFor { $("div.tabbable ul li[heading='Data Elements']")}}
+		conceptualDomainTab {waitFor { $("div.tabbable ul li.ng-isolate-scope a",text:contains('Conceptual Domains'))}}
+		dataElementsTab {waitFor { $("div.tabbable ul li.ng-isolate-scope a",text:contains('Data Elements'))}}
 
-		metadataTab {waitFor { $("div.tabbable ul li[heading='Metadata']")}}
-		parentOfTab {waitFor { $("div.tabbable ul li[heading='Children']")}}
+		metadataTab {waitFor { $("div.tabbable ul li.ng-isolate-scope a",text:contains('Metadata'))}}
+		parentOfTab {waitFor { $("div.tabbable ul li.ng-isolate-scope a",text:contains('Children'))}}
+
 
 		draftIcon     {waitFor {$("h3 span.label-warning")}}
 		finalizedIcon {waitFor {$("h3 span.label-primary")}}

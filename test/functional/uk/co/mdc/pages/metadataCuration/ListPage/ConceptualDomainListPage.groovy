@@ -32,17 +32,17 @@ class ConceptualDomainListPage extends ListPage  {
 	@Override
 	def getRow(rowIndex){
 		def row = ["object":null,"name":null,"desc":null];
-		def table =  $("table[list='list']")
+		def table =  $("table.dl-table.table")
 		waitFor {
 			table.displayed
 		}
 
-		def object = $("table[list='list']").find("tbody tr",rowIndex)
+		def object = $("table.dl-table.table").find("tbody tr",rowIndex)
 
 		if(object){
 			row = ["object":object,
-					"name" :$("table[list='list']").find("tbody tr",rowIndex).find("td",0).find("a"),
-					"desc":$("table[list='list']").find("tbody tr",rowIndex).find("td",1).find("span")]
+					"name":$("table.dl-table.table").find("tbody tr",rowIndex).find("td",0).find("a"),
+					"desc":$("table.dl-table.table").find("tbody tr",rowIndex).find("td",1).find("span")]
 		}
 		return row
 	}

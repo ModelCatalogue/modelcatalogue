@@ -19,17 +19,17 @@ class DataElementShowPage extends BasePageWithNavReadOnly {
 		mainLabel(wait:true) {  $("h3.ce-name") }
 		description(wait:true) { $("blockquote.ce-description")}
 
-		propertiesTab {waitFor {$("div.tabbable ul li[heading='Properties']")}}
-		valueDomainsTab{waitFor { $("div.tabbable ul li[heading='Value Domains']")}}
-		metadataTab {waitFor { $("div.tabbable ul li[heading='Metadata']")}}
-		modelsTab {waitFor { $("div.tabbable ul li[heading='Models']")}}
-		relationshipsTab {waitFor { $("div.tabbable ul li[heading='Relationships']")}}
+		propertiesTab {waitFor {$("div.tabbable ul li.ng-isolate-scope a",text:contains('Properties'))}}
+//		valueDomainsTab{waitFor { $("div.tabbable ul li.ng-isolate-scope a",text:contains('Value Domains'))}}
+		metadataTab {waitFor {$("div.tabbable ul li.ng-isolate-scope a",text:contains('Metadata'))}}
+		modelsTab {waitFor { $("div.tabbable ul li.ng-isolate-scope a",text:contains('Models'))}}
+		relationshipsTab {waitFor { $("div.tabbable ul li.ng-isolate-scope a",text:contains('Relationships'))}}
 
 
 		propertiesTable(required:false) {waitFor {$("table#Properties")}}
-		valueDomainsTable {waitFor {$("table#-instantiatedBy")}}
+//		valueDomainsTable {waitFor {$("table#-instantiatedBy")}}
 		metadataTable {waitFor {$("table#Metadata")}}
-		modelsTable {waitFor {$("table#-containedIn")}}
-		relationshipsTable {waitFor {$("table#-relationships")}}
+		modelsTable {waitFor {$("div#-containedIn")}}
+		relationshipsTable {waitFor {$("div#-relationships")}}
 	}
 }

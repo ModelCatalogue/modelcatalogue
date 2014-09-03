@@ -52,7 +52,7 @@ class AssetShowPageSpec extends GebReportingSpec {
 			metadataTab.displayed
 		}
 		waitFor {
-			$(actionButtons, text: "Download").displayed
+			$(downloadButtons).displayed
 		}
 	}
 }

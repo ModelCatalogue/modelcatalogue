@@ -8,7 +8,7 @@ class DataElementListPage extends ListPage {
 
 	static String actionListButton = "span.btn-group button"
 	static String subActionList    = "ul#switch-statusBtnItems"
-	static String dataElementList  = "table[list='list']"
+	static String dataElementList  = "table.dl-table.table"
 
 	static content = {
 		exportButtonContent{  $("span button#exportBtn") }
@@ -23,7 +23,7 @@ class DataElementListPage extends ListPage {
 	def getRow(rowIndex){
 
 		def row = ["object":null,"name":null,"desc":null];
-		def table = waitFor {  $("table[list='list']")}
+		def table = waitFor {  $("table.dl-table.table")}
 
 		if(!table)
 			return  row

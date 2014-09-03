@@ -37,7 +37,9 @@ class ConceptualDomainShowPageSpec extends GebReportingSpec {
 		waitFor {
 			nameElement.displayed
 		}
-		 nameElement.click()
+		interact{
+			click(nameElement)
+		}
 
 		waitFor {
 			at ConceptualDomainShowPage
@@ -51,13 +53,13 @@ class ConceptualDomainShowPageSpec extends GebReportingSpec {
 		mainLabel.text().contains("NHIC")
 		description.text() == "NHIC Test Description"
 		waitFor {
-			$(ConceptualDomainShowPage.valueDomainsTab).displayed
+			valueDomainsTab.displayed
 		}
 		waitFor{
-			$(ConceptualDomainShowPage.modelsTab).displayed
+			modelsTab.displayed
 		}
 		waitFor{
-			$(ConceptualDomainShowPage.valueDomainsTab).displayed
+			valueDomainsTab.displayed
 		}
 
 	}
@@ -85,11 +87,12 @@ class ConceptualDomainShowPageSpec extends GebReportingSpec {
 			at ConceptualDomainShowPage
 		}
 		waitFor {
-			$(ConceptualDomainShowPage.valueDomainsTab).displayed
-			$(ConceptualDomainShowPage.valueDomainsTab).find("a").displayed
+			valueDomainsTab.displayed
 		}
 		when:"Clicking on valueDomains Tab"
-		$(ConceptualDomainShowPage.valueDomainsTab).find("a").click()
+		interact{
+			click(valueDomainsTab)
+		}
 
 		then:"valueDomains Table will be displayed"
 		waitFor {
@@ -98,11 +101,10 @@ class ConceptualDomainShowPageSpec extends GebReportingSpec {
 
 		when:"Clicking on model Tab"
 		waitFor {
-			$(ConceptualDomainShowPage.modelsTab).displayed
-			$(ConceptualDomainShowPage.modelsTab).find("a").displayed
+			modelsTab.displayed
 		}
 
-		$(ConceptualDomainShowPage.modelsTab).find("a").click()
+		modelsTab.click()
 
 		then:"model Table will be displayed"
 		waitFor {

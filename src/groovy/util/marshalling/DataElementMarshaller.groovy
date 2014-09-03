@@ -40,7 +40,7 @@ class DataElementMarshaller extends PublishedElementMarshallers {
 		}
 	}
 
-	@Override
+
 	protected getAvailableReports(CatalogueElement el) {
 		def reports = []
 		def reportsRegistry = grails.util.Holders.applicationContext.getBean("reportsRegistry")

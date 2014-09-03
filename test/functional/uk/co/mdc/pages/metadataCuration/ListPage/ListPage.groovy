@@ -7,7 +7,7 @@ package uk.co.mdc.pages.metadataCuration.ListPage
  */
 class ListPage extends  BasePageWithNavReadOnly{
 
-	static String elementsTable = "table[list='list']"
+	static String elementsTable = "table.dl-table.table"
 	static String exportButton  = "span button#exportBtn"
 	static String exportButtonItems = "span ul#exportBtnItems"
 

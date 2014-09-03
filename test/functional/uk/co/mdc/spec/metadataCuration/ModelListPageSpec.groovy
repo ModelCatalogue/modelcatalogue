@@ -105,6 +105,7 @@ class ModelListPageSpec extends GebReportingSpec{
 
 	}
 
+	@Ignore
 	def "Clicking on a model name, its dataElements will be displayed on the table"(){
 
 		when: "Click on a model"
@@ -189,6 +190,7 @@ class ModelListPageSpec extends GebReportingSpec{
 		}
 	}
 
+	@Ignore
 	def "Clicking on a dataElement, will redirect us to dataElement show page"(){
 
 		when: "Click on a dataElement in dataElement table"

@@ -61,6 +61,7 @@ class ReadOnlyUserLoginSpec extends GebReportingSpec{
 
 
 
+	@Unroll
 	def"ReadOnly user can not access administration urls #NotAuthorizedUrl"(){
 		when:"ReadOnly user goes to an admin url"
 		at ModelListPage

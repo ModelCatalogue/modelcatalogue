@@ -9,7 +9,7 @@ class AssetShowPage extends BasePageWithNavReadOnly{
 
 	static url = "metadataCurator/#/catalogue/asset/"
 
-	static String actionButtons = "button span"
+	static String downloadButtons = "button[title='Download']"
 
 	static at = {
 		url == "metadataCurator/#/catalogue/asset/" &&
@@ -20,8 +20,8 @@ class AssetShowPage extends BasePageWithNavReadOnly{
 		mainLabel   {waitFor { $("h3.ce-name") }}
 		description {waitFor { $("blockquote.ce-description")}}
 
-		propertiesTab {waitFor {$("div.tabbable ul li[heading='Properties']")}}
-		metadataTab {waitFor { $("div.tabbable ul li[heading='Metadata']")}}
+		propertiesTab {waitFor { $("div.tabbable ul li.ng-isolate-scope a",text:contains('Properties'))}}
+		metadataTab {waitFor { $("div.tabbable ul li.ng-isolate-scope a",text:contains('Metadata'))}}
 	}
 
 }

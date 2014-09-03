@@ -1,6 +1,7 @@
 package uk.co.mdc.spec.metadataCuration
 
 import geb.spock.GebReportingSpec
+import org.junit.Ignore
 import spock.lang.Stepwise
 import uk.co.mdc.pages.authentication.LoginPage
 import uk.co.mdc.pages.metadataCuration.ListPage.ModelListPage
@@ -82,9 +83,7 @@ class DataElementShowPageSpec extends GebReportingSpec {
 		waitFor {
 			propertiesTab.displayed
 		}
-		waitFor {
-			valueDomainsTab.displayed
-		}
+
 		waitFor {
 			metadataTab.displayed
 		}
@@ -135,10 +134,9 @@ class DataElementShowPageSpec extends GebReportingSpec {
 		when:"Clicking on properties Tab"
 		waitFor {
 			propertiesTab.displayed
-			propertiesTab.find("a").displayed
 		}
 		interact {
-			click(propertiesTab.find("a"))
+			click(propertiesTab)
 		}
 
 		then:"properties Table will be displayed"
@@ -147,27 +145,12 @@ class DataElementShowPageSpec extends GebReportingSpec {
 		}
 
 
-		when:"Clicking on valueDomains Tab"
-		waitFor {
-			valueDomainsTab.displayed
-			valueDomainsTab.find("a").displayed
-		}
-		valueDomainsTab.find("a").click()
-
-
-		then:"valueDomains Table will be displayed"
-		waitFor {
-			valueDomainsTable.displayed
-		}
-
-
 		when:"Clicking on metadata Tab"
 		waitFor {
 			metadataTab.displayed
-			metadataTab.find("a")
 		}
 		interact {
-			click(metadataTab.find("a"))
+			click(metadataTab)
 		}
 
 		then:"metadata Table will be displayed"
@@ -177,7 +160,7 @@ class DataElementShowPageSpec extends GebReportingSpec {
 
 
 		when:"Clicking on relatedTo Tab"
-		relationshipsTab.find("a").click()
+		relationshipsTab.click()
 
 		then:"relatedTo Table will be displayed"
 		waitFor {
