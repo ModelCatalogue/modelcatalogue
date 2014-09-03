@@ -581,9 +581,9 @@ class BootStrap {
 		def vdParams = [name: "TestValueDomain", description: "Test Desc", dataType: dataType, measurementUnit: measurementUnit]
 
 		ValueDomain vd = new ValueDomain(vdParams).save(failOnError: true)
-		vd.addToIncludedIn(conceptualDomain)
-		vd.addToInstantiates(de1)
-		vd.addToInstantiates(de2)
+		vd.addToConceptualDomains(conceptualDomain)
+		vd.addToDataElements(de1)
+		vd.addToDataElements(de2)
 		vd.save(failOnError: true)
 
 
@@ -605,7 +605,7 @@ class BootStrap {
 		topParentModel_draft.addToHasContextOf(conceptualDomain)
 		topParentModel_draft.addToContains de3
 
-		vd.addToInstantiates(de3)
+		vd.addToDataElements(de3)
 		vd.save(failOnError: true)
 
 		//add an asset
